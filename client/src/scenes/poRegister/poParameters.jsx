@@ -1,84 +1,19 @@
-import { Box } from "@mui/material"
-import { DataGrid } from "@mui/x-data-grid"
-import Item from "../../components/item"
-import { useGetPoRegisterQuery } from '../../redux/service/poRegister';
-import { useMemo, useState } from 'react';
-import { filterSearch } from '../../helper/helper';
-import ContextMenu from "../../components/ContextMenu";
-// import ContextMenu from "../../../components/ContextMenu"
-// import CustomToolbar from "../../../components/CustomToolbar"
-// import { paymentHistorySchema, paymentHistoryData } from "../data/debt"
+import React from "react"
+import MultiSelectList from "./MultiSelect"
+import ArticleIdSelect from "./articleIdSelect";
 
-const columns = [
-    // ...paymentHistorySchema,
-    {
-        field: "supplier",
-        headerName: "",
-        sortable: false,
-        flex: 1,
-        minWidth: 90,
-        maxWidth: 90,
-        renderCell: () => {
-            return (
-                <Box>
-                    <ContextMenu />
-                </Box>
-            )
-        }
-    }
-]
-const getRowId = (row) => row.poNo;
-function DataTable() {
-    const { data } = useGetPoRegisterQuery();
-    let poData = useMemo(() => data?.data ? data.data : [], [data])
-
+const Parameters = () => {
     return (
-        <Box style={{ height: 400, width: "100%" }}>
-            <DataGrid
-                rows={poData}
-                columns={columns}
-                getRowId={getRowId}
-                disableColumnFilter
-                disableColumnSelector
-                disableDensitySelector
-                slotProps={{
-                    filterPanel: {
-                        sx: {
-                            maxWidth: "100vw"
-                        }
-                    },
-                    toolbar: {
-                        showQuickFilter: true
-                    }
-                }}
-                editMode="row"
-                initialState={{
-                    columns: {
-                        columnVisibilityModel: {
-                            status: false,
-                            category: false,
-                            paymentMethod: false,
-                            reference: false
-                        }
-                    },
-                    filter: {
-                        filterModel: {
-                            items: [],
-                            quickFilterExcludeHiddenColumns: true
-                        }
-                    },
-                    pagination: {
-                        paginationModel: { page: 0, pageSize: 5 }
-                    }
-                }}
-            />
-        </Box>
+        <div className="w-full h-full px-[5%]">
+            <h1 className="text-center text-[14px] font-semibold">Filters</h1>
+            <div className="border-2  border-gray-400 h-[25%]">
+                <MultiSelectList />
+            </div>
+            {/* <div className="border-2 border-gray-400 rounded h-[35%]">
+                <ArticleIdSelect />
+            </div> */}
+        </div>
     )
 }
 
-export default function PoParameters() {
-
-    return (
-        <Item title="Filters" content={<DataTable />} height={500} />
-    )
-}
+export default Parameters

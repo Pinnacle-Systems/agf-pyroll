@@ -7,7 +7,7 @@ export const tokens = (mode) => ({
       grey: {
         100: '#e0e0e0',
         200: '#c2c2c2',
-        300: '#a3a3a3',
+        300: ' #9E9E9E',
         400: '#858585',
         500: '#666666',
         600: '#525252',
@@ -116,6 +116,9 @@ export const tokens = (mode) => ({
         800: '#c3c6fd',
         900: '#e1e2fe',
       },
+      tableTop: {
+        100: '#bedc12'
+      }
     }),
 });
 

@@ -16,8 +16,8 @@ const ActiveTabList = () => {
     const ref = useOutsideClick(() => { setShowHidden(false) })
 
     const tabs = {
-        "DASH": <Dashboard />,
-        "TEAM": <PoRegister />,
+        "DASHBOARD": <Dashboard />,
+        "PO REGISTER": <PoRegister />,
 
     };
     const innerWidth = window.innerWidth;
@@ -25,13 +25,13 @@ const ActiveTabList = () => {
     const currentShowingTabs = openTabs.tabs.slice(0, parseInt(itemsToShow));
     const hiddenTabs = openTabs.tabs.slice(parseInt(itemsToShow));
     return (
-        <div className="relative ">
-            <div className="flex justify-between">
-                <div className="flex gap-2 ml-5">
+        <div className="relative w-full h-full">
+            <div className="flex justify-between h-[3%]">
+                <div className="flex gap-2 ml-2 ">
                     {currentShowingTabs.map((tab, index) => (
                         <div
                             key={index}
-                            className={` p-1 rounded-t-md text-[10px] flex justify-center gap-1 ${tab.active ? "bg-red-300" : "bg-gray-300"
+                            className={`p-[3px] rounded-t-md subheading-font font-semibold flex justify-center gap-1 ${tab.active ? "color text-white" : "bg-white"
                                 }`}
                         >
                             <button
@@ -59,11 +59,11 @@ const ActiveTabList = () => {
                     }
                 </div>
                 {showHidden &&
-                    <ul ref={ref} className="absolute right-0 top-5 bg-gray-200 z-50 text-xs p-1">
+                    <ul ref={ref} className="absolute right-0 top-5 bg-gray-200 z-50 p-1">
                         {hiddenTabs.map(tab =>
                             <li key={tab.id} className={`flex justify-between hover:bg-blue-200  ${tab.active ? "bg-red-300" : "bg-gray-300"
                                 } `}>
-                                <button
+                                <button className=" text-gray-500"
                                     onClick={() => {
                                         dispatch(push({ id: tab.id }));
                                     }}
@@ -83,7 +83,7 @@ const ActiveTabList = () => {
                 }
             </div>
             {openTabs.tabs.map((tab, index) => (
-                <div key={index} className={`${tab.active ? "block" : "hidden"}`}>
+                <div key={index} className={`${tab.active ? "block" : "hidden"} h-[97%] w-full`}>
                     {tabs[tab.name]}
                 </div>
             ))}

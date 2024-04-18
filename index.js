@@ -10,7 +10,9 @@ oracledb.initOracleClient({ libDir: "C:\\oracle\\instantclient_19_20" });
 
 import {
   finYear,
-  poRegister
+  poRegister,
+  supplier,
+  poData
 } from "./src/routes/index.js"
 
 const app = express()
@@ -37,6 +39,9 @@ app.use('/poRegister', poRegister)
 
 app.use('/finYear', finYear)
 
+app.use('/supplier', supplier)
+
+app.use('/poData', poData)
 const PORT = 8080;
 
 app.listen(PORT, () => {

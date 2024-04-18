@@ -88,7 +88,7 @@ export default function ContextMenu() {
         open={open}
         onClose={handleClose}
       >
-        <MenuItem onClick={handleClose} disableRipple>
+        {/* <MenuItem onClick={handleClose} disableRipple>
           <Edit />
           Edit
         </MenuItem>
@@ -104,7 +104,7 @@ export default function ContextMenu() {
         <MenuItem onClick={handleClose} disableRipple>
           <MoreHoriz />
           More
-        </MenuItem>
+        </MenuItem> */}
       </StyledMenu>
     </>
   )

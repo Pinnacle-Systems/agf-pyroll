@@ -11,10 +11,10 @@ import { useState } from 'react';
 import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { tokens } from '../../theme';
-
+import { FaHome } from "react-icons/fa";
 
 const Accordion = styled((props) => (
-    <MuiAccordion disableGutters elevation={0} square {...props} />
+    <MuiAccordion disableGutters className='bg-gray-500' elevation={0} square {...props} />
 ))(({ theme }) => ({
     border: `1px solid ${theme.palette.divider}`,
     '&:not(:last-child)': {
@@ -27,14 +27,16 @@ const Accordion = styled((props) => (
 
 const AccordionSummary = styled((props) => (
     <MuiAccordionSummary
+
+        sx={{
+            backgroundColor: "#979595",
+            color: 'white'
+        }}
         expandIcon={<ArrowForwardIosSharpIcon sx={{ fontSize: '0.9rem' }} />}
         {...props}
     />
 ))(({ theme }) => ({
-    backgroundColor:
-        theme.palette.mode === 'dark'
-            ? 'rgba(255, 255, 255, .05)'
-            : 'rgba(0, 0, 0, .03)',
+
     flexDirection: 'row-reverse',
     '& .MuiAccordionSummary-expandIconWrapper.Mui-expanded': {
         transform: 'rotate(90deg)',
@@ -46,23 +48,11 @@ const AccordionSummary = styled((props) => (
 
 const AccordionDetails = styled(MuiAccordionDetails)(({ theme }) => ({
     padding: theme.spacing(2),
-    borderTop: '1px solid rgba(0, 0, 0, .125)',
+    border: '1px solid white',
+    backgroundColor: "#979595",
+    color: 'white'
 }));
-const Item = ({ title, to, icon, selected, setSelected }) => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    return (
-        <MenuItem
-            active={selected === title}
-            style={{ color: colors.grey[600] }}
-            onClick={() => setSelected(title)}
-            icon={icon}
-        >
-            <Typography>{title}</Typography>
 
-        </MenuItem>
-    );
-};
 const CustomizedAccordions = () => {
     const [expanded, setExpanded] = useState('');
 
@@ -70,45 +60,33 @@ const CustomizedAccordions = () => {
         setExpanded(newExpanded ? panel : false);
     };
     const dispatch = useDispatch()
-    const [selected, setSelected] = useState(`Dashboard`);
-
 
     return (
-        <div className='w-44'>
-            <button className='' onClick={() => dispatch(push({ id: 1, name: "DASH" }))}>   <Item
-                title="Dashboard"
-                to="/home"
-                icon={<HomeOutlinedIcon />}
-                selected={selected}
-                setSelected={setSelected}
-            /></button>
-            <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
-                <AccordionSummary aria-controls="panel1d-content" id="panel1d-header">
-                    <Typography>Po Management</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <h4 className='text-gray-600' onClick={() => dispatch(push({ id: 2, name: "TEAM" }))}>Po Register</h4>
-                </AccordionDetails>
-            </Accordion>
-            <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
-                <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                    <Typography>process Status</Typography>
-                </AccordionSummary>
-                <AccordionDetails >
-                    <h4 className='text-gray-500' onClick={() => dispatch(push({ id: 2, name: "TEAM" }))}>Knitting Pro</h4>
-                    <h4 className='text-gray-500'>Dyeing Pro</h4>
-                </AccordionDetails>
-            </Accordion>
-            <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-                <AccordionSummary aria-controls="panel3d-content" id="panel3d-header">
-                    <Typography>Outstanding</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                    <Typography>
-                        Lorem
-                    </Typography>
-                </AccordionDetails>
-            </Accordion>
+        <div className='w-full   text-white flex flex-col items-center justify-center '>
+            <button className='header-font flex  text-white  items-center  gap-5 justify-start  pt-3 ' onClick={() => dispatch(push({ id: 1, name: "DASHBOARD" }))}>
+                <FaHome className='lg' />
+                <span className='subheading-font font-semibold'>
+                    DASHBOARD
+                </span>
+            </button>
+            <div className='mt-2 w-full p-1'>
+                <Accordion expanded={expanded === 'panel1'} classes onChange={handleChange('panel1')}>
+                    <AccordionSummary id="panel1d-header"  >
+                        <h4 className='w-[100%]  font-semibold subheading-font'>Po management</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <h4 className='w-[100%] subheading-font font-semibold subheading-font' onClick={() => dispatch(push({ id: 2, name: "PO REGISTER" }))}>PO REGISTER</h4>
+                    </AccordionDetails>
+                </Accordion>
+                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+                    <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                        <h4 className='w-[100%] subheading-font font-semibold'>Ord management</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <h4 className='w-[100%] subheading-font font-semibold' onClick={() => dispatch(push({ id: 2, name: "PO REGISTER" }))}>PO REGISTER</h4>
+                    </AccordionDetails>
+                </Accordion>
+            </div>
         </div>
     );
 };

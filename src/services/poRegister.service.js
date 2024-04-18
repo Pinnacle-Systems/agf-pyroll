@@ -11,11 +11,12 @@ export async function get(req, res) {
         supplier,
         totalQty,
         ptransaction,
-        finYr
+        finYr,
+        gtpodetId
          from YFPURREG
      `)
         let resp = result.rows.map(po => ({
-            poNo: po[0], poDate: po[1], dueDate: po[2], supplier: po[3], totalQty: po[4], transaction: po[5], finYr: po[6]
+            poNo: po[0], poDate: po[1], dueDate: po[2], supplier: po[3], totalQty: po[4], transaction: po[5], finYr: po[6], poId: po[7]
         }))
         console.log(resp, 'ypo nresp');
         return res.json({ statusCode: 0, data: resp })

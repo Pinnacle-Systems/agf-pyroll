@@ -7,44 +7,50 @@ body,
 .content {
   height: 100%;
   width: 100%;
-  font-family: 'Source Sans Pro', sans-serif;
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
 }
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-.app {
-  display: flex;
-  position: relative;
-}
 
 /* Scrollbar */
 /* Firefox */
 * {
-  scrollbar-width: auto;
-  scrollbar-color: #585965 #e0e0e0;
+  scrollbar-width: 1px;
+  scrollbar-color: #9e9fac #ffffff;
 }
 
 /* Chrome, Edge, and Safari */
-*::-webkit-scrollbar {
+/* For WebKit-based browsers (Chrome, Safari) */
+::-webkit-scrollbar {
   width: 10px;
-  height: 10px;
+  /* width of the scrollbar */
 }
 
-*::-webkit-scrollbar-track {
-  background: #4a5975;
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* color of the track */
 }
 
-*::-webkit-scrollbar-thumb:hover {
-  background: #272f56;
+::-webkit-scrollbar-thumb {
+  background: #888;
+  /* color of the scrollbar handle */
 }
 
-*::-webkit-scrollbar-thumb {
-  background-color: #30345d;
-  border-radius: 3px;
-  /* border: 1px solid #4c4d56; */
+/* For Firefox */
+/* Set the width of the scrollbar */
+/* auto: browser default, thin, or none: hides the scrollbar */
+/* For Firefox, you can't style the scrollbar directly like in WebKit */
+/* But you can adjust its appearance using the color of the track and handle */
+body {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+  /* thumb color and track color */
 }
+
 
 .toggle-button-wrapper {
   position: fixed;
@@ -70,4 +76,79 @@ body,
 .toggle-button-wrapper:hover {
   background-color: #555;
   /* Adjust hover background color as needed */
+}
+
+/* Adjust the width of the scrollbar */
+::-webkit-scrollbar {
+  width: 10px;
+  /* Change this value to set the width */
+}
+
+/* Style the scrollbar track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  /* Change the background color if needed */
+}
+
+/* Style the scrollbar handle */
+::-webkit-scrollbar-thumb {
+  background: #802525;
+  /* Change the color of the scrollbar handle */
+  border-radius: 5px;
+  /* Add border-radius for rounded corners */
+}
+
+/* Hover effect for the scrollbar handle */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+  /* Change the color on hover */
+}
+
+.scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.scrollbar {
+  -ms-overflow-style: none;
+  /* IE and Edge */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.color {
+  background-color: #17252A;
+}
+
+.font-normal {
+  font-weight: larger;
+}
+
+body {
+  font-size: 0.5vw;
+}
+
+
+.header-font {
+  font-size: 1.7vw;
+}
+
+.title {
+  font-size: 1.1vw;
+}
+
+.subheading-font {
+  font-size: 0.9vw;
+}
+
+.content-font {
+  font-size: 0.8vw;
+}
+
+.table-header-bg {
+  background-color: #bedc12;
+}
+
+.quarterly-review-header {
+  font-weight: bold;
 }

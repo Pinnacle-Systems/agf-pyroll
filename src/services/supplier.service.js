@@ -5,11 +5,11 @@ export async function get(req, res) {
     const connection = await getConnection(res)
     try {
         const result = await connection.execute(`
-        select partyName from partymast
+        select partyName, partymastid from partymast
         where partycat = 'SUPPLIER'
      `)
         let resp = result.rows.map(po => ({
-            supplier: po[0]
+            supplier: po[0], partyMastId: po[1]
         }))
         console.log(resp, 'ypo nresp');
         return res.json({ statusCode: 0, data: resp })

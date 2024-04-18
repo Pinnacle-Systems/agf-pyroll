@@ -19,7 +19,8 @@ const Dashboard = () => {
   const colors = tokens(theme.palette.mode);
 
   return (
-    <Box m="15px">
+    <Box m="15px" overflow={'scroll'}
+      sx={{ scrollY: 'scroll' }}>
       <Helmet>
         <title>Dashboard | ReactDashX</title>
       </Helmet>
@@ -257,7 +258,7 @@ const Dashboard = () => {
           </Box>
         </Box>
 
-        {/* Bar Chart */}
+        Bar Chart
         <Box
           gridColumn="span 4"
           gridRow="span 2"

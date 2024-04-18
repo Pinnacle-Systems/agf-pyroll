@@ -16,7 +16,7 @@ import PieChartOutlineOutlinedIcon from '@mui/icons-material/PieChartOutlineOutl
 import TimelineOutlinedIcon from '@mui/icons-material/TimelineOutlined';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 import MapOutlinedIcon from '@mui/icons-material/MapOutlined';
-import CustomizedAccordions from './accordion'
+import CustomizedAccordions from './Accordion'
 // Custom Item component for MenuItems
 
 
@@ -36,135 +36,32 @@ const getCurrentPathname = () => {
 };
 
 const Sidebar = ({ isCollapsed }) => {
-    const theme = useTheme();
-    const colors = tokens(theme.palette.mode);
-    const currentPathname = getCurrentPathname();
-
-    console.log(isCollapsed, 'is');
-
     return (
         <Box
             sx={{
-                display: isCollapsed ? 'none' : 'block',
-                width: isCollapsed ? '' : '170px', // Adjust the width values as needed
+                overflow: "hidden",
+                width: isCollapsed ? '' : '100%',
                 '& .pro-sidebar-inner': {
-                    background: `${colors.primary[400]} !important`,
-                    width: '180px'
+                    background: `#243447`,
+                    width: '100%',
                 },
                 '& .pro-icon-wrapper': {
                     backgroundColor: 'transparent !important',
                 },
                 '& .pro-inner-item': {
-                    padding: '5px 5px 5px 20px !important',
-                },
-                '& .pro-inner-item:hover': {
-                    color: '#868dfb !important',
-                },
-                '& .pro-menu-item.active': {
-                    color: '#6870fa !important',
+                    padding: '5px 5px 25px 2px !important',
                 },
             }}
         >
-
-            <ProSidebar collapsed={isCollapsed}      >
-                <Menu iconShape="square">
-
-
-                    <Box paddingLeft={isCollapsed ? undefined : '1%'}>
-
-
-
-                        <CustomizedAccordions />
-
-                        {/* <Item
-                            title="Manage Team"
-                            to="/team"
-                            icon={<PeopleOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Item
-                            title="Contacts Info"
-                            to="/contacts"
-                            icon={<ContactsOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Item
-                            title="Invoices Data"
-                            to="/invoices"
-                            icon={<ReceiptOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-
-                        <Typography
-                            variant="h6"
-                            color={colors.grey[300]}
-                            sx={{ m: '15px 0 5px 20px' }}
-                        >
-                            Pages
-                        </Typography>
-                        <Item
-                            title="Profile Form"
-                            to="/form"
-                            icon={<PersonOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Item
-                            title="Calendar"
-                            to="/calendar"
-                            icon={<CalendarTodayOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Item
-                            title="FAQ Page"
-                            to="/faq"
-                            icon={<HelpOutlineOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-
-                        <Typography
-                            variant="h6"
-                            color={colors.grey[300]}
-                            sx={{ m: '15px 0 5px 20px' }}
-                        >
-                            Charts
-                        </Typography>
-                        <Item
-                            title="Bar Chart"
-                            to="/bar"
-                            icon={<BarChartOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Item
-                            title="Pie Chart"
-                            to="/pie"
-                            icon={<PieChartOutlineOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Item
-                            title="Line Chart"
-                            to="/line"
-                            icon={<TimelineOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        />
-                        <Item
-                            title="Geography Chart"
-                            to="/geography"
-                            icon={<MapOutlinedIcon />}
-                            selected={selected}
-                            setSelected={setSelected}
-                        /> */}
-                    </Box>
-                </Menu>
-            </ProSidebar>
+            <div className='w-full pt-1'>
+                <img
+                    src={`../../assets/pin.a0917c99.png`}
+                    alt="user-profile"
+                    className='bg-white h-full w-[98%]   object-cover'
+                    style={{ cursor: 'pointer' }}
+                />
+            </div>
+            <CustomizedAccordions />
         </Box>
     );
 };

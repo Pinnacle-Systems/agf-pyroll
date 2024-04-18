@@ -3,7 +3,6 @@ import { CssBaseline, ThemeProvider } from '@mui/material';
 import { ColorModeContext, useMode } from './theme';
 import { useState } from 'react'
 import Dashboard from './scenes/dashboard';
-import Topbar from './scenes/global/Topbar';
 import Sidebar from './scenes/global/Sidebar';
 import Team from './scenes/poRegister';
 import Contacts from './scenes/contacts';
@@ -31,38 +30,22 @@ function App() {
       <ColorModeContext.Provider value={colorMode}>
         <ThemeProvider theme={theme}>
           <CssBaseline />
-          <div className="app">
-            <Routes>
-              <Route path="/" element={<LoginForm />} />
-              <Route
-                path="/*"
-                element={
-                  < >
-                    <div className='flex relative'> <div >
-                      <div className='fixed z-50 w-screen'
-                      >                      <Topbar toggleSidebar={toggleSidebar} />
-
-                      </div>
-                    </div>
-                      <main className="flex mt-[3.25rem]  ">
-                        <div className='flex '>
-                          <Sidebar isCollapsed={isCollapsed} />
-
-                        </div>
-
-
-
-                        <div className="w-screen">
-                          <ActiveTabList />
-                        </div>
-
-                      </main>
-                    </div>
-                  </>
-                }
-              />
-            </Routes>
-          </div>
+          <Routes>
+            <Route path="/" element={<LoginForm />} />
+            <Route
+              path="/*"
+              element={
+                <main className="w-screen flex h-screen">
+                  <div className='flex float-left w-[15%] h-full color'>
+                    <Sidebar isCollapsed={isCollapsed} />
+                  </div>
+                  <div className="overflow-auto w-[85%] h-full">
+                    <ActiveTabList />
+                  </div>
+                </main>
+              }
+            />
+          </Routes>
         </ThemeProvider>
       </ColorModeContext.Provider>
     </Router>
