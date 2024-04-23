@@ -2,45 +2,70 @@ import { getConnection } from "../constants/db.connection.js";
 
 
 export async function get(req, res) {
-    const connection = await getConnection(res)
+    const connection = await getConnection(res);
     try {
-        const { } = req.query;
-        const result = await connection.execute(`
-        SELECT SUPPLIER,
+        const { finYearData, filterMonth } = req.query;
+        console.log(filterMonth, 8);
+        console.log(finYearData, 8);
+        const fltrYearData = finYearData ? JSON.parse(finYearData).map(item => `'${item}'`) : [];
+        //year filter
+        const fltrYearClauseQ1 = fltrYearData.length > 0 ? `AND Q1.FINYR IN (${fltrYearData})` : '';
+        const fltrYearClauseQ2 = fltrYearData.length > 0 ? `AND Q2.FINYR IN(${fltrYearData})` : '';
+        const fltrYearClauseQ3 = fltrYearData.length > 0 ? `AND Q3.FINYR IN(${fltrYearData})` : '';
+        const fltrYearClauseQ4 = fltrYearData.length > 0 ? `AND Q4.FINYR IN(${fltrYearData})` : '';
+        const fltrYearClauseM = fltrYearData.length > 0 ? `AND M.FINYR IN(${fltrYearData})` : '';
+        //month filter
+        const monthFilter = filterMonth ? JSON.parse(filterMonth).map(item => `'${item}'`) : [];
+        const fltrMonthQ1 = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM Q1.DOCDATE)IN (${monthFilter})` : '';
+        const fltrMonthQ2 = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM Q2.DOCDATE)IN (${monthFilter})` : '';
+        const fltrMonthQ3 = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM Q3.DOCDATE)IN (${monthFilter})` : '';
+        const fltrMonthQ4 = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM Q4.DOCDATE)IN (${monthFilter})` : '';
+        const fltrMonthM = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM M.DOCDATE)IN (${monthFilter})` : '';
+
+        const sql = `SELECT SUPPLIER,
         (SELECT SUM(Q1.POQTY * Q1.PRICE)
         FROM YFPURREG Q1
-        WHERE EXTRACT(MONTH FROM Q1.DOCDATE) IN (1,2,3)
-        AND Q1.SUPPLIER = M.SUPPLIER) AS Q1,
+        WHERE 1=1 ${fltrYearClauseQ1}   ${fltrMonthQ1}
+        AND EXTRACT(MONTH FROM Q1.DOCDATE) IN (4,5,6)
+        AND Q1.SUPPLIER = M.SUPPLIER) AS Q1, 
         (SELECT SUM(Q2.POQTY * Q2.PRICE)
         FROM YFPURREG Q2
-        WHERE EXTRACT(MONTH FROM Q2.DOCDATE) IN (4,5,6)
+        WHERE 1=1 ${fltrYearClauseQ2}   ${fltrMonthQ2}
+        AND EXTRACT(MONTH FROM Q2.DOCDATE) IN (7,8,9)
         AND Q2.SUPPLIER = M.SUPPLIER) AS Q2,
         (SELECT SUM(Q3.POQTY * Q3.PRICE)
         FROM YFPURREG Q3
-        WHERE EXTRACT(MONTH FROM Q3.DOCDATE) IN (7,8,9)
+        WHERE 1=1  ${fltrYearClauseQ3}   ${fltrMonthQ3}
+        AND EXTRACT(MONTH FROM Q3.DOCDATE) IN (10,11,12)
         AND Q3.SUPPLIER = M.SUPPLIER) AS Q3,
         (SELECT SUM(Q4.POQTY * Q4.PRICE)
         FROM YFPURREG Q4
-        WHERE EXTRACT(MONTH FROM Q4.DOCDATE) IN (10,11,12)
+        WHERE 1=1  ${fltrYearClauseQ4}   ${fltrMonthQ4}
+        AND EXTRACT(MONTH FROM Q4.DOCDATE) IN (1,2,3)
         AND Q4.SUPPLIER = M.SUPPLIER) AS Q4,
         SUM(POQTY * PRICE) AS TOTAL
         FROM YFPURREG M
-        GROUP BY M.SUPPLIER
-     `)
+        WHERE 1=1 
+    ${fltrYearClauseM}
+    ${fltrMonthM}
+        GROUP BY M.SUPPLIER`
+
+        console.log(sql, '35');
+        const result = await connection.execute(sql);
         let resp = result.rows.map(po => ({
             supplier: po[0], q1: po[1], q2: po[2], q3: po[3], q4: po[4], price: po[5]
-        }))
-        console.log(resp, 'ypo nresp');
-        return res.json({ statusCode: 0, data: resp })
+        }));
+        return res.json({ statusCode: 0, data: resp });
     }
     catch (err) {
         console.error('Error retrieving data:', err);
         res.status(500).json({ error: 'Internal Server Error' });
     }
     finally {
-        await connection.close()
+        await connection.close();
     }
 }
+
 export async function getFinYr(req, res) {
     const connection = await getConnection(res)
     try {
@@ -51,7 +76,6 @@ export async function getFinYr(req, res) {
         let resp = result.rows.map(po => ({
             finYr: po[0]
         }))
-        console.log(resp, 'ypo nresp');
         return res.json({ statusCode: 0, data: resp })
     }
     catch (err) {
@@ -69,7 +93,6 @@ export async function getSupplier(req, res) {
         const { } = req.query;
         const sql = `
         SELECT DISTINCT SUPPLIER FROM YFPURREG`
-        console.log(sql, 'ypo nresp');
 
         const result = await connection.execute(sql)
 
@@ -97,7 +120,6 @@ export async function getArticleId(req, res) {
         let resp = result.rows.map(po => ({
             articleId: po[0]
         }))
-        console.log(resp, 'ypo nresp');
         return res.json({ statusCode: 0, data: resp })
     }
     catch (err) {

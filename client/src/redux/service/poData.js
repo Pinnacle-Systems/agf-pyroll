@@ -10,11 +10,14 @@ const poData = createApi({
     tagTypes: ['poData'],
     endpoints: (builder) => ({
         getPoData: builder.query({
-            query: () => {
+            query: (params) => {
                 return {
                     url: `${PO_DATA}`,
                     method: 'GET',
-
+                    params,
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
                 }
             },
             providesTags: ['getSupplier'],

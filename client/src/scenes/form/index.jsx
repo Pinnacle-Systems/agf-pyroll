@@ -1,166 +1,170 @@
-import { Box, Button, TextField } from '@mui/material';
-import { Formik } from 'formik';
-import * as yup from 'yup';
-import useMediaQuery from '@mui/material/useMediaQuery';
-import SendIcon from '@mui/icons-material/Send';
-import Header from '../../components/Header';
-import { Helmet } from 'react-helmet';
+import React, { useState } from "react"
+import { DataTable } from "primereact/datatable"
+import { Column } from "primereact/column"
+import { ColumnGroup } from "primereact/columngroup"
+import { Row } from "primereact/row"
 
-const initialValues = {
-  firstName: '',
-  lastName: '',
-  email: '',
-  contact: '',
-  address1: '',
-  address2: '',
-};
+export default function ColumnGroupDemo() {
+  const [sales] = useState([
+    {
+      product: "Bamboo Watch",
+      lastYearSale: 51,
+      thisYearSale: 40,
+      lastYearProfit: 54406,
+      thisYearProfit: 43342
+    },
+    {
+      product: "Black Watch",
+      lastYearSale: 83,
+      thisYearSale: 9,
+      lastYearProfit: 423132,
+      thisYearProfit: 312122
+    },
+    {
+      product: "Blue Band",
+      lastYearSale: 38,
+      thisYearSale: 5,
+      lastYearProfit: 12321,
+      thisYearProfit: 8500
+    },
+    {
+      product: "Blue T-Shirt",
+      lastYearSale: 49,
+      thisYearSale: 22,
+      lastYearProfit: 745232,
+      thisYearProfit: 65323
+    },
+    {
+      product: "Brown Purse",
+      lastYearSale: 17,
+      thisYearSale: 79,
+      lastYearProfit: 643242,
+      thisYearProfit: 500332
+    },
+    {
+      product: "Chakra Bracelet",
+      lastYearSale: 52,
+      thisYearSale: 65,
+      lastYearProfit: 421132,
+      thisYearProfit: 150005
+    },
+    {
+      product: "Galaxy Earrings",
+      lastYearSale: 82,
+      thisYearSale: 12,
+      lastYearProfit: 131211,
+      thisYearProfit: 100214
+    },
+    {
+      product: "Game Controller",
+      lastYearSale: 44,
+      thisYearSale: 45,
+      lastYearProfit: 66442,
+      thisYearProfit: 53322
+    },
+    {
+      product: "Gaming Set",
+      lastYearSale: 90,
+      thisYearSale: 56,
+      lastYearProfit: 765442,
+      thisYearProfit: 296232
+    },
+    {
+      product: "Gold Phone Case",
+      lastYearSale: 75,
+      thisYearSale: 54,
+      lastYearProfit: 21212,
+      thisYearProfit: 12533
+    }
+  ])
 
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
+  const lastYearSaleBodyTemplate = rowData => {
+    return `${rowData.lastYearSale}%`
+  }
 
-const userSchema = yup.object().shape({
-  firstName: yup.string().required('required'),
-  lastName: yup.string().required('required'),
-  email: yup.string().email('Invalid email').required('required'),
-  contact: yup
-    .string()
-    .matches(phoneRegExp, 'Phone number is not valid.')
-    .required('required'),
-  address1: yup.string().required('required'),
-  address2: yup.string().required('required'),
-});
+  const thisYearSaleBodyTemplate = rowData => {
+    return `${rowData.thisYearSale}%`
+  }
 
-const Form = () => {
-  const isNonMobile = useMediaQuery('(min-width:600px)');
+  const lastYearProfitBodyTemplate = rowData => {
+    return `${formatCurrency(rowData.lastYearProfit)}`
+  }
 
-  const formSubmitHandler = (values) => {
-    console.log(values);
-  };
+  const thisYearProfitBodyTemplate = rowData => {
+    return `${formatCurrency(rowData.thisYearProfit)}`
+  }
+
+  const formatCurrency = value => {
+    return value.toLocaleString("en-US", { style: "currency", currency: "USD" })
+  }
+
+  const lastYearTotal = () => {
+    let total = 0
+
+    for (let sale of sales) {
+      total += sale.lastYearProfit
+    }
+
+    return formatCurrency(total)
+  }
+
+  const thisYearTotal = () => {
+    let total = 0
+
+    for (let sale of sales) {
+      total += sale.thisYearProfit
+    }
+
+    return formatCurrency(total)
+  }
+
+  const headerGroup = (
+    <ColumnGroup>
+      <Row>
+        <Column header="Product" rowSpan={3} />
+
+      </Row>
+      <Row>
+
+        <Column header="Profits" colSpan={2} />
+      </Row>
+      <Row>
+        <Column header="Last Year" sortable field="lastYearSale" />
+        <Column header="This Year" sortable field="thisYearSale" />
+        <Column header="Last Year" sortable field="lastYearProfit" />
+        <Column header="This Year" sortable field="thisYearProfit" />
+      </Row>
+    </ColumnGroup>
+  )
+
+  const footerGroup = (
+    <ColumnGroup>
+      <Row>
+        <Column
+          footer="Totals:"
+          colSpan={3}
+          footerStyle={{ textAlign: "right" }}
+        />
+        <Column footer={lastYearTotal} />
+        <Column footer={thisYearTotal} />
+      </Row>
+    </ColumnGroup>
+  )
 
   return (
-    <Box m="15px">
-      <Helmet>
-        <title>Profile Form | ReactDashX</title>
-      </Helmet>
-      <Header title="CREATE USER" subtitle="Create a New User Profile" />
-
-      <Formik
-        onSubmit={formSubmitHandler}
-        initialValues={initialValues}
-        validationSchema={userSchema}
+    <div className="card">
+      <DataTable
+        value={sales}
+        headerColumnGroup={headerGroup}
+        footerColumnGroup={footerGroup}
+        tableStyle={{ minWidth: "50rem", border: '5px', borderBlockColor: 'red' }}
       >
-        {({
-          values,
-          errors,
-          touched,
-          handleBlur,
-          handleChange,
-          handleSubmit,
-        }) => (
-          <form onSubmit={handleSubmit}>
-            <Box
-              display="grid"
-              gap="20px"
-              gridTemplateColumns="repeat(4, minmax(0, 1fr))"
-              sx={{
-                '& > div': { gridColumn: isNonMobile ? undefined : 'span 4' },
-              }}
-            >
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="First Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.firstName}
-                name="firstName"
-                error={!!touched.firstName && !!errors.firstName}
-                helperText={touched.firstName && errors.firstName}
-                sx={{ gridColumn: 'span 2' }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Last Name"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.lastName}
-                name="lastName"
-                error={!!touched.lastName && !!errors.lastName}
-                helperText={touched.lastName && errors.lastName}
-                sx={{ gridColumn: 'span 2' }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Email"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.email}
-                name="email"
-                error={!!touched.email && !!errors.email}
-                helperText={touched.email && errors.email}
-                sx={{ gridColumn: 'span 4' }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Contact Number"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.contact}
-                name="contact"
-                error={!!touched.contact && !!errors.contact}
-                helperText={touched.contact && errors.contact}
-                sx={{ gridColumn: 'span 4' }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Address 1"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address1}
-                name="address1"
-                error={!!touched.address1 && !!errors.address1}
-                helperText={touched.address1 && errors.address1}
-                sx={{ gridColumn: 'span 4' }}
-              />
-              <TextField
-                fullWidth
-                variant="filled"
-                type="text"
-                label="Address 2"
-                onBlur={handleBlur}
-                onChange={handleChange}
-                value={values.address2}
-                name="address2"
-                error={!!touched.address2 && !!errors.address2}
-                helperText={touched.address2 && errors.address2}
-                sx={{ gridColumn: 'span 4' }}
-              />
-            </Box>
-            <Box display="flex" justifyContent="end" mt="15px">
-              <Button
-                type="submit"
-                // onClick={(e) => e.preventDefault()}
-                color="secondary"
-                variant="contained"
-                startIcon={<SendIcon />}
-              >
-                Create User
-              </Button>
-            </Box>
-          </form>
-        )}
-      </Formik>
-    </Box>
-  );
-};
-
-export default Form;
+        <Column field="product" />
+        <Column field="lastYearSale" body={lastYearSaleBodyTemplate} />
+        <Column field="thisYearSale" body={thisYearSaleBodyTemplate} />
+        <Column field="lastYearProfit" body={lastYearProfitBodyTemplate} />
+        <Column field="thisYearProfit" body={thisYearProfitBodyTemplate} />
+      </DataTable>
+    </div>
+  )
+}

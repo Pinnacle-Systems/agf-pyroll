@@ -7,7 +7,7 @@ import { useState } from "react";
 import useOutsideClick from "../../CustomHooks/handleOutsideClick";
 import PoRegister from "../poRegister";
 import Dashboard from "../dashboard";
-
+import Form from '../form'
 const ActiveTabList = () => {
     const openTabs = useSelector((state) => state.openTabs);
     const dispatch = useDispatch();
@@ -18,6 +18,7 @@ const ActiveTabList = () => {
     const tabs = {
         "DASHBOARD": <Dashboard />,
         "PO REGISTER": <PoRegister />,
+        'ORDERS': <Form />
 
     };
     const innerWidth = window.innerWidth;
@@ -25,19 +26,19 @@ const ActiveTabList = () => {
     const currentShowingTabs = openTabs.tabs.slice(0, parseInt(itemsToShow));
     const hiddenTabs = openTabs.tabs.slice(parseInt(itemsToShow));
     return (
-        <div className="relative w-full h-full">
-            <div className="flex justify-between h-[3%]">
-                <div className="flex gap-2 ml-2 ">
+        <div className="relative w-full h-full overflow-hidden">
+            <div className="flex justify-between ">
+                <div className="flex gap-2 m-2  ">
                     {currentShowingTabs.map((tab, index) => (
                         <div
                             key={index}
-                            className={`p-[3px] rounded-t-md subheading-font font-semibold flex justify-center gap-1 ${tab.active ? "color text-white" : "bg-white"
+                            className={`p-1 rounded  subheading-font  text-xs flex justify-center gap-1 ${tab.active ? "tab-color text-white" : "bg-white"
                                 }`}
                         >
                             <button
                                 onClick={() => {
                                     dispatch(push({ id: tab.id }));
-                                }}
+                                }} className=""
                             >
                                 {tab.name}
                             </button>

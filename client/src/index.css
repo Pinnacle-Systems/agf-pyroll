@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Jacquard+24&family=Noto+Sans:ital,wght@0,100..900;1,100..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
 
 html,
 body,
@@ -7,7 +7,7 @@ body,
 .content {
   height: 100%;
   width: 100%;
-  font-family: "Roboto", sans-serif;
+  font-family: "Poppins", sans-serif;
   text-transform: uppercase;
 }
 
@@ -48,6 +48,8 @@ body,
 body {
   scrollbar-width: thin;
   scrollbar-color: #888 #f1f1f1;
+  background-size: cover;
+  background-repeat: no-repeat;
   /* thumb color and track color */
 }
 
@@ -116,9 +118,10 @@ body {
   /* Firefox */
 }
 
-.color {
-  background-color: #17252A;
-}
+
+
+
+
 
 .font-normal {
   font-weight: larger;
@@ -145,10 +148,54 @@ body {
   font-size: 0.8vw;
 }
 
-.table-header-bg {
-  background-color: #bedc12;
-}
+
 
 .quarterly-review-header {
   font-weight: bold;
+}
+
+.even {
+  background-color: #cccbcb;
+}
+
+.odd {
+  background-color: white;
+}
+
+.button-clr {
+  background-color: 'white';
+}
+
+.tab-color {
+  background-color: #242424;
+  color: rgb(255, 255, 255);
+
+}
+
+.side-bar {
+  background-color: #b6b5b5;
+}
+
+.top-Bar {
+  background-color: #00072e;
+  height: 100%;
+  text-align: center;
+  width: 100%;
+}
+
+.top {
+  color: #00072e;
+}
+
+.color {
+  background-color: #adadad;
+}
+
+.top-Bar-style {
+  background-color: #00072e;
+
+}
+
+.clr {
+  background: #99a4e2;
 }

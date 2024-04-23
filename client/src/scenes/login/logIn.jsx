@@ -38,8 +38,8 @@ const LoginForm = ({ setIsLoggedIn }) => {
     }
 
     return (
-        <section className='flex items-center justify-evenly w-full bg-black'>
-            <section className='com  rounded-tr-3xl rounded-bl-3xl  shadow-2xl  p-8 w-[17rem] h-[21rem]  '>
+        <section className='flex items-center justify-evenly w-full bg-black h-full'>
+            <section className='com  rounded-tr-3xl rounded-bl-3xl  shadow-2xl  p-8 w-[17rem] h-[23rem]  '>
 
 
                 <p className='italic hover:not-italic '><span class="text-transparent md:text-xl  bg-clip-text bg-gradient-to-br from-orange-500 to-red-600 animate-text  pr-1">PINNACLE</span> Thulliam operates as a division under the corporate umbrella of the Pinnacle System.
@@ -57,54 +57,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
                     <Link to='/home'> Sign In</Link>
                 </button>
             </section>
-            {/* <div className=' login w-[17rem] h-[21rem] rounded-tr-3xl rounded-bl-3xl  shadow-2xl  p-8 flex flex-col  gap-y-4 '><form onSubmit={submitHandler}
 
-            >
-
-                <label className='w-full '>
-                    <p className='text-[0.85rem] text-white mb-5 leading-[1.375rem]'>User Name <sup className='text-white'>*</sup></p>
-                    <input
-                        required
-                        type="username"
-                        value={username}
-                        onChange={(e) => setUserName(e.target.value)}
-                        name='username'
-                        className='bg-richblack-800 rounded-[0.5rem] text-richblack-5 w-full p-[12px]'
-                    />
-                </label>
-
-                <label className='w-full relative'>
-                    <p className='text-[0.85rem] text-white mb-1 leading-[1.375rem]'>Password <sup className='text-white'>*</sup></p>
-                    <input
-                        required
-                        type={showPassword ? ("text") : ("password")}
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                        name='password'
-                        className='text-black rounded-[0.5rem] text-richblack-5 w-full p-[12px]'
-                    />
-
-                    <span
-                        className='absolute right-3 top-[30px] cursor-pointer'
-                        onClick={() => setShowPassword((prev) => !prev)} >
-                        {showPassword ?
-
-                            (<AiOutlineEyeInvisible fontSize={24} fill='#AFB2BF' />) :
-
-                            (<AiOutlineEye fontSize={24} fill='#AFB2BF' />)}
-                    </span>
-
-                    <Link to="#">
-                        <p className='text-xs mt-1 text-white'>
-                            Forgot Password
-                        </p>
-                    </Link>
-                </label>
-
-
-
-
-            </form></div> */}
         </section>
     )
 }

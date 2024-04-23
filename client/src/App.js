@@ -17,6 +17,7 @@ import Geography from './scenes/geography';
 import LoginForm from './scenes/login/logIn';
 import ActiveTabList from './scenes/ActiveTab';
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
+import Topbar from './scenes/global/Topbar';
 function App() {
   const [theme, colorMode] = useMode();
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -36,11 +37,14 @@ function App() {
               path="/*"
               element={
                 <main className="w-screen flex h-screen">
-                  <div className='flex float-left w-[15%] h-full color'>
-                    <Sidebar isCollapsed={isCollapsed} />
-                  </div>
-                  <div className="overflow-auto w-[85%] h-full">
-                    <ActiveTabList />
+                  <div className='flex-col '>
+                    <div className='w-screen h-[8%]'><Topbar /></div>
+                    <div className='h-[92%] '> <div className='flex float-left w-[15%] h-full side-bar'>
+                      <Sidebar isCollapsed={isCollapsed} />
+                    </div>
+                      <div className="overflow-auto w-[85%] h-full">
+                        <ActiveTabList />
+                      </div></div>
                   </div>
                 </main>
               }

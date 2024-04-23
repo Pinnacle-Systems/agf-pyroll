@@ -30,7 +30,7 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
 
 
     return (
-        <div className='ml-8 flex flex-col text-center align-center'>
+        <div className=' flex flex-col text-center align-center'>
             <div className='flex justify-evenly ' >
                 <div className='flex  h-8 mt-2 cursor-pointer '>
                     <p className='text-sm'> Year :</p>

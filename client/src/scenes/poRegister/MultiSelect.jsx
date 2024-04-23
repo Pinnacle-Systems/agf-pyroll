@@ -1,26 +1,19 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { useGetSupplierQuery } from '../../redux/service/poData';
 
-const MultiSelect = () => {
-    const [selectedItems, setSelectedItems] = useState('')
-    const [searchTerm, setSearchTerm] = useState('');
-    const { data: options } = useGetSupplierQuery()
-    const handleItemClick = (item) => {
-        const selectedIndex = selectedItems.indexOf(item);
-        if (selectedIndex === -1) {
-            setSelectedItems([...selectedItems, item]);
-        } else {
-            setSelectedItems(selectedItems.filter((selectedItems) => selectedItems !== item));
-        }
-    };
+const MultiSelect = ({ searchItem, setSearchItem }) => {
 
+    const { data } = useGetSupplierQuery()
+    let suppData = useMemo(() => data?.data ? data.data : [], [data])
+    console.log(suppData, 'data');
+    const filterData = suppData.filter(item => item.supplier.toLowerCase().includes(searchItem.toLowerCase()))
     return (
-        <div className="w-full h-full m-0 p-0">
-            <input type="text" className='h-[10%] pb-3 w-full focus:ring-0 border-0 border-bborder-gray-400' placeholder='Supplier' value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-            <div className='pl-1 overflow-y-auto scrollbar h-[85%] '>
-                {(options?.data ? options.data : []).map((item, index) => (
-                    <div className={` border rounded cursor-pointer content-font   ${selectedItems.includes(item.supplier) ? 'bg-gray-200' : ''}`}
-                        onClick={() => handleItemClick(item)} key={index}>
+        <div className="w-full h-full bg-white rounded-b-lg pb-8">
+            <input type="text" className='h-7 w-[14.75rem]fixed rounded' placeholder='Supplier' value={searchItem} onChange={(e) => { setSearchItem(e.target.value) }} />
+            <div className='p-2  overflow-y-auto scrollbar h-[100%] '>
+                {filterData?.map((item, index) => (
+                    <div className={` border rounded cursor-pointer content-font font-semibold p-1`}
+                    >
                         {item.supplier}
                     </div>))}
             </div>

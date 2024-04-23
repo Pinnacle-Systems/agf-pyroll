@@ -3,17 +3,17 @@ import { filterSearch } from '../../helper/helper';
 import { useGetFinYrQuery } from '../../redux/service/poData';
 import LineChart from '../../components/LineChart';
 const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
-    console.log(' state:', date);
-    const monthData = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+    console.log(' state:', month);
+    const monthData = [{ id: 1, month: 'JAN' }, { id: 2, month: 'FEB' }, { id: 3, month: 'MAR' }, { id: 4, month: 'APR' }, { id: 5, month: 'MAY' }, { id: 6, month: 'JUN' }, { id: 7, month: 'JUL' }, { id: 8, month: 'AUG' }, { id: 9, month: 'SEP' }, { id: 10, month: 'OCT' }, { id: 11, month: 'NOV' }, { id: 12, month: 'DEC' }]
     const { data: finYear } = useGetFinYrQuery();
     console.log(finYear, 'finyr');
     const handleSelectYear = (item) => {
         setYear(prevState => {
-            const yearIndex = prevState.indexOf(item.finYear);
+            const yearIndex = prevState.indexOf(item.finYr);
             if (yearIndex === -1) {
-                return [...prevState, item.finYear];
+                return [...prevState, item.finYr];
             } else {
-                return prevState.filter(selectedYear => selectedYear !== item.finYear);
+                return prevState.filter(selectedYear => selectedYear !== item.finYr);
             }
         });
     };
@@ -30,12 +30,12 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
 
 
     return (
-        <div className='h-full w-full flex text-center align-center color ml-1 rounded'>
-            <div className='flex justify-evenly pl-2'>  <div className='flex  h-8 mt-1 cursor-pointer align-center'>
-                <p className=' text-white subheading-font font-semibold mr-2 mt-2'> Year : </p>
+        <div className=' flex text-center align-center    rounded bg-gray-200'>
+            <div className='flex justify-between w-full '>  <div className='flex  h-8  cursor-pointer align-center mt-3 px-2'>
+                <p className=' text-black subheading-font font-semibold '> Year : </p>
                 {(finYear?.data ? finYear.data : []).map((item, index) => (
                     <button
-                        className={`flex gap-2 mr-3 mt-1 rounded-[5px] px-[2px] h-6 hover:bg-green-200  text-sm ${year.includes(item.finYr) ? 'bg-green-400' : 'bg-white'}`}
+                        className={`flex  rounded-[5px] px-[2px] h-6 hover:bg-green-200 mr-2 text-sm ${year.includes(item.finYr) ? 'bg-green-400' : 'bg-white'}`}
 
                         onClick={() => handleSelectYear(item)}
                         key={index}
@@ -45,33 +45,32 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
                 ))}
             </div>
                 <ul className='flex   mt-2 cursor-pointer mr-2'>
-                    <p className='subheading-font font-semibold text-white subheading-font font-semibold mr-2 mt-1'> Month :</p>
-                    {monthData.map((item, index) => (
+                    <p className='subheading-font font-semibold text-black subheading-font font-semibold mr-2 mt-1'> Month :</p>
+                    {monthData.map((item, id) => (
                         <li
-                            className={` flex gap-2 mr-2  rounded-[5px] px-[2px] h-5 text-sm  hover:bg-green-200 mt-1 ${month.includes(item) ? 'bg-green-400' : 'bg-white'}`}
-                            onClick={() => handleSelectMonth(item)}
-                            key={index}
+                            className={` flex gap-2 mr-2  rounded-[5px] px-[2px] h-5 text-sm  hover:bg-green-200 mt-1 ${month.includes(item.id) ? 'bg-green-400 text-black' : 'bg-white'}`}
+                            onClick={() => handleSelectMonth(item.id)}
+                            key={id}
                         >
-
-                            {item}
+                            {item.month}
                         </li>
 
                     ))}
                 </ul>
 
                 <div className='flex items-center flex gap-5'> <div class="m-2">
-                    <label className='subheading-font font-semibold text-white mr-2' for="firstName">
+                    <label className='subheading-font font-semibold text-black mr-2' for="firstName">
                         From :
                     </label>
                     <input
-                        class=" h-6  w-[6rem]  text-xs leading-tight text-gray-700 border rounded shadow appearance-none focus:outline-none focus:shadow-outline"
+                        class=" h-6  w-[8rem]  text-xs leading-tight text-gray-700 border rounded shadow  focus:outline-none focus:shadow-outline"
                         id="firstName"
                         type="date"
                         placeholder="search"
                         value={date}
                         onChange={(e) => { setDate(e.target.value) }}
                     />
-                </div> <div className='flex items-center'> <label className='subheading-font font-semibold text-white subheading-font font-semibold mr-2'>To :</label ><input className='rounded w-[6rem] text-[12px] h-6 p-1 ' type="date" /></div></div>
+                </div> <div className='flex items-center'> <label className='subheading-font font-semibold text-black subheading-font font-semibold mr-2'>To :</label ><input className='rounded w-[7rem] text-[12px] h-6 p-1 ' type="date" /></div></div>
             </div></div>
     )
 }

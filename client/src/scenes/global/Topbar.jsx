@@ -21,7 +21,7 @@ import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
 import InboxIcon from '@mui/icons-material/MoveToInbox';
 import MailIcon from '@mui/icons-material/Mail';
-import CustomizedAccordions from './accordion';
+
 import MenuOutlinedIcon from '@mui/icons-material/MenuOutlined';
 
 const Topbar = ({ toggleSidebar }) => {
@@ -38,57 +38,34 @@ const Topbar = ({ toggleSidebar }) => {
 
 
   return (
-    <Box display="flex" justifyContent="space-between" position="sticky"
-      top={0}
-      zIndex={1000}
-      bgcolor="background.paper"
-      boxShadow={4}
-      p={'2px'} >
-
-      <Box
-        display="flex"
-
-
-      >
+    <div className='top-Bar-style flex items-center justify-between text-white font-bold text-lg h-full'
+    >
+      <div className='p-1'>
         <img
           src={`../../assets/pin.a0917c99.png`}
           alt="user-profile"
-          className='w-[15%] h-[100%]'
-          style={{ borderRadius: '10%', cursor: 'pointer' }}
+          className='w-44 bg-white rounded-lg'
+          style={{ cursor: 'pointer' }}
         />
-        <Box>    <IconButton
-          sx={{
-            position: 'fixed',
-            zIndex: 999,
-          }}
-          onClick={toggleSidebar}
-        >
-          <MenuOutlinedIcon />
-        </IconButton></Box>
-      </Box>
-
-
-      <div className=' flex gap-3'>
+      </div>
+      <div>Management Information Report</div>
+      <div>
         <button onClick={colorMode.toggleColorMode}>
-          {theme.palette.mode === 'light' ? (
-            <LightModeOutlinedIcon />
-          ) : (
-            <DarkModeOutlinedIcon />
-          )}
+          <DarkModeOutlinedIcon className='text-white' />
         </button>
         <button>
           <Badge variant="dot" color="secondary">
-            <NotificationsOutlinedIcon />
+            <NotificationsOutlinedIcon className='text-white' />
           </Badge>
         </button>
         <button>
-          <SettingsOutlinedIcon />
+          <SettingsOutlinedIcon className='text-white' />
         </button>
         <button>
-          <PersonOutlinedIcon />
+          <PersonOutlinedIcon className='text-white' />
         </button>
       </div>
-    </Box>
+    </div>
 
   );
 
