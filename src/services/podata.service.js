@@ -25,8 +25,8 @@ export async function get(req, res) {
         const suppFilter = filterSupplier ? JSON.parse(filterSupplier).map(item => `'${item}'`) : [];
         const filterSupp = suppFilter.length > 0 ? `AND SUPPLIER IN (${suppFilter})` : '';
         // Article id filter
-        const articleIdFilter = 
-
+        const articleIdFilter = filterArticleId ? JSON.parse(filterArticleId).map(item => `'${item}'`) : [];
+        const filterArtId = articleIdFilter.length > 0 ? ` AND ARTICLEID IN (${articleIdFilter})` : '';
 
         const sql = `SELECT SUPPLIER,
         (SELECT SUM(Q1.POQTY * Q1.PRICE)
@@ -55,6 +55,7 @@ export async function get(req, res) {
     ${fltrYearClauseM}
     ${fltrMonthM}
     ${filterSupp}
+    ${filterArtId}
         GROUP BY M.SUPPLIER`
 
         console.log(sql, '35');

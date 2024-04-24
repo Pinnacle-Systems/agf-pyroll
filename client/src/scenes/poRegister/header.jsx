@@ -1,8 +1,10 @@
 import { useState } from 'react';
 import { filterSearch } from '../../helper/helper';
 import { useGetFinYrQuery } from '../../redux/service/poData';
-import LineChart from '../../components/LineChart';
-const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
+
+const Header = ({ setYear, year, setMonth, month, setDate, }) => {
+    const [fromDate, setFromDate] = useState([])
+    const [toDate, setToDate] = useState([])
     console.log(' state:', month);
     const monthData = [{ id: 1, month: 'JAN' }, { id: 2, month: 'FEB' }, { id: 3, month: 'MAR' }, { id: 4, month: 'APR' }, { id: 5, month: 'MAY' }, { id: 6, month: 'JUN' }, { id: 7, month: 'JUL' }, { id: 8, month: 'AUG' }, { id: 9, month: 'SEP' }, { id: 10, month: 'OCT' }, { id: 11, month: 'NOV' }, { id: 12, month: 'DEC' }]
     const { data: finYear } = useGetFinYrQuery();
@@ -35,7 +37,7 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
                 <p className=' text-white subheading-font font-semibold mr-2'> Year : </p>
                 {(finYear?.data ? finYear.data : []).map((item, index) => (
                     <button
-                        className={`flex  rounded-[5px] px-[2px] h-6 hover:bg-green-200 mr-2 text-sm ${year.includes(item.finYr) ? 'bg-green-400' : 'bg-white'}`}
+                        className={`flex  rounded-[5px] px-[2px] h-6 hover:bg-green-200 mr-2 text-sm ${year.includes(item.finYr) ? 'select-clr' : 'bg-white'}`}
 
                         onClick={() => handleSelectYear(item)}
                         key={index}
@@ -48,7 +50,7 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
                     <p className='subheading-font font-semibold text-white subheading-font font-semibold mr-2 mt-1'> Month :</p>
                     {monthData.map((item, id) => (
                         <li
-                            className={` flex gap-2 mr-2  rounded-[5px] px-[2px] h-5 text-sm  hover:bg-green-200 mt-1 ${month.includes(item.id) ? 'bg-green-400 text-white' : 'bg-white'}`}
+                            className={` flex gap-2 mr-2  rounded-[5px] px-[2px] h-5 text-sm  focus:bg-green-200 mt-1 ${month.includes(item.id) ? 'select-clr text-white' : 'bg-white'}`}
                             onClick={() => handleSelectMonth(item.id)}
                             key={id}
                         >
@@ -67,10 +69,18 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
                         id="firstName"
                         type="date"
                         placeholder="search"
-                        value={date}
+                        value={fromDate}
                         onChange={(e) => { setDate(e.target.value) }}
                     />
-                </div> <div className='flex items-center'> <label className='subheading-font font-semibold text-white subheading-font font-semibold mr-2'>To :</label ><input className='rounded w-[7rem] text-[12px] h-6 p-1 ' type="date" /></div></div>
+                </div> <div className='flex items-center'> <label className='subheading-font font-semibold text-white subheading-font font-semibold mr-1'>To :</label >  <input
+                    class=" h-6  w-[8rem]  text-xs leading-tight text-gray-700 border rounded shadow  focus:outline-none focus:shadow-outline"
+                    id="firstName"
+                    type="date"
+                    placeholder="search"
+                    value={fromDate}
+                    onChange={(e) => { setDate(e.target.value) }}
+                /></div>
+                    <button className='bg-white mr-2 rounded px-1 '>Apply</button></div>
             </div></div>
     )
 }
