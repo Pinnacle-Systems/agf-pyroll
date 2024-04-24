@@ -4,7 +4,7 @@ import { getConnection } from "../constants/db.connection.js";
 export async function get(req, res) {
     const connection = await getConnection(res);
     try {
-        const { finYearData, filterMonth } = req.query;
+        const { finYearData, filterMonth, filterSupplier, filterArticleId } = req.query;
         console.log(filterMonth, 8);
         console.log(finYearData, 8);
         const fltrYearData = finYearData ? JSON.parse(finYearData).map(item => `'${item}'`) : [];
@@ -21,6 +21,12 @@ export async function get(req, res) {
         const fltrMonthQ3 = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM Q3.DOCDATE)IN (${monthFilter})` : '';
         const fltrMonthQ4 = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM Q4.DOCDATE)IN (${monthFilter})` : '';
         const fltrMonthM = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM M.DOCDATE)IN (${monthFilter})` : '';
+        // supplier filter
+        const suppFilter = filterSupplier ? JSON.parse(filterSupplier).map(item => `'${item}'`) : [];
+        const filterSupp = suppFilter.length > 0 ? `AND SUPPLIER IN (${suppFilter})` : '';
+        // Article id filter
+        const articleIdFilter = 
+
 
         const sql = `SELECT SUPPLIER,
         (SELECT SUM(Q1.POQTY * Q1.PRICE)
@@ -48,6 +54,7 @@ export async function get(req, res) {
         WHERE 1=1 
     ${fltrYearClauseM}
     ${fltrMonthM}
+    ${filterSupp}
         GROUP BY M.SUPPLIER`
 
         console.log(sql, '35');

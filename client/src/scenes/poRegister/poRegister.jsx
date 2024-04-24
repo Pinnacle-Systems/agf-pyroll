@@ -2,75 +2,75 @@ import { Box, Typography, useTheme } from '@mui/material';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { useGetPoDataQuery } from '../../redux/service/poData';
 import { useMemo, useState } from 'react';
-
 import React from "react"; // Don't forget to import React
 import BarChart from '../../components/BarChart';
 
+
 const columns = [
   {
-    field: 'id', headerAlign: 'center', headerName: 'S.no', hide: true, maxWidth: 70, colGroup: "id", fontWeight: 700, renderHeader: params => (
-      <div className='text-[15px] font-medium '>
+    field: 'id', headerAlign: 'center', headerName: 'S.no', maxWidth: 70, sortable: false, colGroup: "id", fontWeight: 700, renderHeader: params => (
+      <div className='text-[15px] font-semibold '>
         S.no
       </div>
     )
   },
   {
 
-    field: 'supplier', headerAlign: 'center', headerName: 'Supplier', minWidth: 300, flex: 1, colGroup: "id", renderHeader: params => (
-      <div className='text-[15px] font-medium '>
-        supplier
+    field: 'supplier', headerAlign: 'center', headerName: 'Supplier', sortable: false, minWidth: 300, flex: 1, colGroup: "id", renderHeader: params => (
+      <div className='text-[15px] font-semibold '>
+        Supplier
       </div>
     )
   },
 
   {
-    field: 'q1', type: "number", headerAlign: 'center', headerName: 'Q1', flex: 1, align: 'right', colGroup: "id", valueFormatter: ({ value }) => {
+    field: 'q1', type: "number", headerAlign: 'center', headerName: 'Q1', sortable: false, flex: 1, align: 'right', colGroup: "id", valueFormatter: ({ value }) => {
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
       return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }, renderHeader: params => (
-      <div className='text-[15px] font-medium '>
+      <div className='text-[15px] font-semibold '>
         Q1
       </div>
     )
   },
   {
-    field: 'q2', type: "number", headerAlign: 'center', headerName: 'Q2', flex: 1, align: 'right', color: 'black', valueFormatter: ({ value }) => {
+    field: 'q2', type: "number", headerAlign: 'center', headerName: 'Q2', sortable: false, flex: 1, align: 'right', color: 'black', valueFormatter: ({ value }) => {
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
       return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }, renderHeader: params => (
-      <div className='text-[15px] font-medium '>
+      <div className='text-[15px] font-semibold '>
         Q2
       </div>
     )
   },
   {
-    field: 'q3', type: "number", headerAlign: 'center', headerName: 'Q3', flex: 1, align: 'right', valueFormatter: ({ value }) => {
+    field: 'q3', type: "number", headerAlign: 'center', headerName: 'Q3', sortable: false, flex: 1, align: 'right', valueFormatter: ({ value }) => {
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
       return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }, renderHeader: params => (
-      <div className='text-[15px] font-medium '>
+      <div className='text-[15px] font-semibold '>
         Q3
       </div>
     )
   },
   {
-    field: 'q4', type: "number", headerAlign: 'center', headerName: 'Q4', flex: 1, align: 'right',
+    field: 'q4', type: "number", headerAlign: 'center', headerName: 'Q4', sortable: false, flex: 1, align: 'right',
     valueFormatter: ({ value }) => {
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
       return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }, renderHeader: params => (
-      <div className='text-[15px] font-medium '>
+      <div className='text-[15px] font-semibold '>
         Q4
       </div>
     )
   },
   {
-    field: 'price', type: "number", headerAlign: 'center', headerName: 'Total Value', flex: 1, align: 'right',
+    field: 'price', type: "number", headerAlign: 'center', headerName: 'Total Value', sortable: false, flex: 1, align: 'right',
     valueFormatter: ({ value }) => {
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
       return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }, renderHeader: params => (
-      <div className='text-[15px] font-medium '>
+      <div className='text-[15px] font-semibold '>
         Total Value
       </div>
     )
@@ -81,7 +81,6 @@ const columnGroupingModel = [
     groupId: 'Quarterly Details',
     children: [{ field: 'q1' }, { field: 'q2' }, { field: 'q3' }, { field: 'q4' }],
     headerAlign: 'center',
-
 
   },
 ];
@@ -96,7 +95,7 @@ function DataTable({ data, totals }) {
     const totalValue = totals[column.field];
     if (totalValue !== undefined) {
       return (
-        <div key={column.field} className='font-medium text-[12px]'>
+        <div key={column.field} className='font-semibold text-[13px]'>
           {totalValue.toFixed(2)}
         </div>
       );
@@ -109,7 +108,7 @@ function DataTable({ data, totals }) {
   return (
     <DataGrid
       autoHeight={false}
-      className='grid h-[80%]'
+      className=' custom-data-grid '
       experimentalFeatures={{ columnGrouping: true }}
       columnGroupingModel={columnGroupingModel}
       rows={rowsWithIds}
@@ -124,40 +123,61 @@ function DataTable({ data, totals }) {
       disableRowSelectionOnClick
 
       getRowClassName={getRowClassName}
+
       sx={{
         '& .MuiDataGrid-columnHeader': {
-          backgroundColor: '#00072e',
+          backgroundColor: '#adb612',
           textAlign: 'center',
-          fontSize: '18px',
-          fontWeight: 500,
+          fontSize: '17px',
+          fontWeight: '500',
           borderColor: '#E5E7EB',
           borderWidth: 1,
           borderStyle: 'solid',
-          color: 'white'
+          color: 'white',
+
         },
 
-        fontSize: '0.75rem',
+        fontSize: '12px',
         color: '#212121',
         borderWidth: 1,
         borderStyle: 'solid',
         '& .even': {
-          backgroundColor: '#99a4e2',
-
-        },
-        '& .odd': {
           backgroundColor: 'white',
 
         },
+        '& .odd': {
+          backgroundColor: '#ebe9e9',
+
+        },
+        '& .even:hover': {
+          backgroundColor: 'white',
+
+        },
+        '& .odd:hover': {
+          backgroundColor: '#ebe9e9',
+
+        },
         '& .MuiDataGrid-titleContainer': {
-          fontSize: '0.3rem', // Adjust the font size here
+          fontSize: '1rem', // Adjust the font size here
+        },
+        '& .MuiDataGrid-cell': {
+          fontSize: '12.25px',
+          fontWeight: ''
+
+        },
+        '& MuiDataGrid-iconButtonContainer ': {
+          color: 'red'
+        },
+        '& .my-super-theme--naming-group': {
+          color: 'red'
         },
       }}
       components={{
         Footer: () => (
           <div className='MuiDataGrid-footer flex  items-center w-full bg-white border-solid border-2 border-gray-300 '>
-            <h1 className=' font-bold text-[15px] w-[38%] p-1'>Total</h1>
+            <h1 className=' font-bold text-[16px] w-[40%] p-1'>Total</h1>
             {columns.map(column => (
-              <div key={column.field} className='font-medium text-[12px] w-[43%] '>
+              <div key={column.field} className='font-bold text-[18px] w-[60%] '>
                 {column.renderFooter ? column.renderFooter(column) : renderTotalCell(column)}
               </div>
             ))}
@@ -176,9 +196,9 @@ function DataTable({ data, totals }) {
 
 
 
-export default function PoRegister({ year, month, date }) {
-  console.log(month, 'monty');
-  const { data } = useGetPoDataQuery({ finYearData: JSON.stringify(year || ''), filterMonth: JSON.stringify(month || '') });
+export default function PoRegister({ year, month, date, selectedSupplier, selectedArticleId }) {
+  console.log(selectedArticleId, 'seletitems');
+  const { data } = useGetPoDataQuery({ finYearData: JSON.stringify(year || ''), filterMonth: JSON.stringify(month || ''), filterSupplier: JSON.stringify(selectedSupplier || ''), filterArticleId: JSON.stringify(selectedArticleId || '') });
   const poData = useMemo(() => (data?.data ? data.data : []), [data]);
   console.log(year, 'year');
   const totals = {
@@ -215,16 +235,12 @@ export default function PoRegister({ year, month, date }) {
 
         <DataTable data={poData} totals={totals} />
 
-        {/* {Array.from({ length: 15 - (poItemsData).length }).map((_, index) =>
-                         {field}
-                                {Array.from({ length: 10 }).map((_, index) =>
-                                    <td key={index}> </td>
-                                )} */}
+
       </div>
       <div>
         <Typography
           variant="h4"
-          fontWeight="600"
+
           sx={{ p: '20px 20px 0 20px' }}
         >
           Chart View

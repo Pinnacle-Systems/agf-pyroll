@@ -30,9 +30,9 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
 
 
     return (
-        <div className=' flex text-center align-center    rounded bg-gray-200'>
+        <div className=' flex text-center align-center top-Bar'>
             <div className='flex justify-between w-full '>  <div className='flex  h-8  cursor-pointer align-center mt-3 px-2'>
-                <p className=' text-black subheading-font font-semibold '> Year : </p>
+                <p className=' text-white subheading-font font-semibold mr-2'> Year : </p>
                 {(finYear?.data ? finYear.data : []).map((item, index) => (
                     <button
                         className={`flex  rounded-[5px] px-[2px] h-6 hover:bg-green-200 mr-2 text-sm ${year.includes(item.finYr) ? 'bg-green-400' : 'bg-white'}`}
@@ -45,10 +45,10 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
                 ))}
             </div>
                 <ul className='flex   mt-2 cursor-pointer mr-2'>
-                    <p className='subheading-font font-semibold text-black subheading-font font-semibold mr-2 mt-1'> Month :</p>
+                    <p className='subheading-font font-semibold text-white subheading-font font-semibold mr-2 mt-1'> Month :</p>
                     {monthData.map((item, id) => (
                         <li
-                            className={` flex gap-2 mr-2  rounded-[5px] px-[2px] h-5 text-sm  hover:bg-green-200 mt-1 ${month.includes(item.id) ? 'bg-green-400 text-black' : 'bg-white'}`}
+                            className={` flex gap-2 mr-2  rounded-[5px] px-[2px] h-5 text-sm  hover:bg-green-200 mt-1 ${month.includes(item.id) ? 'bg-green-400 text-white' : 'bg-white'}`}
                             onClick={() => handleSelectMonth(item.id)}
                             key={id}
                         >
@@ -59,7 +59,7 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
                 </ul>
 
                 <div className='flex items-center flex gap-5'> <div class="m-2">
-                    <label className='subheading-font font-semibold text-black mr-2' for="firstName">
+                    <label className='subheading-font font-semibold text-white mr-2' for="firstName">
                         From :
                     </label>
                     <input
@@ -70,7 +70,7 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
                         value={date}
                         onChange={(e) => { setDate(e.target.value) }}
                     />
-                </div> <div className='flex items-center'> <label className='subheading-font font-semibold text-black subheading-font font-semibold mr-2'>To :</label ><input className='rounded w-[7rem] text-[12px] h-6 p-1 ' type="date" /></div></div>
+                </div> <div className='flex items-center'> <label className='subheading-font font-semibold text-white subheading-font font-semibold mr-2'>To :</label ><input className='rounded w-[7rem] text-[12px] h-6 p-1 ' type="date" /></div></div>
             </div></div>
     )
 }
