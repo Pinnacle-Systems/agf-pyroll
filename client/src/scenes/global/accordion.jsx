@@ -12,7 +12,6 @@ import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { tokens } from '../../theme';
 import { FaHome } from "react-icons/fa";
-import { color } from 'chart.js/helpers';
 
 const Accordion = styled((props) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />

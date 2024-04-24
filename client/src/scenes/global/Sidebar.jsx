@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { tokens } from '../../theme';
 import { Box, IconButton, Typography, useTheme } from '@mui/material';
 
-import CustomizedAccordions from './Accordion'
+import CustomizedAccordions from './accordion'
 // Custom Item component for MenuItems
 
 
