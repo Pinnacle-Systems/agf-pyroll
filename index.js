@@ -12,7 +12,8 @@ import {
   finYear,
   poRegister,
   supplier,
-  poData
+  poData,
+  misDashboard
 } from "./src/routes/index.js"
 
 const app = express()
@@ -42,6 +43,7 @@ app.use('/finYear', finYear)
 app.use('/supplier', supplier)
 
 app.use('/poData', poData)
+app.use('/misDashboard', misDashboard)
 const PORT = 8080;
 
 app.listen(PORT, () => {
