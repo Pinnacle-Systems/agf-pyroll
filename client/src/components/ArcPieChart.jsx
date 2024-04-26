@@ -19,13 +19,22 @@ const ArcPieChart = () => {
             { country: 'Germany', litres: 165.8 },
             { country: 'Australia', litres: 139.9 },
             { country: 'Austria', litres: 128.3 },
-
         ];
 
         let series = chart.series.push(new am4charts.PieSeries3D());
         series.dataFields.value = 'litres';
         series.dataFields.category = 'country';
 
+        // Change the color of the pie slices
+        series.colors.list = [
+            am4core.color('#FF5733'), // Red
+            am4core.color('#FFC300'), // Yellow
+            am4core.color('#36A2EB'), // Blue
+            am4core.color('#4CAF50'), // Green
+            am4core.color('#9B59B6'), // Purple
+            am4core.color('#E74C3C'), // Dark Red
+        ];
+        chart.logo.disabled = true;
         return () => {
             chart.dispose();
         };
