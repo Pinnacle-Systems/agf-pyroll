@@ -4,6 +4,8 @@ import { useGetPoDataQuery } from '../../redux/service/poData';
 import { useMemo, useState } from 'react';
 import React from "react"; // Don't forget to import React
 import BarChart from '../../components/BarChart';
+import { Pie } from 'react-chartjs-2';
+import PieChart from '../../components/PieChart';
 
 
 const columns = [
@@ -68,9 +70,9 @@ const columns = [
     field: 'price', type: "number", headerAlign: 'center', headerName: 'Total Value', sortable: false, flex: 1, align: 'right',
     valueFormatter: ({ value }) => {
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
-      return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+      return formattedValue
     }, renderHeader: params => (
-      <div className='text-[15px] font-semibold '>
+      <div className='text-[14px] font-semibold '>
         Total Value
       </div>
     )
@@ -94,16 +96,16 @@ function DataTable({ data, totals }) {
   const renderTotalCell = (column) => {
     const totalValue = totals[column.field];
     if (totalValue !== undefined) {
+      const formattedTotal = totalValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       return (
-        <div key={column.field} className='font-semibold text-[13px]'>
-          {totalValue.toFixed(2)}
+        <div key={column.field} className='text-[12px] font-semibold'>
+          {formattedTotal}
         </div>
       );
     } else {
       return null;
     }
   };
-
 
   return (
     <DataGrid
@@ -174,13 +176,28 @@ function DataTable({ data, totals }) {
       }}
       components={{
         Footer: () => (
-          <div className='MuiDataGrid-footer flex  items-center w-full bg-white border-solid border-2 border-gray-300 '>
-            <h1 className=' font-bold text-[16px] w-[40%] p-1'>Total</h1>
-            {columns.map(column => (
-              <div key={column.field} className='font-bold text-[18px] w-[60%] '>
-                {column.renderFooter ? column.renderFooter(column) : renderTotalCell(column)}
-              </div>
-            ))}
+          <div className='MuiDataGrid-footer items-center w-full bg-white border-solid border-2 border-gray-300 flex justify-between'>
+            <h1 className='font-bold text-[16px] total-head py-1'>Total</h1>
+            <table className="total-width">
+              <thead className='text-white '>
+                <tr className=" ">
+                  {columns.map(column => (
+                    <th key={column.field} className='font-semibold text-[14px] hidden'>
+                      {column.headerName}
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className=' '>
+                <tr className="">
+                  {columns.map(column => (
+                    <td key={column.field} className=' '>
+                      {column.renderFooter ? column.renderFooter(column) : renderTotalCell(column)}
+                    </td>
+                  ))}
+                </tr>
+              </tbody>
+            </table>
           </div>
         ),
       }}
@@ -197,10 +214,9 @@ function DataTable({ data, totals }) {
 
 
 export default function PoRegister({ year, month, date, selectedSupplier, selectedArticleId }) {
-  console.log(selectedArticleId, 'seletitems');
+  console.log(date, 'date');
   const { data } = useGetPoDataQuery({ finYearData: JSON.stringify(year || ''), filterMonth: JSON.stringify(month || ''), filterSupplier: JSON.stringify(selectedSupplier || ''), filterArticleId: JSON.stringify(selectedArticleId || '') });
   const poData = useMemo(() => (data?.data ? data.data : []), [data]);
-  console.log(year, 'year');
   const totals = {
     q1: poData.reduce((sum, row) => sum + (row.q1 || 0), 0),
     q2: poData.reduce((sum, row) => sum + (row.q2 || 0), 0),
@@ -208,26 +224,6 @@ export default function PoRegister({ year, month, date, selectedSupplier, select
     q4: poData.reduce((sum, row) => sum + (row.q4 || 0), 0),
     price: poData.reduce((sum, row) => sum + (row.price || 0), 0),
   };
-  console.log(totals, 'total');
-  // const lowercaseMonth = month.map(mnt => mnt.toLowerCase());
-  //  poData = poData.map((row) => ({
-  //   ...row,
-  //   poDate: getMonthValue(row.poDate),
-  //   dueDate: getMonthValue(row.dueDate),
-  // }));
-
-  // if (year.length > 0 || lowercaseMonth.length > 0) {
-  //   poData = poData.filter((option) => {
-  //     const yearMatch = year.length === 0 || year.includes(option.finYr);
-  //     const monthMatch = lowercaseMonth.length === 0 || lowercaseMonth.some(mnt => {
-  //       const dueDate = option.dueDate ? option.dueDate.toLowerCase() : '';
-  //       const poDate = option.poDate ? option.poDate.toLowerCase() : '';
-  //       return dueDate.includes(mnt) || poDate.includes(mnt);
-  //     });
-
-  //     return yearMatch && monthMatch
-  //   });
-  // }
 
   return (
     <div className='text-center align-center bg-gray-200 w-full h-full scrollbar overflow-auto'>
@@ -237,18 +233,7 @@ export default function PoRegister({ year, month, date, selectedSupplier, select
 
 
       </div>
-      <div>
-        <Typography
-          variant="h4"
 
-          sx={{ p: '20px 20px 0 20px' }}
-        >
-          Chart View
-        </Typography>
-        <Box height="80vh">
-          <BarChart isDashboard="true" />
-        </Box>
-      </div>
     </div>
 
 

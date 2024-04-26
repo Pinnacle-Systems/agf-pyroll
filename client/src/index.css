@@ -215,3 +215,48 @@ body {
 .select-clr {
   background-color: #adb612;
 }
+
+.total-width {
+  width: 50%;
+}
+
+@media screen and (min-width: 700px) {
+  .total-width {
+    width: 60%;
+
+  }
+}
+
+@media screen and (min-width: 1440px) {
+  .total-width {
+    width: 74%;
+
+
+
+  }
+
+  .total-head {
+    width: 42%;
+
+  }
+}
+
+.canvasjs-chart-credit {
+  display: none;
+}
+
+.element.style {
+  display: none;
+}
+
+/* Inside the PieChart.css file */
+
+/* Style the inner area of the pie chart */
+.canvasjs-chart-pie .canvasjs-chart-pie-inner {
+  fill: #f6ad55;
+  /* Change the color as needed */
+}
+
+.MuiChartsLegend-root {
+  display: none;
+}
