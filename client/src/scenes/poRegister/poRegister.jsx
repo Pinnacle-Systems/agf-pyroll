@@ -4,7 +4,6 @@ import { useGetPoDataQuery } from '../../redux/service/poData';
 import { useMemo, useState } from 'react';
 import React from "react"; // Don't forget to import React
 import BarChart from '../../components/BarChart';
-import { Pie } from 'react-chartjs-2';
 import PieChart from '../../components/PieChart';
 
 
