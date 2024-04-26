@@ -6,8 +6,11 @@ import { CLOSE_ICON, DOUBLE_NEXT_ICON } from "../../icons";
 import { useState } from "react";
 import useOutsideClick from "../../CustomHooks/handleOutsideClick";
 import PoRegister from "../poRegister";
-import Dashboard from "../dashboard";
+
+import { MisDashboard } from "../../scenes"
+
 import Form from '../form'
+import GeographyChart from "../../components/GeographyChart";
 const ActiveTabList = () => {
     const openTabs = useSelector((state) => state.openTabs);
     const dispatch = useDispatch();
@@ -16,11 +19,11 @@ const ActiveTabList = () => {
     const ref = useOutsideClick(() => { setShowHidden(false) })
 
     const tabs = {
-        "DASHBOARD": <Dashboard />,
+        "DASHBOARD": <MisDashboard />,
         "PO REGISTER": <PoRegister />,
         'ORDERS': <Form />
-
     };
+
     const innerWidth = window.innerWidth;
     const itemsToShow = innerWidth / 130;
     const currentShowingTabs = openTabs.tabs.slice(0, parseInt(itemsToShow));
