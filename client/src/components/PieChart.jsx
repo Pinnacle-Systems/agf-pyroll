@@ -5,6 +5,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 export default function ChartsOverviewDemo1() {
   const data = [
     { value: 5, label: 'Q1', color: '#adb612' },
+    { value: 5, label: 'Q1', color: '#adb612' },
     { value: 10, label: 'Q2', color: '#7f7f7f' },
     { value: 25, label: 'Q3', color: '#303030' },
 
