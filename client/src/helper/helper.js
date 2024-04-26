@@ -56,3 +56,4 @@ export function getNetAmountForTax(items) {
   let sum = items.filter(i => i.sf === 1).reduce((a, c) => a + parseFloat(c?.adValue ? c?.adValue : 0), 0)
   return roundTo2Decimals(sum)
 }
+

@@ -1,46 +1,55 @@
 import React from 'react'
-import { FaArrowAltCircleUp, FaArrowAltCircleDown } from "react-icons/fa";
+import { useGetMisDashboardQuery } from '../redux/service/misDashboardService';
+import { DOWN_TREND_ICON, UP_TREND_ICON } from '../icons';
+import { getDifferenceInPercentage } from '../helper/accumulation';
 
 const NumericCard = () => {
+    const { data: misData } = useGetMisDashboardQuery({})
+    const totalTurnOver = misData?.data?.totalTurnOver;
+    const profit = misData?.data?.profit;
+    const newCustomers = misData?.data?.newCustomers;
+    const topCustomers = misData?.data?.topCustomers;
+    const loss = misData?.data?.loss;
     const data = [
         {
             name: "Turn Over",
             borderColor: "#1F588B",
-            value: "$1061 M",
-            previousValue: "$960 M",
-            change: "14.61%",
-            trend: <span className='text-green-500'> <FaArrowAltCircleUp /> </span>
-        }, {
+            value: `₹${totalTurnOver?.currentValue}`,
+            previousValue: `₹${totalTurnOver?.prevValue}`,
+            change: `${getDifferenceInPercentage(totalTurnOver?.prevValue, totalTurnOver?.currentValue)}%`,
+            trend: (totalTurnOver?.prevValue < totalTurnOver?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
+        },
+        {
             name: "Profit",
             borderColor: "#62AAA3",
-            value: "$192,13 M",
-            previousValue: "$183.61 M",
-            change: "+4.43%",
-            trend: <span className='text-green-500'> <FaArrowAltCircleUp /> </span>
+            value: `₹${profit?.currentValue}`,
+            previousValue: `₹${profit?.prevValue}`,
+            change: `${getDifferenceInPercentage(profit?.prevValue, profit?.currentValue)}%`,
+            trend: (totalTurnOver?.prevValue < totalTurnOver?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
         },
         {
             name: "New Customers",
             borderColor: "border-[#96A669]",
-            value: "11,918",
-            previousValue: "10,719",
-            change: "11.21%",
-            trend: <span className='text-red-500'> <FaArrowAltCircleDown /> </span>
+            value: `₹${newCustomers?.currentValue}`,
+            previousValue: `₹${newCustomers?.prevValue}`,
+            change: `${getDifferenceInPercentage(newCustomers?.prevValue, newCustomers?.currentValue)}%`,
+            trend: (totalTurnOver?.prevValue < totalTurnOver?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
         },
         {
             name: "Top 5 Customers",
             borderColor: "border-[#D49B37]",
-            value: "93.13 %",
-            previousValue: "79.82 %",
-            change: "14.29%",
-            trend: <span className='text-green-500'> <FaArrowAltCircleUp /> </span>
+            value: `₹${topCustomers?.currentValue}`,
+            previousValue: `₹${topCustomers?.prevValue}`,
+            change: `${getDifferenceInPercentage(topCustomers?.prevValue, topCustomers?.currentValue)}%`,
+            trend: (topCustomers?.prevValue < topCustomers?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
         },
         {
             name: "Loss",
             borderColor: "border-[#D49B37]",
-            value: "93.13 %",
-            previousValue: "79.82 %",
-            change: "14.29%",
-            trend: <span className='text-green-500'> <FaArrowAltCircleUp /> </span>
+            value: `₹${loss?.currentValue}`,
+            previousValue: `₹${loss?.prevValue}`,
+            change: `${getDifferenceInPercentage(loss?.prevValue, loss?.currentValue)}%`,
+            trend: (loss?.prevValue < loss?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
         },
     ]
     return (
