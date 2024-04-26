@@ -48,7 +48,7 @@ const Topbar = ({ toggleSidebar }) => {
           style={{ cursor: 'pointer' }}
         />
       </div>
-      <div className='text-[24px] font-normal'>Management Information Report</div>
+      <div className='text-[24px] font-normal'>Management Information Dashboard</div>
       <div>
         <button onClick={colorMode.toggleColorMode}>
           <DarkModeOutlinedIcon className='text-white' />

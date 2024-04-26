@@ -2,7 +2,7 @@ import React, { useMemo, useState } from 'react'
 import { useGetSupplierQuery } from '../../redux/service/poData';
 
 const MultiSelect = ({ selectedSupplier, setSelectedSupplier }) => {
-    const { data } = useGetSupplierQuery();
+    const { data, isLoading } = useGetSupplierQuery();
     const [searchItem, setSearchItem] = useState('');
 
 
@@ -19,9 +19,11 @@ const MultiSelect = ({ selectedSupplier, setSelectedSupplier }) => {
         }
     };
     return (
-        <div className="w-full h-full bg-white rounded-b-lg pb-2 ">
-            <div className=''>            <input type="text" className='w-[15%] h-7   fixed rounded' placeholder='Supplier' value={searchItem} onChange={(e) => setSearchItem(e.target.value)} />
-            </div>            <div className='p-2 overflow-y-auto scrollbar h-[100%]'>
+        <div className="w-full h-full bg-white rounded-b-lg pb-8 ">
+            <div className=''>
+                <input type="text" className='w-full h-7    rounded' placeholder='Supplier' value={searchItem} onChange={(e) => setSearchItem(e.target.value)} />
+            </div>
+            {isLoading ? 'Loading ...' : <div className=' overflow-y-auto scrollbar h-full'>
                 {(filterData ? filterData : []).map((item, index) => (
                     <div
                         key={index}
@@ -31,8 +33,11 @@ const MultiSelect = ({ selectedSupplier, setSelectedSupplier }) => {
                         {item.supplier}
                     </div>
                 ))}
-            </div>
+            </div>}
         </div>
+
+
+
     );
 };
 
