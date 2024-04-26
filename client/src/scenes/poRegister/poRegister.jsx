@@ -10,7 +10,7 @@ import PieChart from '../../components/PieChart';
 const columns = [
   {
     field: 'id', headerAlign: 'center', headerName: 'S.no', maxWidth: 70, sortable: false, colGroup: "id", fontWeight: 700, renderHeader: params => (
-      <div className='text-[15px] font-semibold '>
+      <div className='text-[15px] font-medium '>
         S.no
       </div>
     )
@@ -18,7 +18,7 @@ const columns = [
   {
 
     field: 'supplier', headerAlign: 'center', headerName: 'Supplier', sortable: false, minWidth: 300, flex: 1, colGroup: "id", renderHeader: params => (
-      <div className='text-[15px] font-semibold '>
+      <div className='text-[15px] font-medium '>
         Supplier
       </div>
     )
@@ -29,7 +29,7 @@ const columns = [
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
       return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }, renderHeader: params => (
-      <div className='text-[15px] font-semibold '>
+      <div className='text-[15px] font-medium '>
         Q1
       </div>
     )
@@ -39,7 +39,7 @@ const columns = [
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
       return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }, renderHeader: params => (
-      <div className='text-[15px] font-semibold '>
+      <div className='text-[15px] font-medium '>
         Q2
       </div>
     )
@@ -49,7 +49,7 @@ const columns = [
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
       return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }, renderHeader: params => (
-      <div className='text-[15px] font-semibold '>
+      <div className='text-[15px] font-medium '>
         Q3
       </div>
     )
@@ -60,7 +60,7 @@ const columns = [
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
       return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     }, renderHeader: params => (
-      <div className='text-[15px] font-semibold '>
+      <div className='text-[15px] font-medium '>
         Q4
       </div>
     )
@@ -71,7 +71,7 @@ const columns = [
       const formattedValue = parseFloat(value ? value : '').toFixed(2);
       return formattedValue
     }, renderHeader: params => (
-      <div className='text-[14px] font-semibold '>
+      <div className='text-[14px] font-medium'>
         Total Value
       </div>
     )
@@ -97,7 +97,7 @@ function DataTable({ data, totals }) {
     if (totalValue !== undefined) {
       const formattedTotal = totalValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       return (
-        <div key={column.field} className='text-[12px] font-semibold'>
+        <div key={column.field} className='text-[14px] font-semibold'>
           {formattedTotal}
         </div>
       );
@@ -181,7 +181,7 @@ function DataTable({ data, totals }) {
               <thead className='text-white '>
                 <tr className=" ">
                   {columns.map(column => (
-                    <th key={column.field} className='font-semibold text-[14px] hidden'>
+                    <th key={column.field} className='font-medium text-[14px] hidden'>
                       {column.headerName}
                     </th>
                   ))}
@@ -226,7 +226,7 @@ export default function PoRegister({ year, month, date, selectedSupplier, select
 
   return (
     <div className='text-center align-center bg-gray-200 w-full h-full scrollbar overflow-auto'>
-      <div className='h-[80%] overflow-auto'>
+      <div className='h-[100%] overflow-auto'>
 
         <DataTable data={poData} totals={totals} />
 

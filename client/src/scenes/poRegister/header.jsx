@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { filterSearch } from '../../helper/helper';
 import { useGetFinYrQuery } from '../../redux/service/poData';
 
-const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
+const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArticleId, setSelectedSupplier }) => {
     const [fromDate, setFromDate] = useState('')
     const [toDate, setToDate] = useState('')
     console.log(' state:', date);
@@ -31,16 +31,20 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
     }
 
     const onHandleClick = () => {
-        setDate({ fromDate, toDate });
+        setYear([]);
+        setMonth([]);
+        setSelectedSupplier([]);
+        setSelectedArticleId([]);
     };
+
     return (
         <div className=' flex text-center align-center top-Bar w-full'>
-            <div className='flex justify-evenly'>
-                <div className='flex  h-8  cursor-pointer align-center mt-3 '>
+            <div className='w-full flex justify-evenly'>
+                <div className='flex  h-8  cursor-pointer align-center  pt-3'>
                     <p className=' text-white subheading-font font-semibold mr-2'> Year : </p>
                     {(finYear?.data ? finYear.data : []).map((item, index) => (
                         <button
-                            className={`flex  rounded-[5px] px-[2px] h-6 hover:bg-green-200 mr-2 text-sm ${year.includes(item.finYr) ? 'select-clr' : 'bg-white'}`}
+                            className={`flex  rounded-[5px] px-[2px] h-5 hover:bg-green-200 mr-2 text-sm ${year.includes(item.finYr) ? 'select-clr' : 'bg-white'}`}
 
                             onClick={() => handleSelectYear(item)}
                             key={index}
@@ -49,7 +53,7 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
                         </button>
                     ))}
                 </div>
-                <ul className='flex   mt-2 cursor-pointer mr-2'>
+                <div>       <ul className='flex   mt-2 cursor-pointer mr-2'>
                     <p className='subheading-font font-semibold text-white subheading-font font-semibold mr-2 mt-1'> Month :</p>
                     {monthData.map((item, id) => (
                         <li
@@ -61,7 +65,7 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
                         </li>
 
                     ))}
-                </ul>
+                </ul></div>
 
                 <div className='flex items-center flex gap-5'> <div class="m-2">
                     <label className='subheading-font font-semibold text-white mr-2' for="firstName">
@@ -83,7 +87,12 @@ const Header = ({ setYear, year, setMonth, month, setDate, date }) => {
                     value={toDate}
                     onChange={(e) => { setToDate(e.target.value) }}
                 /></div>
+
                 </div>
+                <div className='rounded pt-3'>
+                    <button className='rounded bg-white text-sm px-1 hover' onClick={onHandleClick}>Clear All</button>
+                </div>
+
             </div></div>
     )
 }

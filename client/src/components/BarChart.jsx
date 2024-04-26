@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 
-export default function ChartsOverviewDemo() {
+export default function BarCharts() {
   return (
     <BarChart
       series={[
@@ -10,7 +10,7 @@ export default function ChartsOverviewDemo() {
         { data: [15, 25, 30, 50], color: '#303030' }, // Customize color for series 3
 
       ]}
-      height={190}
+      height={200}
       width={300}
       xAxis={[{ data: ['Q1', 'Q2', 'Q3', 'Q4'], scaleType: 'band' }]}
       margin={{ top: 10, bottom: 30, left: 40, right: 10 }}

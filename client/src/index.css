@@ -247,7 +247,7 @@ body {
 
 @media screen and (min-width: 1440px) {
   .total-width {
-    width: 74%;
+    width: 70%;
 
 
 
@@ -273,8 +273,4 @@ body {
 .canvasjs-chart-pie .canvasjs-chart-pie-inner {
   fill: #f6ad55;
   /* Change the color as needed */
-}
-
-.MuiChartsLegend-root {
-  display: none;
 }

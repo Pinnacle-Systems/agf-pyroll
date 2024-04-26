@@ -1,8 +1,7 @@
 import { PieChart, pieArcLabelClasses } from '@mui/x-charts/PieChart';
 import * as React from 'react';
-import { BarChart } from '@mui/x-charts/BarChart';
 
-export default function ChartsOverviewDemo1() {
+export default function PieCharts() {
   const data = [
     { value: 5, label: 'Q1', color: '#adb612' },
     { value: 5, label: 'Q1', color: '#adb612' },
@@ -13,7 +12,7 @@ export default function ChartsOverviewDemo1() {
 
   const size = {
     width: 400,
-    height: 400,
+    height: 220,
   };
   return (
     <PieChart
@@ -28,7 +27,7 @@ export default function ChartsOverviewDemo1() {
           startAngle: -90,
           endAngle: 180,
           cx: 100,
-          cy: 100,
+          cy: 95,
           data,
         }
       ]}
@@ -42,3 +41,5 @@ export default function ChartsOverviewDemo1() {
     />
   );
 }
+
+
