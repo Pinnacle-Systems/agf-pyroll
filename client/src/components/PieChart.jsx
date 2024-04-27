@@ -15,7 +15,7 @@ export default function PieCharts() {
     height: 220,
   };
   return (
-    <PieChart
+    <div> <h1 className='text-center font-semibold text-lg'>Supplier Efficiency</h1>   <PieChart
       series={[
         {
           arcLabel: (item) => `${item.label} (${item.value})`,
@@ -38,7 +38,7 @@ export default function PieCharts() {
         },
       }}
       {...size}
-    />
+    /></div>
   );
 }
 

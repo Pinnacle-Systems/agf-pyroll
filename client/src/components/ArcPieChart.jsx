@@ -1,3 +1,5 @@
+/* global am4core */
+
 import React, { useEffect } from 'react';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
@@ -10,15 +12,17 @@ const ArcPieChart = () => {
         let chart = am4core.create('chartdiv', am4charts.PieChart3D);
         chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
-        chart.legend = new am4charts.Legend();
+        // Create legend and set its properties
+        let legend = new am4charts.Legend();
+        legend.fontSize = 12;
+        legend.align = 'center'; // Align legend to the center of the chart
+        legend.contentAlign = 'right'; // Align legend content to the left
+        chart.legend = legend;
 
         chart.data = [
             { country: 'Lithuania', litres: 501.9 },
             { country: 'Czech Republic', litres: 301.9 },
             { country: 'Ireland', litres: 201.1 },
-            { country: 'Germany', litres: 165.8 },
-            { country: 'Australia', litres: 139.9 },
-            { country: 'Austria', litres: 128.3 },
         ];
 
         let series = chart.series.push(new am4charts.PieSeries3D());
@@ -34,13 +38,17 @@ const ArcPieChart = () => {
             am4core.color('#9B59B6'), // Purple
             am4core.color('#E74C3C'), // Dark Red
         ];
+
+        series.labels.template.fontSize = 12; // Set label font size
+        series.ticks.template.fontSize = 14;
         chart.logo.disabled = true;
+
         return () => {
             chart.dispose();
         };
     }, []);
 
-    return <div id="chartdiv" style={{ width: '80%', height: '500px' }}></div>;
+    return <div id="chartdiv" style={{ width: '100%', height: '270px' }}></div>;
 };
 
 export default ArcPieChart;

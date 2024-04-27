@@ -25,16 +25,17 @@ const Index = () => {
       </div>
       {console.log(date, 'date')}
       <div className='flex w-[100%] h-[100%] pl-2' >
-        <div className='w-[80%] h-[80%] '>
+        <div className='w-[80%] h-[90%] '>
           <PoRegister year={year} month={month} data={date} selectedSupplier={selectedSupplier} selectedArticleId={selectedArticleId} />
         </div>
-        <div className='w-[20%] h-[80%]'>
+        <div className='w-[20%] h-[90%]'>
           <PoParameters selectedSupplier={selectedSupplier} setSelectedSupplier={setSelectedSupplier} selectedArticleId={selectedArticleId} setSelectedArticleId={setSelectedArticleId} />
         </div>
 
       </div>
       <div className='h-full'>
-        <div><ActivePoCharts /></div>
+        <h1 className='w-full text-[20px] text-center font-bold '>Charts</h1>
+        <div ><ActivePoCharts /></div>
 
 
       </div>
