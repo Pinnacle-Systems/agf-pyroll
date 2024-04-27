@@ -58,7 +58,6 @@ export async function get(req, res) {
     ${filterArtId}
         GROUP BY M.SUPPLIER`
 
-        console.log(sql, '35');
         const result = await connection.execute(sql);
         let resp = result.rows.map(po => ({
             supplier: po[0], q1: po[1], q2: po[2], q3: po[3], q4: po[4], price: po[5]
@@ -138,7 +137,36 @@ export async function getArticleId(req, res) {
         await connection.close()
     }
 }
+export async function getSuppEfficency(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { } = req.query;
+        const sql =
+            `
+        select * from (select supplier, sum(poqty) as poqty
+        from misyfpurreg
+        group by supplier
+        order by poqty desc)
+        where rownum <= 5
+     `
 
+        console.log(sql, '35');
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+            supplier: po[0],
+            poQty: po[1]
+        }))
+        console.log(resp, 'resp');
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
 
 
 
