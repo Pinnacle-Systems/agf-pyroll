@@ -10,23 +10,37 @@ const MisDashboard = createApi({
     tagTypes: ['MisDashboard'],
     endpoints: (builder) => ({
         getMisDashboard: builder.query({
-            query: () => {
+            query: ({ params }) => {
                 return {
                     url: MIS_DASHBOARD,
                     method: 'GET',
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8',
                     },
+                    params
                 }
             },
             providesTags: ['MisDashboard'],
         }),
-
+        getMisDashboardOrdersInHand: builder.query({
+            query: ({ params }) => {
+                return {
+                    url: MIS_DASHBOARD + "/ordersInHand",
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    params
+                }
+            },
+            providesTags: ['MisDashboard'],
+        }),
     }),
 })
 
 export const {
     useGetMisDashboardQuery,
+    useGetMisDashboardOrdersInHandQuery
 } = MisDashboard;
 
 export default MisDashboard;

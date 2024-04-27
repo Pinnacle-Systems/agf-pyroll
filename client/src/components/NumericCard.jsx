@@ -1,10 +1,10 @@
 import React from 'react'
-import { useGetMisDashboardQuery } from '../redux/service/misDashboardService';
 import { DOWN_TREND_ICON, UP_TREND_ICON } from '../icons';
 import { getDifferenceInPercentage } from '../helper/accumulation';
+import CardWrapper from './CardWrapper';
 
-const NumericCard = () => {
-    const { data: misData } = useGetMisDashboardQuery({})
+const NumericCard = ({ misData }) => {
+
     const totalTurnOver = misData?.data?.totalTurnOver;
     const profit = misData?.data?.profit;
     const newCustomers = misData?.data?.newCustomers;
@@ -55,11 +55,8 @@ const NumericCard = () => {
     return (
         <div className='flex justify-around w-full h-full'>
             {data.map((val, i) =>
-                <div key={i} className='w-[24.5%] h-full text-center border border-gray-200'>
-                    <div className='bg-gradient-to-b from-[#F2F2F1] rounded-xs h-[20%] border-2 border-[#E0E0E0] text-gray-800'>
-                        <span className='text-[16px] font-extralight text-black'>{val.name}</span>
-                    </div>
-                    <div className='h-[80%] p-2'>
+                <div key={i} className='w-[24.5%] h-full text-center '>
+                    <CardWrapper name={val.name} >
                         <div className={`h-full grid items-center  p-1 bg-white border-4 cuttedBorder${i + 1}`}
                         >
                             <div>
@@ -88,7 +85,7 @@ const NumericCard = () => {
                                 </div>
                             </div>
                         </div>
-                    </div>
+                    </CardWrapper>
                 </div>
             )}
         </div>
