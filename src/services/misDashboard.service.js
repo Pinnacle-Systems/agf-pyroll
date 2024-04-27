@@ -56,7 +56,37 @@ export async function getOrdersInHand(req, res) {
     }
 }
 
-
+export async function getOrdersInHandMonthWise(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const sql = `
+        select to_char(planshipdt, 'MM-YYYY') as monthYear, count(1) from MISORDSALESVAL 
+where extract(YEAR from planshipdt) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -6))
+and extract(MONTH from planshipdt) = extract(MONTH from ADD_MONTHS(CURRENT_DATE, -6))
+group by to_char(planshipdt, 'MM-YYYY')
+        `
+        const monthArr = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
+        let result = await connection.execute(`
+        select customer, count(1)
+        from MISORDSALESVAL 
+        where status = '${IN_HAND}'
+        group by customer
+        `);
+        result = result.rows.map(row => ({
+            buyer: row[0], value: row[1]
+        }))
+        return res.json({
+            statusCode: 0, data: result
+        })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
 
 
 
