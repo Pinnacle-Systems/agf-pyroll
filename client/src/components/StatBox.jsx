@@ -24,7 +24,7 @@ export default function DenseTable() {
     <div>
       <h1 className='text-center text-lg font-semibold'>Top Suppliers</h1>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 600 }} size="small" aria-label="a dense table">
+        <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
           <TableHead>
             <TableRow>
               <TableCell>Dessert (100g serving)</TableCell>

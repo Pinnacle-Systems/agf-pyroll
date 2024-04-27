@@ -16,7 +16,7 @@ const MisDashboard = () => {
             </div>
             <div className='grid grid-cols-3 p-5 h-[50%] gap-4 mb-4'>
                 <div className='border-[#E0E0E0] p-2 h-full flex items-center justify-center w-full'>
-                    <PieChartTemplate data={ordersInHandBuyerWise} valueField='value' categoryField='buyer' />
+                    {/* <PieChartTemplate data={ordersInHandBuyerWise} valueField='value' categoryField='buyer' /> */}
                 </div>
             </div>
         </div>

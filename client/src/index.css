@@ -256,7 +256,7 @@ body {
   }
 
   .total-head {
-    width: 42%;
+    width: 38%;
 
   }
 }
@@ -269,10 +269,18 @@ body {
   display: none;
 }
 
-/* Inside the PieChart.css file */
 
-/* Style the inner area of the pie chart */
 .canvasjs-chart-pie .canvasjs-chart-pie-inner {
   fill: #f6ad55;
   /* Change the color as needed */
+}
+
+.css-1jkp6p1-MuiTableCell-root {
+  font-weight: 600;
+  color: red;
+}
+
+.css-t89xny-MuiDataGrid-columnHeaderTitle {
+
+  font-weight: 900;
 }

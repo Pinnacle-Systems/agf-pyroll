@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import PieCharts from "../../components/PieChart";
 import BarCharts from "../../components/BarChart";
 import PageOne from "./PageOne";
+import PageTwo from "./PageTwo";
 
 const ActivePoCharts = () => {
     const [currentActiveTab, setCurrentActiveTab] = useState("Po Reports");
@@ -11,8 +12,8 @@ const ActivePoCharts = () => {
             component: <PageOne />,
         },
         {
-            'name': "Bar",
-            component: <BarCharts />,
+            'name': "Top purchase",
+            component: <PageTwo />,
         },
     ]
     return (
