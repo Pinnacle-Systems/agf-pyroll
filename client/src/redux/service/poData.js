@@ -46,6 +46,14 @@ const poData = createApi({
                 }
             }
         }),
+        getSuppEfficency: builder.query({
+            query: () => {
+                return {
+                    url: `${PO_DATA}/getSuppEfficency`,
+                    method: 'GET',
+                }
+            }
+        }),
     }),
 })
 
@@ -54,6 +62,7 @@ export const {
     useGetFinYrQuery,
     useGetSupplierQuery,
     useGetArticleIdQuery,
+    useGetSuppEfficencyQuery,
 } = poData;
 
 export default poData;
