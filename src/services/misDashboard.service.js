@@ -1,4 +1,5 @@
 import { getConnection } from "../constants/db.connection.js";
+import { IN_HAND } from "../constants/dbConstants.js";
 import { getTopCustomers, getProfit, getTurnOver, getNewCustomers, getLoss } from "../queries/misDashboard.js";
 
 
@@ -19,6 +20,31 @@ export async function get(req, res) {
                 topCustomers,
                 loss
             }
+        })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
+
+export async function getOrdersInHand(req, res) {
+    const connection = await getConnection(res)
+    try {
+        let result = await connection.execute(`
+        select customer, count(1)
+        from MISORDSALESVAL 
+        where status = '${IN_HAND}'
+        group by customer
+        `);
+        result = result.rows.map(row => ({
+            buyer: row[0], value: row[1]
+        }))
+        return res.json({
+            statusCode: 0, data: result
         })
     }
     catch (err) {
