@@ -8,16 +8,20 @@ const oracledb = require('oracledb');
 //       connectString: "203.95.216.155:1555/AVT05p",
 
 // };
+// const dbConfig = {
+//       user: "PSSDEMOGAR",
+//       password: "PSSDEMOGAR_MAY2023",
+//       connectString: "203.95.216.155:1555/AVT05p",
+// };
 const dbConfig = {
-      user: "PSSDEMOGAR",
-      password: "PSSDEMOGAR_MAY2023",
-      connectString: "203.95.216.155:1555/AVT05p",
+      user: "pssbsa",
+      password: "PSSBSA_MAY2023",
+      connectString: "203.95.216.155:1556/AVT06p",
 };
 // const dbConfig = {
 //       user: "TIPLAGF",
 //       password: "TIPLAGF555",
 //       connectString: "103.125.155.219:1555/an01p",
-
 // };
 
 

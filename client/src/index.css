@@ -16,7 +16,9 @@
   border-image: linear-gradient(#D49B37 30%, transparent 0 70%, #D49B37 0) 2;
 }
 
-
+.cuttedBorder5 {
+  border-image: linear-gradient(#af3f0b 30%, transparent 0 70%, #af3f0b 0) 2;
+}
 
 html,
 body,

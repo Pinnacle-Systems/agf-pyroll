@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { openTabs } from "./features";
 
-import { poRegister, finYear, supplier, poData } from './service'
+import { poRegister, finYear, supplier, poData, misDashboardService } from './service'
 import { setupListeners } from '@reduxjs/toolkit/query'
 
 export const store = configureStore({
@@ -11,13 +11,16 @@ export const store = configureStore({
         [finYear.reducerPath]: finYear.reducer,
         [supplier.reducerPath]: supplier.reducer,
         [poData.reducerPath]: poData.reducer,
+        [misDashboardService.reducerPath]: misDashboardService.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
             poRegister.middleware,
             finYear.middleware,
             supplier.middleware,
-            poData.middleware]
+            poData.middleware,
+            misDashboardService.middleware,
+        ]
         ),
 });
 
