@@ -4,19 +4,20 @@ import PieCharts from '../../components/PieChart'
 import Lchart from '../../components/LineChart'
 import DenseTable from '../../components/StatBox'
 import PieActiveArc from '../../components/ArcPieChart'
-import ArcPieChart from '../../components/ArcPieChart'
 
 const PageOne = () => {
     return (
-        <div>    <h1 className='w-full text-[20px] text-center font-bold '>Charts</h1>
-            <div className=' flex justify-between w-full'>
-                <div className='w-full  mr-2'><BarCharts /></div>
-                <div className='w-full  mr-2'><PieCharts /></div>
-                <div className='w-full  mr-2'><Lchart /></div>
-            </div>
-            <div className='flex'>
-                <div className='  m-2'></div>
-                <div className='w-full  mr-2'><DenseTable /></div>   <div className='w-full  mr-2'>< ArcPieChart /></div></div></div>
+        <div className='bg-gray-200'>
+            <div className='grid grid-cols-2 w-full '>
+                <div className='w-[90%]  m-3  bg-white rounded'><BarCharts /></div>
+                <div className='w-[90%]  m-3  bg-white rounded'>
+                    <h1 className='text-center font-semibold text-lg'>Supplier Efficiency</h1>           <div className=''>< PieActiveArc /></div>
+                </div>
+
+
+                <div className='w-[90%] m-3  bg-white rounded'><PieCharts /></div>
+
+                <div className='w-[90%] m-3  bg-white rounded '><DenseTable /></div>    </div>  </div>
     )
 }
 

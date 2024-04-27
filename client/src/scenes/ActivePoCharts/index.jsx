@@ -4,7 +4,7 @@ import BarCharts from "../../components/BarChart";
 import PageOne from "./PageOne";
 
 const ActivePoCharts = () => {
-    const [currentActiveTab, setCurrentActiveTab] = useState("Pie");
+    const [currentActiveTab, setCurrentActiveTab] = useState("Po Reports");
     const tabs = [
         {
             'name': "Po Reports",
@@ -16,10 +16,10 @@ const ActivePoCharts = () => {
         },
     ]
     return (
-        <div className="relative w-full h-full overflow-hidden">
-            <div className="flex gap-5">
+        <div className="relative w-full h-full overflow-hidden ">
+            <div className="flex gap-5 select-clr ">
                 {tabs.map(tab =>
-                    <div key={tab.name} className={`${(tab.name === currentActiveTab) ? "bg-gray-500 text-white" : ""}`} onClick={() => { setCurrentActiveTab(tab.name) }}>
+                    <div key={tab.name} className={`${(tab.name === currentActiveTab) ? "bg-white text-black" : ""} m-2 rounded px-1`} onClick={() => { setCurrentActiveTab(tab.name) }}>
                         {tab.name}
                     </div>
                 )}
