@@ -1,17 +1,20 @@
 import * as React from 'react';
 import { LineChart } from '@mui/x-charts/LineChart';
 
-export default function Lchart() {
+export default function Lchart({ xAxisData, series1Data, series2Data }) {
   const size = {
     width: 400,
     height: 400,
   };
   return (
     <LineChart
-      xAxis={[{ data: [1, 2, 3, 5, 8, 10] }]}
+      xAxis={[{ data: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] }]}
       series={[
         {
-          data: [2, 5.5, 2, 8.5, 1.5, 5],
+          data: series1Data,
+        },
+        {
+          data: series2Data,
         },
       ]}
       height={200}

@@ -59,24 +59,32 @@ export async function getOrdersInHand(req, res) {
 export async function getOrdersInHandMonthWise(req, res) {
     const connection = await getConnection(res)
     try {
-        const sql = `
-        select to_char(planshipdt, 'MM-YYYY') as monthYear, count(1) from MISORDSALESVAL 
-where extract(YEAR from planshipdt) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -6))
-and extract(MONTH from planshipdt) = extract(MONTH from ADD_MONTHS(CURRENT_DATE, -6))
-group by to_char(planshipdt, 'MM-YYYY')
+        const monthArr = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6].map(i =>
+            `
+            select 
+            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'MM-YYYY') as monthYear ,
+            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'MM') as monthOnly ,
+            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'YYYY') as yearOnly ,
+            (
+            select count(1) from MISORDSALESVAL 
+            where extract(YEAR from planshipdt) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, ${i}))
+            and extract(MONTH from planshipdt) = extract(MONTH from ADD_MONTHS(CURRENT_DATE, ${i}))
+            ) AS PLANNED,
+            (
+            select count(1) from MISORDSALESVAL 
+            where extract(YEAR from actshipdt) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, ${i}))
+            and extract(MONTH from actshipdt) = extract(MONTH from ADD_MONTHS(CURRENT_DATE, ${i}))
+            ) AS ACTUAL
+            FROM DUAL
         `
-        const monthArr = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6]
-        let result = await connection.execute(`
-        select customer, count(1)
-        from MISORDSALESVAL 
-        where status = '${IN_HAND}'
-        group by customer
-        `);
+        )
+        const sql = monthArr.join('union')
+        let result = await connection.execute(`select * from (${sql}) order by yearOnly,monthOnly`);
         result = result.rows.map(row => ({
-            buyer: row[0], value: row[1]
+            date: row[0], planned: row[3], actual: row[4]
         }))
         return res.json({
-            statusCode: 0, data: result
+            statusCode: 0, data: result, sql
         })
     }
     catch (err) {
