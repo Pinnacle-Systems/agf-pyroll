@@ -35,10 +35,28 @@ export async function getOrdersInHand(req, res) {
     const connection = await getConnection(res)
     try {
         let result = await connection.execute(`
-        select customer, count(1)
+        select * from (select customer, count(1) as orders
         from MISORDSALESVAL 
         where status = '${IN_HAND}'
         group by customer
+        order by orders desc)
+        where rownum <= 10 
+union 
+select 'OTHERS' as customer, 
+(
+ select sum(orders) from 
+        (
+        select customer, orders, 
+        rownum as row_num 
+        from (select customer, count(1) as orders
+                from MISORDSALESVAL 
+                where status = '${IN_HAND}'
+                group by customer
+                order by orders desc
+                )
+        ) where row_num > 10
+) as orders
+from dual
         `);
         result = result.rows.map(row => ({
             buyer: row[0], value: row[1]
@@ -62,7 +80,7 @@ export async function getOrdersInHandMonthWise(req, res) {
         const monthArr = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6].map(i =>
             `
             select 
-            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'MM-YYYY') as monthYear ,
+            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'Mon-YYYY') as monthYear ,
             to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'MM') as monthOnly ,
             to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'YYYY') as yearOnly ,
             (
@@ -97,4 +115,42 @@ export async function getOrdersInHandMonthWise(req, res) {
 }
 
 
-
+export async function getActualVsBudgetValueMonthWise(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const monthArr = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6].map(i =>
+            `
+            select 
+            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'Mon-YYYY') as monthYear ,
+            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'MM') as monthOnly ,
+            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'YYYY') as yearOnly ,
+            (
+                select round(COALESCE(sum(PLANSALESVAL),0)) from MISORDSALESVAL
+            where extract(YEAR from BPODATE) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, ${i}))
+            and extract(MONTH from BPODATE) = extract(MONTH from ADD_MONTHS(CURRENT_DATE, ${i}))
+            ) AS PLANNED,
+            (
+                select round(COALESCE(sum(ACTSALVAL),0)) from MISORDSALESVAL
+            where extract(YEAR from BPODATE) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, ${i}))
+            and extract(MONTH from BPODATE) = extract(MONTH from ADD_MONTHS(CURRENT_DATE, ${i}))
+            ) AS ACTUAL
+            FROM DUAL
+        `
+        )
+        const sql = monthArr.join('union')
+        let result = await connection.execute(`select * from (${sql}) order by yearOnly,monthOnly`);
+        result = result.rows.map(row => ({
+            date: row[0], planned: row[3], actual: row[4]
+        }))
+        return res.json({
+            statusCode: 0, data: result, sql
+        })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
