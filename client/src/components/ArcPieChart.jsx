@@ -1,29 +1,19 @@
-/* global am4core */
-
 import React, { useEffect } from 'react';
 import * as am4core from '@amcharts/amcharts4/core';
 import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 
-const ArcPieChart = () => {
+const ArcPieChart = ({ suppEfficiency }) => {
     useEffect(() => {
         am4core.useTheme(am4themes_animated);
 
-        let chart = am4core.create('chartdiv', am4charts.PieChart3D);
+        let chart = am4core.create('piechartdiv', am4charts.PieChart3D);
         chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
 
-        // Create legend and set its properties
-        let legend = new am4charts.Legend();
-        legend.fontSize = 12;
-        legend.align = 'center'; // Align legend to the center of the chart
-        legend.contentAlign = 'right'; // Align legend content to the left
-        chart.legend = legend;
-
-        chart.data = [
-            { country: 'Lithuania', litres: 501.9 },
-            { country: 'Czech Republic', litres: 301.9 },
-            { country: 'Ireland', litres: 201.1 },
-        ];
+        chart.data = suppEfficiency.map(item => ({
+            country: item.supplier,
+            litres: item.poQty,
+        }));
 
         let series = chart.series.push(new am4charts.PieSeries3D());
         series.dataFields.value = 'litres';
@@ -38,17 +28,22 @@ const ArcPieChart = () => {
             am4core.color('#9B59B6'), // Purple
             am4core.color('#E74C3C'), // Dark Red
         ];
+        series.labels.template.wrap = true;
+        series.labels.template.maxWidth = 100; // Adjust as needed
+        series.labels.template.truncate = true;
 
-        series.labels.template.fontSize = 12; // Set label font size
-        series.ticks.template.fontSize = 14;
+        series.labels.template.fontSize = 11;
+        series.ticks.template.fontSize = 10;
+
+
         chart.logo.disabled = true;
 
         return () => {
             chart.dispose();
         };
-    }, []);
+    }, [suppEfficiency]);
 
-    return <div id="chartdiv" style={{ width: '100%', height: '270px' }}></div>;
+    return <div id="piechartdiv" style={{ width: '100%', height: '300px' }}></div>;
 };
 
 export default ArcPieChart;
