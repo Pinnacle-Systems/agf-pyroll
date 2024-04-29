@@ -168,5 +168,34 @@ export async function getSuppEfficency(req, res) {
     }
 }
 
+export async function getTopItems(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { } = req.query;
+        const sql =
+            `
+            select * from (select ARTICLEID, sum(poqty) as poqty
+            from misyfpurreg
+            group by ARTICLEID
+            order by poqty desc)
+            where rownum <= 10
+     `
 
+        console.log(sql, '35');
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+            articleId: po[0],
+            poQty: po[1]
+        }))
+        console.log(resp, 'resp');
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
 

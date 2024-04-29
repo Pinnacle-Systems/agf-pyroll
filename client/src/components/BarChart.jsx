@@ -1,21 +1,30 @@
 import * as React from 'react';
 import { BarChart } from '@mui/x-charts/BarChart';
 
-export default function ChartsOverviewDemo() {
+export default function BarCharts({ topItems }) {
+  // Map the data to match the format expected by the BarChart component
+  const seriesData = topItems.map((item) => ({
+    data: [item.poQty.toFixed(2)], // Truncate to 2 decimal places
+    color: '#adb612', // Customize the color if needed
+  }));
+
+  // Function to truncate article IDs
+  const truncateArticleId = (articleId, maxLength) => {
+    return articleId.length > maxLength ? articleId.substring(0, maxLength) + '...' : articleId;
+  };
+
   return (
-
-    <div className='w-full  '>
-      <h1 className='text-center text-lg font-semibold'>Quarterly Status</h1> <BarChart
-        series={[
-          { data: [35, 44, 24, 34], color: '#adb612' }, // Customize color for series 1
-          { data: [51, 6, 49, 30], color: '#7f7f7f' }, // Customize color for series 2
-          { data: [15, 25, 30, 50], color: '#303030' }, // Customize color for series 3
-
-        ]}
+    <div className='w-full'>
+      <h1 className='text-center text-lg font-semibold'>Quarterly Status</h1>
+      <BarChart
+        series={seriesData}
         height={250}
-        width={380}
-        xAxis={[{ data: ['Q1', 'Q2', 'Q3', 'Q4'], scaleType: 'band' }]}
+        width={450}
+        xAxis={[{ data: topItems.map((item) => truncateArticleId(item.articleId, 10)), scaleType: 'band' }]}
         margin={{ top: 10, bottom: 30, left: 40, right: 10 }}
-      /></div>
+        barWidth={30} // Adjust the width of the bars as needed
+        valueInsideBar={{ enabled: true }} // Show the value (article ID) inside the bars
+      />
+    </div>
   );
 }
