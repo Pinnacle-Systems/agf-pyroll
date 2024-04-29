@@ -14,41 +14,41 @@ const NumericCard = ({ misData }) => {
         {
             name: "Turn Over",
             borderColor: "#1F588B",
-            value: `₹${totalTurnOver?.currentValue}`,
-            previousValue: `₹${totalTurnOver?.prevValue}`,
-            change: `${getDifferenceInPercentage(totalTurnOver?.prevValue, totalTurnOver?.currentValue)}%`,
+            value: `₹${(totalTurnOver?.currentValue || 0).toLocaleString()}`,
+            previousValue: `₹${totalTurnOver?.prevValue || 0}`,
+            change: `${getDifferenceInPercentage(totalTurnOver?.prevValue || 0, totalTurnOver?.currentValue || 0)}%`,
             trend: (totalTurnOver?.prevValue < totalTurnOver?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
         },
         {
             name: "Profit",
             borderColor: "#62AAA3",
-            value: `₹${profit?.currentValue}`,
-            previousValue: `₹${profit?.prevValue}`,
-            change: `${getDifferenceInPercentage(profit?.prevValue, profit?.currentValue)}%`,
+            value: `₹${profit?.currentValue || 0}`,
+            previousValue: `₹${profit?.prevValue || 0}`,
+            change: `${getDifferenceInPercentage(profit?.prevValue || 0, profit?.currentValue || 0)}%`,
             trend: (totalTurnOver?.prevValue < totalTurnOver?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
         },
         {
             name: "New Customers",
             borderColor: "border-[#96A669]",
-            value: `₹${newCustomers?.currentValue}`,
-            previousValue: `₹${newCustomers?.prevValue}`,
-            change: `${getDifferenceInPercentage(newCustomers?.prevValue, newCustomers?.currentValue)}%`,
+            value: `₹${newCustomers?.currentValue || 0}`,
+            previousValue: `₹${newCustomers?.prevValue || 0}`,
+            change: `${getDifferenceInPercentage(newCustomers?.prevValue || 0, newCustomers?.currentValue || 0)}%`,
             trend: (totalTurnOver?.prevValue < totalTurnOver?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
         },
         {
             name: "Top 5 Customers",
             borderColor: "border-[#D49B37]",
-            value: `₹${topCustomers?.currentValue}`,
-            previousValue: `₹${topCustomers?.prevValue}`,
-            change: `${getDifferenceInPercentage(topCustomers?.prevValue, topCustomers?.currentValue)}%`,
+            value: `₹${topCustomers?.currentValue || 0}`,
+            previousValue: `₹${topCustomers?.prevValue || 0}`,
+            change: `${getDifferenceInPercentage(topCustomers?.prevValue || 0, topCustomers?.currentValue || 0)}%`,
             trend: (topCustomers?.prevValue < topCustomers?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
         },
         {
             name: "Loss",
             borderColor: "border-[#D49B37]",
-            value: `₹${loss?.currentValue}`,
-            previousValue: `₹${loss?.prevValue}`,
-            change: `${getDifferenceInPercentage(loss?.prevValue, loss?.currentValue)}%`,
+            value: `₹${loss?.currentValue || 0}`,
+            previousValue: `₹${loss?.prevValue || 0}`,
+            change: `${getDifferenceInPercentage(loss?.prevValue || 0, loss?.currentValue || 0)}%`,
             trend: (loss?.prevValue < loss?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
         },
     ]
