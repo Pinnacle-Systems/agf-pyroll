@@ -7,6 +7,7 @@ import PieActiveArc from '../../components/ArcPieChart'
 import { useGetSuppEfficencyQuery } from '../../redux/service/poData'
 import { useGetTopItemsQuery } from '../../redux/service/poData'
 import LineChart from '../../HorizonComponents/charts/LineChart'
+import SortedBarChart from '../../components/SortedBarChart'
 
 const PageOne = () => {
     const { data } = useGetSuppEfficencyQuery()
@@ -20,7 +21,7 @@ const PageOne = () => {
                 <div className='w-[90%]  m-3  bg-white rounded'>
                     <h1 className='text-center font-semibold text-lg '>Top Items</h1>
 
-                    <div className=''><LineChart topItems={topItems} /></div>
+                    <div className='w-[100%] '><SortedBarChart topItems={topItems} /></div>
                 </div>
                 <div className='w-[90%]  m-3  bg-white rounded'>
                     <h1 className='text-center font-semibold text-lg'>Supplier Efficiency</h1>
