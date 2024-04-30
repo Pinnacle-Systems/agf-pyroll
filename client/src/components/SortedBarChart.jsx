@@ -5,13 +5,14 @@ import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 
 const SortedBarChart = ({ topItems }) => {
     useEffect(() => {
+        let chart;
         am4core.ready(function () {
             // Themes begin
             am4core.useTheme(am4themes_animated);
             // Themes end
 
-            let chart = am4core.create("sidechartdiv", am4charts.XYChart);
-            chart.padding(10, 10, 10, 10);
+            chart = am4core.create("sidechartdiv", am4charts.XYChart);
+            chart.padding(5, 5, 5, 5);
 
             // Create category axis
             let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
@@ -26,11 +27,13 @@ const SortedBarChart = ({ topItems }) => {
             categoryAxis.renderer.labels.template.maxWidth = 100; // Maximum width before truncation
             categoryAxis.renderer.labels.template.truncate = true; // Truncate labels
 
+
             // Create value axis
             let valueAxis = chart.xAxes.push(new am4charts.ValueAxis());
-            valueAxis.min = 0;
+            valueAxis.max = Math.max(...topItems.map(i => parseFloat(i.poQty)));
 
-            // Create series
+            console.log(valueAxis.max, 'max');
+
             let series = chart.series.push(new am4charts.ColumnSeries());
             series.dataFields.categoryY = "articleId";
             series.dataFields.valueX = "poQty";
@@ -41,16 +44,10 @@ const SortedBarChart = ({ topItems }) => {
             // Set tooltip configuration
             series.columns.template.tooltipText = "{categoryY}: {valueX}";
             series.columns.template.tooltipText.toString()
-            // Customize series colors
-            series.columns.template.fill = am4core.color("#7B1FA2"); // Change to your desired color
-            series.columns.template.stroke = am4core.color("#512DA8"); // Change to your desired color
 
-            // Truncate labels in series
-            if (series.columns.labels) {
-                series.columns.labels.wrap = true;
-                series.columns.labels.maxWidth = 100; // Adjust as needed
-                series.columns.labels.truncate = true;
-            }
+            series.xAxis.fontSize = 12
+            series.xAxis.width = '100%'
+
 
             // Create label bullet
             let labelBullet = series.bullets.push(new am4charts.LabelBullet())
@@ -59,12 +56,26 @@ const SortedBarChart = ({ topItems }) => {
             labelBullet.label.text = "{values.valueX.workingValue.formatNumber('#.0as')}";
             labelBullet.locationX = 1;
 
-            // Reduce font size of label bullets
-            labelBullet.label.fontSize = 12; // Adjust font size as needed
+            labelBullet.label.fontSize = 12;
 
-            // Color adapter
             series.columns.template.adapter.add("fill", function (fill, target) {
                 return chart.colors.getIndex(target.dataItem.index);
+            });
+
+            chart.events.on("ready", function () {
+                // Change color for specific columns (example: first column)
+                if (series.columns.length > 0) {
+                    series.columns.getIndex(0).fill = am4core.color("#adadad");
+                    series.columns.getIndex(1).fill = am4core.color("#adb612");
+                    series.columns.getIndex(2).fill = am4core.color("#32fce1");
+                    series.columns.getIndex(3).fill = am4core.color("#65c96d");
+                    series.columns.getIndex(4).fill = am4core.color("#446b8d");
+                    series.columns.getIndex(5).fill = am4core.color("#f6ad55");
+                    series.columns.getIndex(6).fill = am4core.color("#b6b0ee");
+                    series.columns.getIndex(7).fill = am4core.color("#eeb0e9");
+                    series.columns.getIndex(8).fill = am4core.color("#6178ff");
+                    series.columns.getIndex(9).fill = am4core.color("#c96d6d");
+                }
             });
 
             categoryAxis.sortBySeries = series;
@@ -72,6 +83,11 @@ const SortedBarChart = ({ topItems }) => {
             // Set data
             chart.data = topItems;
         });
+        return () => {
+            if (chart) {
+                chart.dispose();
+            }
+        };
     }, [topItems]); // Include topItems in the dependency array
 
     return <div id="sidechartdiv" style={{ width: '100%', height: '300px', }}></div>;

@@ -62,6 +62,14 @@ const poData = createApi({
                 }
             }
         }),
+        getMonthlyReceivables: builder.query({
+            query: () => {
+                return {
+                    url: `${PO_DATA}/getMonthlyReceivables`,
+                    method: 'GET',
+                }
+            }
+        }),
     }),
 })
 
@@ -71,7 +79,8 @@ export const {
     useGetSupplierQuery,
     useGetArticleIdQuery,
     useGetSuppEfficencyQuery,
-    useGetTopItemsQuery
+    useGetTopItemsQuery,
+    useGetMonthlyReceivablesQuery
 } = poData;
 
 export default poData;

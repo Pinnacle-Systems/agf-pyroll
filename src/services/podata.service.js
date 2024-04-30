@@ -199,3 +199,50 @@ export async function getTopItems(req, res) {
     }
 }
 
+export async function getMonthlyReceivables(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { } = req.query;
+        const sql =
+            `
+            SELECT A.DUMON,COUNT(*) NOOFPOS,A.SUPPLIER FROM 
+            (SELECT DISTINCT TRIM(TO_CHAR(A.DUEDATE,'Mon')) DUMON,A.DOCID, SUPPLIER 
+            FROM MISYFPURREG A WHERE A.INBALQTY > 0 AND A.FINYR = '23-24'
+            ) A
+            GROUP BY A.DUMON,A.SUPPLIER
+            ORDER BY 1,3,2
+     `
+        console.log(sql, '35');
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+            month: po[0],
+            po: po[1],
+            supplier: po[2]
+        }))
+        console.log(resp, 'resp');
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
+// SELECT *
+// FROM (
+//     SELECT t.docDate,
+//       (SELECT SUM(s.POQTY * s.PRICE) AS AMT
+//        FROM misyfpurreg s
+//        WHERE s.docDate > SYSDATE - 90
+//          AND s.SUPPLIER = t.SUPPLIER
+//        GROUP BY s.SUPPLIER
+//       ) AS AMOUNT,
+//       t.SUPPLIER
+//     FROM misyfpurreg t
+//     WHERE t.docDate > SYSDATE - 90
+//     GROUP BY t.docDate, t.SUPPLIER
+//     ORDER BY AMOUNT DESC
+// )
+// WHERE ROWNUM <= 5;
