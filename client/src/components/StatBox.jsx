@@ -4,12 +4,12 @@ import ApexCharts from 'apexcharts';
 
 const MyChartComponent = ({ monthlyReceivables }) => {
 
-  const categories = monthlyReceivables.map(item => item.month);
+  const categories = monthlyReceivables?.monthData || [];
 
 
-  const seriesData = monthlyReceivables.map(item => ({
-    name: item.suppliers.map(supp => supp.supplier),
-    data: item.suppliers.map(supp => supp.noOfQty)
+  const seriesData = (monthlyReceivables?.supplierData || []).map(item => ({
+    name: item.supplier,
+    data: item.monthWisePoReceivable
   }));
 
 
@@ -19,6 +19,7 @@ const MyChartComponent = ({ monthlyReceivables }) => {
       type: 'bar',
       height: 350,
       stacked: true,
+      stackType: '100%',
       toolbar: {
         show: true,
       },
@@ -26,7 +27,7 @@ const MyChartComponent = ({ monthlyReceivables }) => {
     plotOptions: {
       bar: {
         horizontal: false,
-        borderRadius: 10,
+
         dataLabels: {
           total: {
             enabled: false,

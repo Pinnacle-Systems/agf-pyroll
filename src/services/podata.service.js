@@ -1,4 +1,5 @@
 import { getConnection } from "../constants/db.connection.js";
+import { getSupplierWiseMonthlyReceivables, monthWiseDataSupplierReceivables } from "../queries/poData.js";
 
 
 export async function get(req, res) {
@@ -202,40 +203,13 @@ export async function getTopItems(req, res) {
 export async function getMonthlyReceivables(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
-        let finalOutput = [];
-        const month = [0, 1, 2];
-        let currentMonth, currentYear;
-        const monthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
-
-        for (let monthIndex = 0; monthIndex < month.length; monthIndex++) {
-            const monthItem = month[monthIndex];
-            let date = new Date();
-
-            currentMonth = date.getMonth() + 1 + monthItem;
-            currentYear = date.getFullYear();
-            const sql =
-                `
-                select supplier, round(sum(inbalqty)) as balanceQty
-                from MISYFPURREG
-                where extract(MONTH from duedate) = '${currentMonth}'
-                and extract(YEAR from duedate) = '${currentYear}'
-                and inbalqty > 0
-                group by supplier
-         `
-            const result = await connection.execute(sql);
-            let resp = result.rows.map(po => ({
-                supplier: po[0],
-                noOfQty: po[1],
-            }))
-            date.setMonth(date.getMonth() + monthItem);
-            finalOutput.push({
-                month: `${monthList[date.getMonth()]}`,
-                suppliers: resp
-            })
-        }
-
-        return res.json({ statusCode: 0, data: finalOutput })
+        const { isMonthWise } = req.query;
+        let data;
+        data = await monthWiseDataSupplierReceivables(connection)
+        // if (isMonthWise) {
+        // }
+        // data = await getSupplierWiseMonthlyReceivables(connection)
+        return res.json({ statusCode: 0, data })
     }
     catch (err) {
         console.error('Error retrieving data:', err);
@@ -249,20 +223,28 @@ export async function getTopFiveSuppTurnOvr(req, res) {
     const connection = await getConnection(res)
     try {
         const { } = req.query;
-        const sql =
-            `
+
+        for (let monthIndex = 0; monthIndex < month.length; monthIndex++) {
+            const monthItem = month[monthIndex];
+            let date = new Date();
+
+            currentMonth = date.getMonth() + 1 + monthItem;
+            currentYear = date.getFullYear();
+            const sql =
+                `
             select * from(select docDate, supplier, Round(sum(poQty*price)) as amount   from misyfpurreg group by supplier,docDate order by amount desc
         ) where rowNum <=5 AND docDate > SYSDATE - 90
      `
-        console.log(sql, '35');
-        const result = await connection.execute(sql)
-        let resp = result.rows.map(po => ({
-            docDte: po[0],
-            supplier: po[1],
-            amount: po[2],
-        }))
-        console.log(resp, 'resp');
-        return res.json({ statusCode: 0, data: resp })
+            console.log(sql, '35');
+            const result = await connection.execute(sql)
+            let resp = result.rows.map(po => ({
+                docDte: po[0],
+                supplier: po[1],
+                amount: po[2],
+            }))
+            console.log(resp, 'resp');
+            return res.json({ statusCode: 0, data: resp })
+        }
     }
     catch (err) {
         console.error('Error retrieving data:', err);

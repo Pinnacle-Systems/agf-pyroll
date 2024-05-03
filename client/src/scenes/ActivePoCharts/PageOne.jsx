@@ -35,7 +35,7 @@ const PageOne = () => {
                     <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Top Turnovers of Last three Month</h1>
                     <div className=''><PieArcLabel topSupplierLastTrurnOver={topSupplierLastTrurnOver} /></div>
                 </div>
-                <div className='w-[98%] m-3  bg-white rounded '><DenseTable monthlyReceivables={monthlyReceivables} /></div>
+                <div className='w-[98%] m-3  bg-white rounded '> <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Upcoming Three Month's Receivable PO's</h1><DenseTable monthlyReceivables={monthlyReceivables} /></div>
                 {console.log(monthlyReceivables, 'monthlyReceivables')}
             </div>
         </div>
