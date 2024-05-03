@@ -1,12 +1,11 @@
 import React, { useRef, useEffect } from 'react';
 import CanvasJSReact from '@canvasjs/react-charts';
-import { useGetMonthlyReceivablesQuery } from '../redux/service/poData';
 
 const { CanvasJSChart } = CanvasJSReact;
 
 const StackedBarChart = ({ monthlyReceivables }) => {
     const chartRef = useRef(null);
-    const { data } = useGetMonthlyReceivablesQuery();
+
 
     const options = {
         animationEnabled: true,

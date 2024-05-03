@@ -4,7 +4,12 @@ import * as am5percent from '@amcharts/amcharts5/percent';
 
 const FunnelChart = ({ topSupplierLastTrurnOver }) => {
     useEffect(() => {
-        const root = am5.Root.new('chartdiv', {
+        if (!topSupplierLastTrurnOver) {
+            console.error('No data provided for the funnel chart.');
+            return;
+        }
+
+        const root = am5.Root.new('chart', {
             logo: false, // Hide the logo
         });
         const chart = root.container.children.push(
@@ -19,11 +24,14 @@ const FunnelChart = ({ topSupplierLastTrurnOver }) => {
                 orientation: 'vertical',
                 valueField: 'value',
                 categoryField: 'category',
-                tooltip: am5.Tooltip.new(root, {
-                    pointerOrientation: 'vertical',
-                }),
             })
         );
+
+        // Tooltip configuration
+        const tooltip = am5.Tooltip.new(root, {
+            pointerOrientation: 'vertical',
+        });
+        series.tooltip = tooltip;
 
         series.slices.template.setAll({
             strokeOpacity: 0,
@@ -45,7 +53,7 @@ const FunnelChart = ({ topSupplierLastTrurnOver }) => {
                 topSupplierLastTrurnOver.map(item => ({
                     value: item.amount,
                     category: item.supplier,
-                    tooltipText: `{category}: {value}`,
+                    tooltipText: `${item.supplier}: ${item.amount}`,
                 }))
             );
         }
@@ -58,7 +66,7 @@ const FunnelChart = ({ topSupplierLastTrurnOver }) => {
         };
     }, [topSupplierLastTrurnOver]);
 
-    return <div id="chartdiv" style={{ width: '100%', height: '300px' }} />;
+    return <div id="chart" style={{ width: '100%', height: '300px' }} />;
 };
 
 export default FunnelChart;

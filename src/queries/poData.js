@@ -31,7 +31,7 @@ export async function monthWiseDataSupplierReceivables(connection) {
         })
     }
     let out = [];
-    const suppliers = finalOutput.flatMap(i => i.suppliers).map(i => i.supplier);
+    const suppliers = [...new Set(finalOutput.flatMap(i => i.suppliers).map(i => i.supplier))];
     for (let index = 0; index < suppliers.length; index++) {
         const supplier = suppliers[index];
         let suppliersData;

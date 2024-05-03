@@ -2,15 +2,9 @@ import React, { useState } from 'react';
 import PoRegister from './poRegister';
 import PoParameters from './poParameters';
 import Header from './header'; // Import the Header component
-import ChartsOverviewDemo from '../../components/BarChart';
-import PieChart from '../../components/PieChart';
-import PieCharts from '../../components/PieChart';
-import ChartsOverviewDemo1 from '../../components/PieChart';
-import Lchart from '../../components/LineChart';
-import ActiveTabList from '../ActiveTab';
+
 import ActivePoCharts from '../ActivePoCharts';
-import DenseTable from '../../components/StatBox';
-import BarCharts from '../../components/BarChart';
+
 
 const Index = () => {
   const [year, setYear] = useState([]);

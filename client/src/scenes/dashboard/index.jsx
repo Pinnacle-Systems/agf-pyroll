@@ -11,7 +11,7 @@ import LineChart from '../../components/LineChart';
 import BarChart from '../../components/BarChart';
 import GeographyChart from '../../components/GeographyChart';
 import ProgressCircle from '../../components/ProgressCircle';
-import StatBox from '../../components/StatBox';
+
 import { Helmet } from 'react-helmet';
 
 const Dashboard = () => {
@@ -59,17 +59,7 @@ const Dashboard = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <StatBox
-            title="12,121"
-            subtitle="Emails Sent"
-            progress="0.75"
-            increase="+9%"
-            icon={
-              <EmailIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
+
         </Box>
         <Box
           gridColumn="span 3"
@@ -78,17 +68,7 @@ const Dashboard = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <StatBox
-            title="52,521"
-            subtitle="Sales Obtained"
-            progress="0.50"
-            increase="+21%"
-            icon={
-              <PointOfSaleIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
+
         </Box>
         <Box
           gridColumn="span 3"
@@ -97,17 +77,7 @@ const Dashboard = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <StatBox
-            title="8,121"
-            subtitle="New Clients"
-            progress="0.21"
-            increase="+15%"
-            icon={
-              <PersonAddIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
+
         </Box>
         <Box
           gridColumn="span 3"
@@ -116,17 +86,8 @@ const Dashboard = () => {
           justifyContent="center"
           alignItems="center"
         >
-          <StatBox
-            title="1,312,121"
-            subtitle="Traffic Occured"
-            progress="0.90"
-            increase="+40%"
-            icon={
-              <TrafficIcon
-                sx={{ color: colors.greenAccent[600], fontSize: '26px' }}
-              />
-            }
-          />
+
+
         </Box>
 
         {/* Row 2 */}

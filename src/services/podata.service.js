@@ -223,28 +223,31 @@ export async function getTopFiveSuppTurnOvr(req, res) {
     const connection = await getConnection(res)
     try {
         const { } = req.query;
+        let finalOutput = [];
+        const month = [-2, -1, 0];
+        let currentMonth, currentYear;
 
-        for (let monthIndex = 0; monthIndex < month.length; monthIndex++) {
-            const monthItem = month[monthIndex];
-            let date = new Date();
-
-            currentMonth = date.getMonth() + 1 + monthItem;
-            currentYear = date.getFullYear();
-            const sql =
-                `
-            select * from(select docDate, supplier, Round(sum(poQty*price)) as amount   from misyfpurreg group by supplier,docDate order by amount desc
-        ) where rowNum <=5 AND docDate > SYSDATE - 90
+        const sql =
+            `
+                select *
+                from (
+                    select docDate, supplier, Round(sum(poQty*price)) as amount
+                    from misyfpurreg
+                    where docDate >= ADD_MONTHS(TRUNC(SYSDATE), -3) 
+                    group by supplier, docDate
+                    order by amount desc
+                ) where rowNum <= 5                
      `
-            console.log(sql, '35');
-            const result = await connection.execute(sql)
-            let resp = result.rows.map(po => ({
-                docDte: po[0],
-                supplier: po[1],
-                amount: po[2],
-            }))
-            console.log(resp, 'resp');
-            return res.json({ statusCode: 0, data: resp })
-        }
+        console.log(sql, '35');
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+            docDte: po[0],
+            supplier: po[1],
+            amount: po[2],
+        }))
+        console.log(resp, 'resp');
+        return res.json({ statusCode: 0, data: resp })
+
     }
     catch (err) {
         console.error('Error retrieving data:', err);
