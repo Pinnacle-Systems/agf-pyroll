@@ -203,21 +203,63 @@ export async function getMonthlyReceivables(req, res) {
     const connection = await getConnection(res)
     try {
         const { } = req.query;
+        let finalOutput = [];
+        const month = [0, 1, 2];
+        let currentMonth, currentYear;
+        const monthList = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'June', 'July', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'];
+
+        for (let monthIndex = 0; monthIndex < month.length; monthIndex++) {
+            const monthItem = month[monthIndex];
+            let date = new Date();
+
+            currentMonth = date.getMonth() + 1 + monthItem;
+            currentYear = date.getFullYear();
+            const sql =
+                `
+                select supplier, round(sum(inbalqty)) as balanceQty
+                from MISYFPURREG
+                where extract(MONTH from duedate) = '${currentMonth}'
+                and extract(YEAR from duedate) = '${currentYear}'
+                and inbalqty > 0
+                group by supplier
+         `
+            const result = await connection.execute(sql);
+            let resp = result.rows.map(po => ({
+                supplier: po[0],
+                noOfQty: po[1],
+            }))
+            date.setMonth(date.getMonth() + monthItem);
+            finalOutput.push({
+                month: `${monthList[date.getMonth()]}`,
+                suppliers: resp
+            })
+        }
+
+        return res.json({ statusCode: 0, data: finalOutput })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
+export async function getTopFiveSuppTurnOvr(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { } = req.query;
         const sql =
             `
-            SELECT A.DUMON,COUNT(*) NOOFPOS,A.SUPPLIER FROM 
-            (SELECT DISTINCT TRIM(TO_CHAR(A.DUEDATE,'Mon')) DUMON,A.DOCID, SUPPLIER 
-            FROM MISYFPURREG A WHERE A.INBALQTY > 0 AND A.FINYR = '23-24'
-            ) A
-            GROUP BY A.DUMON,A.SUPPLIER
-            ORDER BY 1,3,2
+            select * from(select docDate, supplier, Round(sum(poQty*price)) as amount   from misyfpurreg group by supplier,docDate order by amount desc
+        ) where rowNum <=5 AND docDate > SYSDATE - 90
      `
         console.log(sql, '35');
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
-            month: po[0],
-            po: po[1],
-            supplier: po[2]
+            docDte: po[0],
+            supplier: po[1],
+            amount: po[2],
         }))
         console.log(resp, 'resp');
         return res.json({ statusCode: 0, data: resp })
@@ -230,19 +272,3 @@ export async function getMonthlyReceivables(req, res) {
         await connection.close()
     }
 }
-// SELECT *
-// FROM (
-//     SELECT t.docDate,
-//       (SELECT SUM(s.POQTY * s.PRICE) AS AMT
-//        FROM misyfpurreg s
-//        WHERE s.docDate > SYSDATE - 90
-//          AND s.SUPPLIER = t.SUPPLIER
-//        GROUP BY s.SUPPLIER
-//       ) AS AMOUNT,
-//       t.SUPPLIER
-//     FROM misyfpurreg t
-//     WHERE t.docDate > SYSDATE - 90
-//     GROUP BY t.docDate, t.SUPPLIER
-//     ORDER BY AMOUNT DESC
-// )
-// WHERE ROWNUM <= 5;

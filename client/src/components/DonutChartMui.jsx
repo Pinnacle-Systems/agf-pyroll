@@ -1,69 +1,64 @@
-import {
-    Card,
-    CardBody,
-    CardHeader,
-    Typography,
-} from "@material-tailwind/react";
-import Chart from "react-apexcharts";
-import { ChartBarIcon } from "@heroicons/react/24/outline";
+import React, { useEffect } from 'react';
+import * as am5 from '@amcharts/amcharts5';
+import * as am5percent from '@amcharts/amcharts5/percent';
 
-// If you're using Next.js please use the dynamic import for react-apexcharts and remove the import from the top for the react-apexcharts
-// import dynamic from "next/dynamic";
-// const Chart = dynamic(() => import("react-apexcharts"), { ssr: false });
+const FunnelChart = ({ topSupplierLastTrurnOver }) => {
+    useEffect(() => {
+        const root = am5.Root.new('chartdiv', {
+            logo: false, // Hide the logo
+        });
+        const chart = root.container.children.push(
+            am5percent.SlicedChart.new(root, {
+                layout: root.verticalLayout,
+            })
+        );
 
-const chartConfig = {
-    type: "donut",
-    width: 280,
-    height: 280,
-    series: [44, 55, 13, 43, 22],
-    options: {
-        chart: {
-            toolbar: {
-                show: false,
-            },
-        },
-        title: {
-            show: "",
-        },
-        dataLabels: {
-            enabled: false,
-        },
-        colors: ["#020617", "#ff8f00", "#00897b", "#1e88e5", "#d81b60"],
-        legend: {
-            show: false,
-        },
-    },
+        const series = chart.series.push(
+            am5percent.FunnelSeries.new(root, {
+                alignLabels: false,
+                orientation: 'vertical',
+                valueField: 'value',
+                categoryField: 'category',
+                tooltip: am5.Tooltip.new(root, {
+                    pointerOrientation: 'vertical',
+                }),
+            })
+        );
+
+        series.slices.template.setAll({
+            strokeOpacity: 0,
+            fillGradient: am5.LinearGradient.new(root, {
+                rotation: 0,
+                stops: [{ brighten: -0.4 }, { brighten: 0.4 }, { brighten: -0.4 }],
+            }),
+        });
+
+        series.labels.template.setAll({
+            truncate: true,
+            maxWidth: '100%',
+            fill: am5.color('#ffffff'),
+            fontSize: 12,
+        });
+
+        if (Array.isArray(topSupplierLastTrurnOver)) {
+            series.data.setAll(
+                topSupplierLastTrurnOver.map(item => ({
+                    value: item.amount,
+                    category: item.supplier,
+                    tooltipText: `{category}: {value}`,
+                }))
+            );
+        }
+
+        series.appear();
+        chart.appear(1000, 100);
+
+        return () => {
+            root.dispose();
+        };
+    }, [topSupplierLastTrurnOver]);
+
+    return <div id="chartdiv" style={{ width: '100%', height: '300px' }} />;
 };
 
-export default function DonutChartMui() {
-    return (
-        <Card>
-            <CardHeader
-                floated={false}
-                shadow={false}
-                color="transparent"
-                className="flex flex-col gap-4 rounded-none md:flex-row md:items-center"
-            >
-                <div className="w-max rounded-lg bg-gray-900 p-5 text-white">
-                    <ChartBarIcon className="h-6 w-6" />
-                </div>
-                <div>
-                    <Typography variant="h6" color="blue-gray">
-                        Supplier wise details
-                    </Typography>
-                    {/* <Typography
-                        variant="small"
-                        color="gray"
-                        className="max-w-sm font-normal"
-                    >
-                        Visualize your data in a simple way using the
-                        @material-tailwind/react chart plugin.
-                    </Typography> */}
-                </div>
-            </CardHeader>
-            <CardBody className="mt-4 grid place-items-center px-2">
-                <Chart {...chartConfig} />
-            </CardBody>
-        </Card>
-    );
-}
+export default FunnelChart;

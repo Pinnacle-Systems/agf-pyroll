@@ -70,6 +70,14 @@ const poData = createApi({
                 }
             }
         }),
+        getTopFiveSuppTurnOvr: builder.query({
+            query: () => {
+                return {
+                    url: `${PO_DATA}/getTopFiveSuppTurnOvr`,
+                    method: 'GET',
+                }
+            }
+        }),
     }),
 })
 
@@ -80,7 +88,8 @@ export const {
     useGetArticleIdQuery,
     useGetSuppEfficencyQuery,
     useGetTopItemsQuery,
-    useGetMonthlyReceivablesQuery
+    useGetMonthlyReceivablesQuery,
+    useGetTopFiveSuppTurnOvrQuery
 } = poData;
 
 export default poData;

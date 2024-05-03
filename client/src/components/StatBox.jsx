@@ -1,54 +1,61 @@
-import * as React from 'react';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+import React, { useEffect } from 'react';
+import Chart from 'react-apexcharts';
+import ApexCharts from 'apexcharts';
 
-function createData(name, calories, fat, carbs, protein) {
-  return { name, calories, fat };
-}
+const MyChartComponent = ({ monthlyReceivables }) => {
 
-const rows = [
-  createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData('Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData('Eclair', 262, 16.0, 24, 6.0),
-  createData('Cupcake', 305, 3.7, 67, 4.3),
-  createData('Gingerbread', 356, 16.0, 49, 3.9),
-];
+  const categories = monthlyReceivables.map(item => item.month);
 
-export default function DenseTable() {
-  return (
-    <div>
-      <h1 className='text-center text-lg font-semibold'>Top Suppliers</h1>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 400 }} size="small" aria-label="a dense table">
-          <TableHead>
-            <TableRow>
-              <TableCell>Dessert (100g serving)</TableCell>
-              <TableCell align="right" className='font-semibold'>Calories</TableCell>
-              <TableCell align="right">Fat&nbsp;(g)</TableCell>
 
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {rows.map((row) => (
-              <TableRow
-                key={row.name}
-                sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-              >
-                <TableCell component="th" scope="row">
-                  {row.name}
-                </TableCell>
-                <TableCell align="right">{row.calories}</TableCell>
-                <TableCell align="right">{row.fat}</TableCell>
+  const seriesData = monthlyReceivables.map(item => ({
+    name: item.suppliers.map(supp => supp.supplier),
+    data: item.suppliers.map(supp => supp.noOfQty)
+  }));
 
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer></div>
-  );
-}
+
+  const options = {
+    series: seriesData,
+    chart: {
+      type: 'bar',
+      height: 350,
+      stacked: true,
+      toolbar: {
+        show: true,
+      },
+    },
+    plotOptions: {
+      bar: {
+        horizontal: false,
+        borderRadius: 10,
+        dataLabels: {
+          total: {
+            enabled: false,
+          },
+        },
+      },
+    },
+    xaxis: {
+      type: 'category',
+      categories: categories,
+    },
+    legend: {
+      show: false,
+    },
+    fill: {
+      opacity: 1,
+    },
+  };
+
+  useEffect(() => {
+    const chart = new ApexCharts(document.querySelector("#chart"), options);
+    chart.render();
+
+    return () => {
+      chart.destroy();
+    };
+  }, [options, monthlyReceivables]);
+
+  return <div id="chart" />;
+};
+
+export default MyChartComponent;

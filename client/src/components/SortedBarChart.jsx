@@ -13,7 +13,7 @@ const SortedBarChart = ({ topItems }) => {
 
             chart = am4core.create("sidechartdiv", am4charts.XYChart);
             chart.padding(5, 5, 5, 5);
-
+            chart.logo.disabled = true;
             // Create category axis
             let categoryAxis = chart.yAxes.push(new am4charts.CategoryAxis());
             categoryAxis.renderer.grid.template.location = 0;
