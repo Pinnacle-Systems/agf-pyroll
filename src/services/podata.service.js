@@ -79,7 +79,8 @@ export async function getFinYr(req, res) {
     try {
         const { } = req.query;
         const result = await connection.execute(`
-        SELECT DISTINCT FINYR FROM YFPURREG
+        select * from (select finyr  from GTFINANCIALYEAR order by finyr desc) finyr     
+        where rownum <= 3
      `)
         let resp = result.rows.map(po => ({
             finYr: po[0]
@@ -223,9 +224,7 @@ export async function getTopFiveSuppTurnOvr(req, res) {
     const connection = await getConnection(res)
     try {
         const { } = req.query;
-        let finalOutput = [];
-        const month = [-2, -1, 0];
-        let currentMonth, currentYear;
+
 
         const sql =
             `
@@ -244,6 +243,71 @@ export async function getTopFiveSuppTurnOvr(req, res) {
             docDte: po[0],
             supplier: po[1],
             amount: po[2],
+        }))
+        console.log(resp, 'resp');
+        return res.json({ statusCode: 0, data: resp })
+
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
+export async function getOverAllSupplierContribution(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { } = req.query;
+
+
+        const sql =
+            `
+            select supplier,Round(sum(poQty)) as poQty,finyr from misyfpurreg where finyr = '23-24'
+            and poQty > '5000'  group by supplier, finyr              
+     `
+        console.log(sql, '35');
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+
+            supplier: po[0],
+            poQty: po[1],
+        }))
+        console.log(resp, 'resp');
+        return res.json({ statusCode: 0, data: resp })
+
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
+export async function getMostPaidTaxVal(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { } = req.query;
+
+
+        const sql =
+            `
+            select * from  (select tax,
+                Round(sum(taxvalue)) as taxval, supplier from misyfpurreg  where misyfpurreg.docDate >= ADD_MONTHS(Trunc(sysDate), -3) 
+                group by supplier,tax order by taxval desc 
+                        )where rownum <= 5
+            
+                     
+     `
+        console.log(sql, '35');
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+
+            taxValue: po[0],
+            supplier: po[1],
+
         }))
         console.log(resp, 'resp');
         return res.json({ statusCode: 0, data: resp })

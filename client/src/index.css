@@ -293,3 +293,18 @@ body {
 
   display: none;
 }
+
+/* .dx-export-menu-button {
+  display: none;
+} */
+
+.lable {
+  font-size: 20px;
+}
+
+/* MyFunnel.css */
+
+.my-funnel-wrapper .dx-export-menu {
+  margin-top: 20rem;
+
+}

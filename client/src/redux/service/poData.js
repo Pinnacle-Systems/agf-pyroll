@@ -78,6 +78,14 @@ const poData = createApi({
                 }
             }
         }),
+        getOverAllSupplierContribution: builder.query({
+            query: () => {
+                return {
+                    url: `${PO_DATA}/getOverAllSupplierContribution`,
+                    method: 'GET',
+                }
+            }
+        })
     }),
 })
 
@@ -89,7 +97,8 @@ export const {
     useGetSuppEfficencyQuery,
     useGetTopItemsQuery,
     useGetMonthlyReceivablesQuery,
-    useGetTopFiveSuppTurnOvrQuery
+    useGetTopFiveSuppTurnOvrQuery,
+    useGetOverAllSupplierContributionQuery
 } = poData;
 
 export default poData;

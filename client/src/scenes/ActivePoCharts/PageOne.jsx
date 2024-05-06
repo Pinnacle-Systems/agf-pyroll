@@ -3,7 +3,7 @@ import React from 'react'
 
 
 import PieActiveArc from '../../components/ArcPieChart'
-import { useGetTopFiveSuppTurnOvrQuery, useGetMonthlyReceivablesQuery, useGetSuppEfficencyQuery, } from '../../redux/service/poData'
+import { useGetTopFiveSuppTurnOvrQuery, useGetMonthlyReceivablesQuery, useGetSuppEfficencyQuery, useGetOverAllSupplierContributionQuery, } from '../../redux/service/poData'
 import { useGetTopItemsQuery } from '../../redux/service/poData'
 import SortedBarChart from '../../components/SortedBarChart'
 import PieArcLabel from '../../components/DonutChartMui'
@@ -17,12 +17,12 @@ const PageOne = () => {
     const { data: topItem } = useGetTopItemsQuery()
     const { data: monthlyreceivable } = useGetMonthlyReceivablesQuery()
     const { data: threeMntTrurOver } = useGetTopFiveSuppTurnOvrQuery()
-
+    const { data: overAllSupData } = useGetOverAllSupplierContributionQuery()
     const suppEfficiency = data?.data || [];
     const topItems = topItem?.data || [];
     const monthlyReceivables = monthlyreceivable?.data || [];
     const topSupplierLastTrurnOver = threeMntTrurOver?.data || []
-
+    const overAllSuppCon = overAllSupData?.data || []
     return (
         <div className='bg-gray-200'>
             <div className='grid grid-cols-3 w-full '>
@@ -41,11 +41,11 @@ const PageOne = () => {
 
             </div>
             <div className='w-full flex'>
-                <div className='w-[34%] m-3  bg-white rounded '> <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Upcoming Three Month's Receivable PO's</h1><StackedBarChart monthlyReceivables={monthlyReceivables} /></div>
 
+                <div className='w-[98%] m-3  bg-white rounded '> <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>PO Receivable's For Next 3 Month's  </h1><StackedBarChart monthlyReceivables={monthlyReceivables} /></div>
                 <div className='w-[66%]  m-3  bg-white rounded'>
                     <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Supplier Contribution</h1>
-                    <div className=''>< TreeMapChart /></div>
+                    <div className=''>< TreeMapChart overAllSuppCon={overAllSuppCon} /></div>
                 </div></div>
         </div>
     )

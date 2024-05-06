@@ -5,7 +5,8 @@ export async function get(req, res) {
     const connection = await getConnection(res)
     try {
         const result = await connection.execute(`
-        select finyr  from GTFINANCIALYEAR
+        select * from (select finyr  from GTFINANCIALYEAR order by finyr desc) finyr     
+        where rownum <= 3
      `)
         let resp = result.rows.map(po => ({
             finYear: po[0]

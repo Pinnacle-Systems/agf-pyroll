@@ -1,72 +1,47 @@
-import React, { useEffect } from 'react';
-import * as am5 from '@amcharts/amcharts5';
-import * as am5percent from '@amcharts/amcharts5/percent';
+import React from 'react';
+import DXFunnel, {
+    Export,
+    Tooltip,
+    Item,
+    Border,
+    Label,
+} from 'devextreme-react/funnel';
+import './donutChartMui.css'
 
-const FunnelChart = ({ topSupplierLastTrurnOver }) => {
-    useEffect(() => {
-        if (!topSupplierLastTrurnOver) {
-            console.error('No data provided for the funnel chart.');
-            return;
-        }
+const formatLabel = (arg) =>
+    `<span style="font-size: 16px">${arg.percentText}</span><br/><span >${arg.item.argument}</span>`;
 
-        const root = am5.Root.new('chart', {
-            logo: false, // Hide the logo
-        });
-        const chart = root.container.children.push(
-            am5percent.SlicedChart.new(root, {
-                layout: root.verticalLayout,
-            })
-        );
+function MyFunnel({ topSupplierLastTrurnOver }) {
+    console.log(topSupplierLastTrurnOver, 'topSupplierLastTrurnOver');
+    const topTurnOver = topSupplierLastTrurnOver.map(item =>
+    ({
+        argument: item.supplier, value: item.amount
+    }))
 
-        const series = chart.series.push(
-            am5percent.FunnelSeries.new(root, {
-                alignLabels: false,
-                orientation: 'vertical',
-                valueField: 'value',
-                categoryField: 'category',
-            })
-        );
+    return (
+        <div className="my-funnel-wrapper"> {/* Add a wrapper div */}
+            <DXFunnel
+                id="funnel"
+                dataSource={topTurnOver}
+                argumentField="argument"
+                valueField="value"
+                height={300}
+                palette={['#007bff', '#28a745', '#dc3545', '#ffc107', '#6c757d']}
+            >
 
-        // Tooltip configuration
-        const tooltip = am5.Tooltip.new(root, {
-            pointerOrientation: 'vertical',
-        });
-        series.tooltip = tooltip;
+                <Tooltip enabled={true} format="fixedPoint" />
+                <Item>
 
-        series.slices.template.setAll({
-            strokeOpacity: 0,
-            fillGradient: am5.LinearGradient.new(root, {
-                rotation: 0,
-                stops: [{ brighten: -0.4 }, { brighten: 0.4 }, { brighten: -0.4 }],
-            }),
-        });
+                </Item>
+                <Label
+                    visible={true}
+                    position="inside"
+                    backgroundColor="none"
+                    customizeText={formatLabel}
+                />
+            </DXFunnel>
+        </div>
+    );
+}
 
-        series.labels.template.setAll({
-            truncate: true,
-            maxWidth: '100%',
-            fill: am5.color('#ffffff'),
-            fontSize: 12,
-        });
-
-        if (Array.isArray(topSupplierLastTrurnOver)) {
-            series.data.setAll(
-                topSupplierLastTrurnOver.map(item => ({
-                    value: item.amount,
-                    category: item.supplier,
-                    tooltipText: `${item.supplier}: ${item.amount}`,
-                }))
-            );
-        }
-
-        series.appear();
-        chart.appear(1000, 100);
-
-        return () => {
-            root.dispose();
-        };
-    }, [topSupplierLastTrurnOver]);
-
-    return <div id="chart" style={{ width: '100%', height: '300px' }} />;
-};
-
-export default FunnelChart;
+export default MyFunnel;

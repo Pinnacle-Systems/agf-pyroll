@@ -1,30 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
 
-const TreeMapChart = () => {
+const TreeMapChart = ({ overAllSuppCon }) => {
+    console.log(overAllSuppCon, 'overAllSuppCon');
+
+    const truncateText = (text, maxLength) => {
+        if (text.length > maxLength) {
+            return text.substring(0, maxLength) + '...';
+        }
+        return text;
+    };
+
     const [chartOptions, setChartOptions] = useState({
-        series: [
-            {
-                data: [
-                    { x: 'New Delhi', y: 218 },
-                    { x: 'Kolkata', y: 149 },
-                    { x: 'Mumbai', y: 184 },
-                    { x: 'Ahmedabad', y: 55 },
-                    { x: 'Bangaluru', y: 84 },
-                    { x: 'Pune', y: 31 },
-                    { x: 'Chennai', y: 70 },
-                    { x: 'Jaipur', y: 30 },
-                    { x: 'Surat', y: 44 },
-                    { x: 'Hyderabad', y: 68 },
-                    { x: 'Lucknow', y: 28 },
-                    { x: 'Indore', y: 19 },
-                    { x: 'Kanpur', y: 29 },
-                ],
-            },
-        ],
+        series: [],
         legend: { show: false },
         chart: { height: 350, type: 'treemap' },
-
+        tooltip: {
+            custom: ({ series, seriesIndex, dataPointIndex, w }) => {
+                const { fullX, y } = w.config.series[seriesIndex].data[dataPointIndex];
+                return `<div>${fullX}: ${y}</div>`; // Customize tooltip content here
+            },
+        },
         colors: [
             '#3B93A5',
             '#F7B844',
@@ -45,11 +41,32 @@ const TreeMapChart = () => {
                 enableShades: false,
             },
         },
+        dataLabels: {
+            style: {
+                colors: ['black'],
+
+            },
+        },
     });
 
+    useEffect(() => {
+        if (overAllSuppCon && overAllSuppCon.length > 0) {
+            const data = overAllSuppCon.map(item => ({
+                x: truncateText(item.supplier, 10), // Adjust the number based on your desired length
+                y: item.poQty,
+                fullX: item.supplier, // Store the full supplier name for tooltip
+            }));
+
+            setChartOptions(prevOptions => ({
+                ...prevOptions,
+                series: [{ data }],
+            }));
+        }
+    }, [overAllSuppCon]);
+
     return (
-        <div id="chart">
-            <Chart options={chartOptions} series={chartOptions.series} type="treemap" height={350} />
+        <div id="chart" >
+            <Chart options={chartOptions} series={chartOptions.series} type="treemap" height={350} className='text-black' />
         </div>
     );
 };

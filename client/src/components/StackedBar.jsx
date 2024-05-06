@@ -17,7 +17,7 @@ const StackedBarChart = ({ monthlyReceivables }) => {
         series: seriesData,
         chart: {
             type: 'bar',
-            height: 350,
+            height: 300,
             stacked: true,
             stackType: '100%',
             toolbar: {
