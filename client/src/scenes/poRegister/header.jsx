@@ -1,14 +1,36 @@
 import { useState } from 'react';
-import { filterSearch } from '../../helper/helper';
 import { useGetFinYrQuery } from '../../redux/service/poData';
 
 const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArticleId, setSelectedSupplier }) => {
     const [fromDate, setFromDate] = useState('')
     const [toDate, setToDate] = useState('')
-    console.log(' state:', date);
-    const monthData = [{ id: 4, month: 'APR' }, { id: 5, month: 'MAY' }, { id: 6, month: 'JUN' }, { id: 7, month: 'JUL' }, { id: 8, month: 'AUG' }, { id: 9, month: 'SEP' }, { id: 10, month: 'OCT' }, { id: 11, month: 'NOV' }, { id: 12, month: 'DEC' }, { id: 1, month: 'JAN' }, { id: 2, month: 'FEB' }, { id: 3, month: 'MAR' },]
+    const quartelyData = [
+        {
+            q: 'Q1',
+            month: [
+                { id: 4, month: 'APR' }, { id: 5, month: 'MAY' }, { id: 6, month: 'JUN' }
+            ]
+        },
+        {
+            q: "Q2",
+            month: [
+                { id: 7, month: 'JUL' }, { id: 8, month: 'AUG' }, { id: 9, month: 'SEP' }
+            ]
+        },
+        {
+            q: "Q3",
+            month: [
+                { id: 10, month: 'OCT' }, { id: 11, month: 'NOV' }, { id: 12, month: 'DEC' }
+            ]
+        },
+        {
+            q: "Q4",
+            month: [
+                { id: 1, month: 'JAN' }, { id: 2, month: 'FEB' }, { id: 3, month: 'MAR' }
+            ]
+        },
+    ]
     const { data: finYear } = useGetFinYrQuery();
-    console.log(finYear, 'finyr');
     const handleSelectYear = (item) => {
         setYear(prevState => {
             const yearIndex = prevState.indexOf(item.finYr);
@@ -26,6 +48,16 @@ const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArti
                 return [...prev, item]
             } else {
                 return prev.filter(selectedMnt => selectedMnt !== item)
+            }
+        })
+    }
+    const handleSelectQuarter = (q) => {
+        const qMonths = q.month.map(i => i.id);
+        setMonth(prev => {
+            if (q.month.every(i => prev.includes(i.id))) {
+                return prev.filter(selectedMnt => !qMonths.includes(selectedMnt))
+            } else {
+                return [...new Set([...prev, ...qMonths])]
             }
         })
     }
@@ -53,20 +85,32 @@ const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArti
                         </button>
                     ))}
                 </div>
-                <div>       <ul className='flex   mt-2 cursor-pointer mr-2'>
-                    <p className='subheading-font font-semibold text-white subheading-font font-semibold mr-2 mt-1'> Month :</p>
-                    {monthData.map((item, id) => (
-                        <li
-                            className={` flex gap-2 mr-2  rounded-[5px] px-[2px] h-5 text-sm  focus:bg-green-200 mt-1 ${month.includes(item.id) ? 'select-clr text-white' : 'bg-white'}`}
-                            onClick={() => handleSelectMonth(item.id)}
-                            key={id}
-                        >
-                            {item.month}
-                        </li>
-
-                    ))}
-                </ul></div>
-
+                <div className='flex mt-1 cursor-pointer gap-1'>
+                    <p className='subheading-font font-semibold text-white subheading-font font-semibold '> Month :</p>
+                    <div className='flex'>
+                        {quartelyData.map((q, id) => (
+                            <div
+                                className={`grid text-xs bg-white  `}
+                                key={id}
+                            >
+                                <div
+                                    onClick={() => {
+                                        handleSelectQuarter(q)
+                                    }}
+                                    className={`border ${(q.month.every(i => month.includes(i.id))) ? 'select-clr text-white' : 'bg-white'}`}>
+                                    {q.q}
+                                </div>
+                                <div className='grid grid-cols-3 border border-gray-300 gap-1'>
+                                    {q.month.map(m =>
+                                        <div key={m.id} onClick={() => {
+                                            handleSelectMonth(m.id)
+                                        }} className={`border p-1 ${month.includes(m.id) ? 'select-clr text-white' : 'bg-white'}`}>{m.month}</div>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
                 <div className='flex items-center flex gap-5'> <div class="m-2">
                     <label className='subheading-font font-semibold text-white mr-2' for="firstName">
                         From :

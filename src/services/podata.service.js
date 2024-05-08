@@ -81,6 +81,7 @@ export async function getFinYr(req, res) {
         const result = await connection.execute(`
         select * from (select finyr  from GTFINANCIALYEAR order by finyr desc) finyr     
         where rownum <= 3
+        order by finyr
      `)
         let resp = result.rows.map(po => ({
             finYr: po[0]

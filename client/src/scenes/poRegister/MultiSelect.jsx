@@ -27,7 +27,7 @@ const MultiSelect = ({ selectedSupplier, setSelectedSupplier }) => {
                 {(filterData ? filterData : []).map((item, index) => (
                     <div
                         key={index}
-                        className={` truncate border rounded cursor-pointer content-font font-medium  hover:bg-gray-200 p-1 ${selectedSupplier.includes(item.supplier) ? 'select-clr ' : ''}`}
+                        className={` truncate border rounded cursor-pointer content-font font-medium   p-1 ${selectedSupplier.includes(item.supplier) ? 'select-clr hover:select-clr' : 'hover:bg-gray-200'}`}
                         onClick={() => handleClick(item)}
                         title={item.supplier}
                     >

@@ -20,7 +20,7 @@ const ActivePoCharts = () => {
         <div className="relative w-full h-full overflow-hidden ">
             <div className="flex gap-5 select-clr ">
                 {tabs.map(tab =>
-                    <div key={tab.name} className={`${(tab.name === currentActiveTab) ? "bg-white text-black" : ""} m-2 rounded px-1`} onClick={() => { setCurrentActiveTab(tab.name) }}>
+                    <div key={tab.name} className={`${(tab.name === currentActiveTab) ? "bg-white text-black" : ""} m-2 rounded px-1 cursor-pointer`} onClick={() => { setCurrentActiveTab(tab.name) }}>
                         {tab.name}
                     </div>
                 )}

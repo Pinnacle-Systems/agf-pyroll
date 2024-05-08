@@ -27,7 +27,7 @@ const ArticleIdSelect = ({ selectedArticleId, setSelectedArticleId }) => {
                 {(filterData ? filterData : []).map((item, index) => (
                     <div
                         key={index}
-                        className={`w-[15rem] truncate border rounded cursor-pointer content-font font-medium hover:bg-gray-200 p-1 ${selectedArticleId.includes(item.articleId) ? 'select-clr ' : ''}`}
+                        className={`w-[15rem] truncate border rounded cursor-pointer content-font font-medium p-1 ${selectedArticleId.includes(item.articleId) ? 'select-clr hover:select-clr' : 'hover:bg-gray-200'}`}
                         onClick={() => handleClick(item)}
                         title={item.articleId}
                     >
