@@ -265,7 +265,7 @@ export async function getOverAllSupplierContribution(req, res) {
 
         const sql =
             `
-            select supplier,Round(sum(poQty)) as poQty,finyr from misyfpurreg where finyr = '23-24'
+            select supplier,Round(sum(poQty * price)) as poQty,finyr from misyfpurreg where finyr = '23-24'
             and poQty > '5000'  group by supplier, finyr              
      `
         console.log(sql, '35');
@@ -291,23 +291,42 @@ export async function getMostPaidTaxVal(req, res) {
     const connection = await getConnection(res)
     try {
         const { } = req.query;
-
-
         const sql =
             `
-            select * from  (select tax,
-                Round(sum(taxvalue)) as taxval, supplier from misyfpurreg  where misyfpurreg.docDate >= ADD_MONTHS(Trunc(sysDate), -3) 
-                group by supplier,tax order by taxval desc 
-                        )where rownum <= 5
-            
-                     
+            SELECT ROUND(SUM((BILLQTY*PRICE)*TAX/100)) AS Value,
+            TRIM(TO_CHAR(DUEDATE,'Mon')) || TRIM(TO_CHAR(DUEDATE,'yy')) AS MonYr,
+            taxTemp
+     FROM misyfpurreg
+     WHERE misyfpurreg.docDate >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -5) -- Filter for the last 6 months starting from the current month
+           AND TRUNC(DUEDATE, 'MM') < TRUNC(SYSDATE, 'MM')
+     GROUP BY TRIM(TO_CHAR(DUEDATE,'Mon')), TRIM(TO_CHAR(DUEDATE,'yy')), taxTemp
+     ORDER BY 
+         CASE TRIM(TO_CHAR(DUEDATE,'Mon'))
+             WHEN 'Jan' THEN 1
+             WHEN 'Feb' THEN 2
+             WHEN 'Mar' THEN 3
+             WHEN 'Apr' THEN 4
+             WHEN 'May' THEN 5
+             WHEN 'Jun' THEN 6
+             WHEN 'Jul' THEN 7
+             WHEN 'Aug' THEN 8
+             WHEN 'Sep' THEN 9
+             WHEN 'Oct' THEN 10
+             WHEN 'Nov' THEN 11
+             WHEN 'Dec' THEN 12
+             ELSE 99
+         END,
+         taxTemp ASC
      `
         console.log(sql, '35');
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
 
-            taxValue: po[0],
-            supplier: po[1],
+
+            taxVal: po[0],
+            month: po[1],
+            taxTemp: po[2],
+
 
         }))
         console.log(resp, 'resp');
