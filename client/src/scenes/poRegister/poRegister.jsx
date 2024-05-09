@@ -1,10 +1,8 @@
-import { Box, Typography, useTheme } from '@mui/material';
+import React from "react"; // Don't forget to import React
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { useGetPoDataQuery } from '../../redux/service/poData';
-import { useMemo, useState } from 'react';
-import React from "react"; // Don't forget to import React
-import BarChart from '../../components/BarChart';
-import PieChart from '../../components/PieChart';
+import { useMemo } from 'react';
+import { CircleLoaderComponent } from '../../components/Loaders';
 
 
 const columns = [
@@ -214,7 +212,7 @@ function DataTable({ data, totals }) {
 
 export default function PoRegister({ year, month, date, selectedSupplier, selectedArticleId }) {
   console.log(date, 'date');
-  const { data } = useGetPoDataQuery({ finYearData: JSON.stringify(year || ''), filterMonth: JSON.stringify(month || ''), filterSupplier: JSON.stringify(selectedSupplier || ''), filterArticleId: JSON.stringify(selectedArticleId || '') });
+  const { data, isLoading, isFetching } = useGetPoDataQuery({ finYearData: JSON.stringify(year || ''), filterMonth: JSON.stringify(month || ''), filterSupplier: JSON.stringify(selectedSupplier || ''), filterArticleId: JSON.stringify(selectedArticleId || '') });
   const poData = useMemo(() => (data?.data ? data.data : []), [data]);
   const totals = {
     q1: poData.reduce((sum, row) => sum + (row.q1 || 0), 0),
@@ -225,15 +223,22 @@ export default function PoRegister({ year, month, date, selectedSupplier, select
   };
 
   return (
-    <div className='text-center align-center bg-gray-200 w-full h-full scrollbar overflow-auto'>
-      <div className='h-[100%] overflow-auto'>
+    <>
+      {/* {(isLoading || isFetching)
+        ?
+        <CircleLoaderComponent />
+        : */}
+      <div className='text-center align-center bg-gray-200 w-full h-full scrollbar overflow-auto'>
+        <div className='h-[100%] overflow-auto'>
 
-        <DataTable data={poData} totals={totals} />
+          <DataTable data={poData} totals={totals} />
 
+
+        </div>
 
       </div>
-
-    </div>
+      {/* } */}
+    </>
 
 
   );

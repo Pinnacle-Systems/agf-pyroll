@@ -10,7 +10,6 @@ import PoRegister from "../poRegister";
 import { MisDashboard } from "../../scenes"
 
 import Form from '../form'
-import GeographyChart from "../../components/GeographyChart";
 const ActiveTabList = () => {
     const openTabs = useSelector((state) => state.openTabs);
     const dispatch = useDispatch();

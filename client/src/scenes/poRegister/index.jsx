@@ -14,10 +14,9 @@ const Index = () => {
   const [selectedArticleId, setSelectedArticleId] = useState([])
   return (
     <div className='h-full w-full overflow-scroll'>
-      <div className='w-full h-[7%] '>
+      <div className='w-full h-[9%] '>
         <Header setYear={setYear} year={year} setMonth={setMonth} month={month} setDate={setDate} date={date} setSelectedSupplier={setSelectedSupplier} setSelectedArticleId={setSelectedArticleId} />
       </div>
-      {console.log(date, 'date')}
       <div className='flex w-[100%] h-[100%] pl-2' >
         <div className='w-[80%] h-[90%] '>
           <PoRegister year={year} month={month} data={date} selectedSupplier={selectedSupplier} selectedArticleId={selectedArticleId} />
@@ -27,11 +26,9 @@ const Index = () => {
         </div>
 
       </div>
-      <div className='h-full'>
+      <div className='h-full w-full'>
         <h1 className='w-full text-[20px] text-center font-bold '>Charts</h1>
-        <div ><ActivePoCharts /></div>
-
-
+        <div className='w-full' ><ActivePoCharts /></div>
       </div>
     </div>
   );

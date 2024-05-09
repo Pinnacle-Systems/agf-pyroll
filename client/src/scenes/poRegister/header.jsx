@@ -71,7 +71,7 @@ const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArti
 
     return (
         <div className=' flex text-center align-center top-Bar w-full'>
-            <div className='w-full flex justify-evenly'>
+            <div className='w-full flex justify-evenly '>
                 <div className='flex  h-8  cursor-pointer align-center  pt-3'>
                     <p className=' text-white subheading-font font-semibold mr-2'> Year : </p>
                     {(finYear?.data ? finYear.data : []).map((item, index) => (
@@ -86,7 +86,7 @@ const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArti
                     ))}
                 </div>
                 <div className='flex mt-1 cursor-pointer gap-1'>
-                    <p className='subheading-font font-semibold text-white subheading-font font-semibold '> Month :</p>
+                    <p className='subheading-font font-semibold text-white subheading-font '> Month :</p>
                     <div className='flex'>
                         {quartelyData.map((q, id) => (
                             <div

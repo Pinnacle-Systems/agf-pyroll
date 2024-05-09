@@ -10838,6 +10838,11 @@
     "use-callback-ref" "^1.2.5"
     "use-sidecar" "^1.0.5"
 
+"react-google-charts@^4.0.1":
+  "integrity" "sha512-V/hcMcNuBgD5w49BYTUDye+bUKaPmsU5vy/9W/Nj2xEeGn+6/AuH9IvBkbDcNBsY00cV9OeexdmgfI5RFHgsXQ=="
+  "resolved" "https://registry.npmjs.org/react-google-charts/-/react-google-charts-4.0.1.tgz"
+  "version" "4.0.1"
+
 "react-google-font-loader@^1.1.0":
   "integrity" "sha512-mnPYxBdhYEldTtREYPKllbmMvCGkTbpdmNjR6iTM3eTNWcg17OrfXjq9HRDZe+1+mhnUnI/AOcpvG0LIQPcLIw=="
   "resolved" "https://registry.npmjs.org/react-google-font-loader/-/react-google-font-loader-1.1.0.tgz"

@@ -25,7 +25,7 @@ const ActivePoCharts = () => {
                     </div>
                 )}
             </div>
-            <div>
+            <div className="w-full">
                 {tabs.find(i => i.name === currentActiveTab)?.component}
             </div>
         </div>
