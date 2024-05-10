@@ -72,22 +72,25 @@ const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArti
     return (
         <div className=' flex text-center align-center top-Bar w-full'>
             <div className='w-full flex justify-evenly '>
-                <div className='flex  h-8  cursor-pointer align-center  pt-3'>
-                    <p className=' text-white subheading-font font-semibold mr-2'> Year : </p>
-                    {(finYear?.data ? finYear.data : []).map((item, index) => (
-                        <button
-                            className={`flex  rounded-[5px] px-[2px] h-5 hover:bg-green-200 mr-2 text-sm ${year.includes(item.finYr) ? 'select-clr' : 'bg-white'}`}
+                <div className='flex items-center  gap-5'>
+                    <div className='  h-8  cursor-pointer flex items-center  '>
+                        <p className=' text-white subheading-font font-semibold mr-2'> Year : </p>
+                        {(finYear?.data ? finYear.data : []).map((item, index) => (
+                            <button
+                                className={`flex  rounded-[5px] px-[2px] h-5 hover:bg-green-200 mr-2 text-sm ${year.includes(item.finYr) ? 'select-clr' : 'bg-white'}`}
 
-                            onClick={() => handleSelectYear(item)}
-                            key={index}
-                        >
-                            {item.finYr}
-                        </button>
-                    ))}
+                                onClick={() => handleSelectYear(item)}
+                                key={index}
+                            >
+                                {item.finYr}
+                            </button>
+                        ))}
+                    </div>
+
                 </div>
                 <div className='flex mt-1 cursor-pointer gap-1'>
-                    <p className='subheading-font font-semibold text-white subheading-font '> Month :</p>
-                    <div className='flex'>
+                    <p className='subheading-font font-semibold text-white subheading-font flex items-center'> Month :</p>
+                    <div className='flex items-center'>
                         {quartelyData.map((q, id) => (
                             <div
                                 className={`grid text-xs bg-white  `}
@@ -133,11 +136,12 @@ const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArti
                 /></div>
 
                 </div>
-                <div className='rounded pt-3'>
+                <div className='rounded  flex items-center'>
                     <button className='rounded bg-white text-sm px-1 hover' onClick={onHandleClick}>Clear All</button>
                 </div>
 
-            </div></div>
+            </div>
+        </div>
     )
 }
 

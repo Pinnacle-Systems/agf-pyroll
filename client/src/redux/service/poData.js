@@ -85,6 +85,14 @@ const poData = createApi({
                     method: 'GET',
                 }
             }
+        }),
+        getMostPaidTaxVal: builder.query({
+            query: () => {
+                return {
+                    url: `${PO_DATA}/getMostPaidTaxVal`,
+                    method: 'GET',
+                }
+            }
         })
     }),
 })
@@ -98,7 +106,8 @@ export const {
     useGetTopItemsQuery,
     useGetMonthlyReceivablesQuery,
     useGetTopFiveSuppTurnOvrQuery,
-    useGetOverAllSupplierContributionQuery
+    useGetOverAllSupplierContributionQuery,
+    useGetMostPaidTaxValQuery
 } = poData;
 
 export default poData;

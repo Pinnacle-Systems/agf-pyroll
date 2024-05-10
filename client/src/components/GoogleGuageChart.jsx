@@ -9,8 +9,8 @@ export function getData() {
     return [
         ["Label", "Value"],
         ["Memory", getRandomNumber()],
-        // ["CPU", getRandomNumber()],
-        // ["Network", getRandomNumber()],
+        ["CPU", getRandomNumber()],
+        ["Network", getRandomNumber()],
     ];
 }
 
@@ -44,7 +44,7 @@ export function GoogleGuageChart() {
         <Chart
             chartType="Gauge"
             width="100%"
-            height="400px"
+            height=""
             data={data}
             options={options}
         />
