@@ -36,7 +36,7 @@ from dual)
      `)
     }
     result = result.rows.map(row => ({
-        prevValue: row[0], currentValue: row[1]
+        prevValue: row[1], currentValue: row[0]
 
     }))
     return result[0]
@@ -133,7 +133,7 @@ export async function getNewCustomers(connection, type = "YEAR") {
      `)
     }
     result = result.rows.map(row => ({
-        prevValue: row[0], currentValue: row[1]
+        prevValue: row[1], currentValue: row[0]
 
     }))
     return result[0]
@@ -193,7 +193,7 @@ from dual
 
     }
     result = result.rows.map(row => ({
-        prevValue: row[0], currentValue: row[1]
+        prevValue: row[1], currentValue: row[0]
     }))
     return result[0]
 }
@@ -237,7 +237,7 @@ from dual) a
 
     }
     result = result.rows.map(row => ({
-        prevValue: row[0], currentValue: row[1]
+        prevValue: row[1], currentValue: row[2]
 
     }))
     return result[0]
