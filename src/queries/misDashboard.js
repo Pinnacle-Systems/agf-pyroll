@@ -36,7 +36,7 @@ from dual)
      `)
     }
     result = result.rows.map(row => ({
-        prevValue: row[1], currentValue: row[0]
+        prevValue: row[0], currentValue: row[1]
 
     }))
     return result[0]
@@ -133,7 +133,7 @@ export async function getNewCustomers(connection, type = "YEAR") {
      `)
     }
     result = result.rows.map(row => ({
-        prevValue: row[1], currentValue: row[0]
+        prevValue: row[0], currentValue: row[1]
 
     }))
     return result[0]
@@ -143,6 +143,15 @@ export async function getTopCustomers(connection, type = "YEAR") {
     if (type === "YEAR") {
         result = await connection.execute(`
         select 
+        (select round(sum(turnover)) 
+        from (
+        select customer, coalesce(sum(actsalval),0) as turnover
+        from MISORDSALESVAL
+        where extract(YEAR from bpodate) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -12))
+        group by customer order by turnover desc
+        )
+        where rownum <= 5
+        ) as prevValue,
 (
 select round(sum(turnover)) 
 from (
@@ -152,21 +161,22 @@ where extract(YEAR from bpodate) = extract(YEAR from CURRENT_DATE)
 group by customer order by turnover desc
 )
 where rownum <= 5
-) as currentValue,
-(select round(sum(turnover)) 
-from (
-select customer, coalesce(sum(actsalval),0) as turnover
-from MISORDSALESVAL
-where extract(YEAR from bpodate) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -12))
-group by customer order by turnover desc
-)
-where rownum <= 5
-) as prevValue
+) as currentValue
 from dual
      `)
     } else if (type === "MONTH") {
         result = await connection.execute(`
         select 
+        (select round(sum(turnover)) 
+        from (
+        select customer, coalesce(sum(actsalval),0) as turnover
+        from MISORDSALESVAL
+        where extract(YEAR from bpodate) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -1))
+          and extract(MONTH from bpodate) = extract(MONTH from ADD_MONTHS(CURRENT_DATE, -1))
+        group by customer order by turnover desc
+        )
+        where rownum <= 5
+        ) as prevValue,
         (
         select round(sum(turnover)) 
         from (
@@ -177,23 +187,13 @@ from dual
         group by customer order by turnover desc
         )
         where rownum <= 5
-        ) as currentValue,
-        (select round(sum(turnover)) 
-        from (
-        select customer, coalesce(sum(actsalval),0) as turnover
-        from MISORDSALESVAL
-        where extract(YEAR from bpodate) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -1))
-          and extract(MONTH from bpodate) = extract(MONTH from ADD_MONTHS(CURRENT_DATE, -1))
-        group by customer order by turnover desc
-        )
-        where rownum <= 5
-        ) as prevValue
+        ) as currentValue
         from dual
      `)
 
     }
     result = result.rows.map(row => ({
-        prevValue: row[1], currentValue: row[0]
+        prevValue: row[0], currentValue: row[1]
     }))
     return result[0]
 }
@@ -237,7 +237,7 @@ from dual) a
 
     }
     result = result.rows.map(row => ({
-        prevValue: row[1], currentValue: row[2]
+        prevValue: row[0], currentValue: row[1]
 
     }))
     return result[0]
