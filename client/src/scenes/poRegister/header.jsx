@@ -1,9 +1,11 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useGetFinYrQuery } from '../../redux/service/poData';
 
 const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArticleId, setSelectedSupplier }) => {
     const [fromDate, setFromDate] = useState('')
     const [toDate, setToDate] = useState('')
+    console.log(date, 'date');
+
     const quartelyData = [
         {
             q: 'Q1',
@@ -61,10 +63,17 @@ const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArti
             }
         })
     }
+    useEffect(() => {
+        if (fromDate && toDate && fromDate !== toDate) {
+            setDate([fromDate, toDate]);
+        }
+    }, [fromDate, toDate, setDate]);
 
     const onHandleClick = () => {
         setYear([]);
         setMonth([]);
+        setFromDate('');
+        setToDate('');
         setSelectedSupplier([]);
         setSelectedArticleId([]);
     };
@@ -137,7 +146,7 @@ const Header = ({ setYear, year, setMonth, month, setDate, date, setSelectedArti
 
                 </div>
                 <div className='rounded  flex items-center'>
-                    <button className='rounded bg-white text-sm px-1 hover' onClick={onHandleClick}>Clear All</button>
+                    <button className='rounded bg-white text-sm px-1 hover:bg-red-400' onClick={onHandleClick}>Clear All</button>
                 </div>
 
             </div>

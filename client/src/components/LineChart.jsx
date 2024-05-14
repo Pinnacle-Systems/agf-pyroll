@@ -13,7 +13,7 @@ export default function Lchart({ xAxisData, series1Data, series2Data, series1Lab
           data: series2Data, label: series2Label
         },
       ]}
-      colors={["#34A853", "#4285F4"]}
+      colors={["#adb612", "#303030"]}
       margin={{ left: 80 }}
       grid={{ vertical: true, horizontal: true }}
     />

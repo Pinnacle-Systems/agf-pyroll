@@ -19,7 +19,6 @@ const ArcPieChart = ({ suppEfficiency }) => {
         series.dataFields.value = 'litres';
         series.dataFields.category = 'country';
 
-        // Change the color of the pie slices
         series.colors.list = [
             am4core.color('#FF5733'), // Red
             am4core.color('#FFC300'), // Yellow

@@ -19,8 +19,12 @@ const PieChartTemplate = ({ data = [], valueField = '', categoryField = '', colo
         let series = chart.series.push(new am4charts.PieSeries3D());
         series.dataFields.value = valueField;
         series.dataFields.category = categoryField;
+        series.labels.template.wrap = true;
+        series.labels.template.maxWidth = 100;
+        series.labels.template.truncate = true;
 
-        // Change the color of the pie slices
+        series.labels.template.fontSize = 11;
+        series.ticks.template.fontSize = 10;
         series.colors.list = colorList.map(i => am4core.color(i.color));
         chart.logo.disabled = true;
         return () => {

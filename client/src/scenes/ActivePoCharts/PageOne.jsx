@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { use, useEffect, useState } from 'react'
 
 
 
@@ -12,27 +12,37 @@ import StockTreemapChart from '../../components/TreeChart'
 import TreeMapChart from '../../components/TreeChart'
 import FunnelChart from '../../components/DonutChartMui'
 
-const PageOne = () => {
-    const { data } = useGetSuppEfficencyQuery()
-    const { data: topItem } = useGetTopItemsQuery()
+const PageOne = ({ selectedYear }) => {
     const { data: monthlyreceivable } = useGetMonthlyReceivablesQuery()
     const { data: threeMntTrurOver } = useGetTopFiveSuppTurnOvrQuery()
-    const { data: overAllSupData } = useGetOverAllSupplierContributionQuery()
-    const suppEfficiency = data?.data || [];
-    const topItems = topItem?.data || [];
     const monthlyReceivables = monthlyreceivable?.data || [];
     const topSupplierLastTrurnOver = threeMntTrurOver?.data || []
+    const { data: topItem } = useGetTopItemsQuery({ finYearData: JSON.stringify(selectedYear?.name ? selectedYear.name : '' || selectedYear) })
+    const { data } = useGetSuppEfficencyQuery({ suppEffFin: JSON.stringify(selectedYear?.name ? selectedYear.name : '' || selectedYear) })
+    const { data: overAllSupData } = useGetOverAllSupplierContributionQuery({ suppContribution: JSON.stringify(selectedYear?.name ? selectedYear.name : '' || selectedYear) })
     const overAllSuppCon = overAllSupData?.data || []
+
+    const suppEfficiency = data?.data || [];
+    console.log(selectedYear, 'yra');
+    const topItems = topItem?.data || [];
+
+
     return (
         <div className='bg-gray-200'>
             <div className='grid grid-cols-3 w-full '>
-                <div className='w-[98%]  m-3  bg-white rounded'>
-                    <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Top Items</h1>
-                    <div className=' '><SortedBarChart topItems={topItems} /></div>
+                <div className='w-[98%] m-3 bg-white rounded'>
+                    <div className='flex w-full text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-between h-[30px] border-2 border-[#E0E0E0] text-gray-800'>
+                        <h1 className='text-gray-800 grow'>Top Items</h1>
+
+                    </div>
+                    <div className=''><SortedBarChart topItems={topItems} /></div>
                 </div>
-                <div className='w-[98%]  m-3  bg-white rounded'>
-                    <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Supplier Efficiency</h1>
+                <div className='w-[98%] m-3 bg-white rounded'>
+                    <div className='flex w-full text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-between h-[30px] border-2 border-[#E0E0E0] text-gray-800'>
+                        <h1 className='text-gray-800 grow'>Supplier Efficiency</h1>
+                    </div>
                     <div className=''>< PieActiveArc suppEfficiency={suppEfficiency} /></div>
+
                 </div>
                 <div className='w-[98%] m-3  bg-white rounded'>
                     <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Top Turnovers of Last three Month</h1>

@@ -19,15 +19,15 @@ const Index = () => {
       </div>
       <div className='flex w-[100%] h-[100%] pl-2' >
         <div className='w-[80%] h-[90%] '>
-          <PoRegister year={year} month={month} data={date} selectedSupplier={selectedSupplier} selectedArticleId={selectedArticleId} />
-        </div>
+          <PoRegister year={year} month={month} date={date} selectedSupplier={selectedSupplier} selectedArticleId={selectedArticleId} />
+        </div>{console.log(date, 'date 23')}
         <div className='w-[20%] h-[90%]'>
           <PoParameters selectedSupplier={selectedSupplier} setSelectedSupplier={setSelectedSupplier} selectedArticleId={selectedArticleId} setSelectedArticleId={setSelectedArticleId} />
         </div>
 
       </div>
       <div className='h-full w-full'>
-        <h1 className='w-full text-[20px] text-center font-bold '>Charts</h1>
+
         <div className='w-full' ><ActivePoCharts /></div>
       </div>
     </div>

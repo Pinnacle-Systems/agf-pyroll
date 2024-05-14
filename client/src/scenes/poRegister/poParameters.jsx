@@ -6,7 +6,7 @@ const Parameters = ({ selectedSupplier, setSelectedSupplier, selectedArticleId, 
 
     return (
         <div className="w-full h-full p-[5%] side-bar ">
-            <h1 className="text-center text-[22px] py-1 h-[6%] font-semibold bg-white text-center rounded">Filters</h1>
+            <h1 className="text-center text-[16px] py-1 h-[6%] font-semibold bg-white text-center rounded">Filters</h1>
             <div className="border-2  border-gray-400 h-[48%] rounded-b-xl w-full">
                 <MultiSelectList selectedSupplier={selectedSupplier} setSelectedSupplier={setSelectedSupplier} />
             </div>

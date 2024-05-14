@@ -39,58 +39,65 @@ const poData = createApi({
             }
         }),
         getArticleId: builder.query({
-            query: () => {
+            query: (params) => {
                 return {
                     url: `${PO_DATA}/getArticleId`,
                     method: 'GET',
+                    params
                 }
             }
         }),
         getSuppEfficency: builder.query({
-            query: () => {
+            query: (params) => {
                 return {
                     url: `${PO_DATA}/getSuppEfficency`,
                     method: 'GET',
+                    params
                 }
             }
         }),
         getTopItems: builder.query({
-            query: () => {
+            query: (params) => {
                 return {
                     url: `${PO_DATA}/getTopItems`,
                     method: 'GET',
+                    params,
                 }
             }
         }),
         getMonthlyReceivables: builder.query({
-            query: () => {
+            query: (params) => {
                 return {
                     url: `${PO_DATA}/getMonthlyReceivables`,
                     method: 'GET',
+                    params
                 }
             }
         }),
         getTopFiveSuppTurnOvr: builder.query({
-            query: () => {
+            query: (params) => {
                 return {
                     url: `${PO_DATA}/getTopFiveSuppTurnOvr`,
                     method: 'GET',
+                    params
                 }
             }
         }),
         getOverAllSupplierContribution: builder.query({
-            query: () => {
+            query: (params) => {
                 return {
                     url: `${PO_DATA}/getOverAllSupplierContribution`,
                     method: 'GET',
+                    params
                 }
             }
         }),
         getMostPaidTaxVal: builder.query({
-            query: () => {
+            query: (params) => {
                 return {
                     url: `${PO_DATA}/getMostPaidTaxVal`,
                     method: 'GET',
+                    params
                 }
             }
         })

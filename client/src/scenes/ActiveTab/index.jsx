@@ -10,6 +10,8 @@ import PoRegister from "../poRegister";
 import { MisDashboard } from "../../scenes"
 
 import Form from '../form'
+import OrderMgmtNumCard from "../../components/OrderMgmtCard";
+import OrderManagement from "../OrderManagement";
 const ActiveTabList = () => {
     const openTabs = useSelector((state) => state.openTabs);
     const dispatch = useDispatch();
@@ -19,8 +21,8 @@ const ActiveTabList = () => {
 
     const tabs = {
         "DASHBOARD": <MisDashboard />,
-        "PO REGISTER": <PoRegister />,
-        'ORDERS': <Form />
+        "PO Register": <PoRegister />,
+        'Orders': <OrderManagement />,
     };
 
     const innerWidth = window.innerWidth;

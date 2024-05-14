@@ -2,6 +2,7 @@
 
 .cuttedBorder1 {
   border-image: linear-gradient(#1F588B 30%, transparent 0 70%, #1F588B 0) 2;
+  background-color: #3fd6ca;
 }
 
 .cuttedBorder2 {
@@ -218,10 +219,6 @@ body {
 
 }
 
-.clr {
-  background: #99a4e2;
-}
-
 
 
 
@@ -285,8 +282,8 @@ body {
   font-weight: 900;
 }
 
-.cr {
-  color: #b6b0ee;
+.clr {
+  color: #dcdaf0;
 }
 
 .am5-layer-30 {
@@ -306,5 +303,21 @@ body {
 
 .my-funnel-wrapper .dx-export-menu {
   margin-top: 20rem;
+
+}
+
+.MuiI-focused {
+  outline: none;
+  display: none;
+}
+
+.input:focus {
+  outline: none;
+}
+
+.dropdown-panel-black .p-dropdown-items-wrapper {
+  background-color: white !important;
+  border-radius: 8px;
+  width: 4.5rem;
 
 }

@@ -91,32 +91,32 @@ const CustomizedAccordions = () => {
 
                 </Accordion>
 
-                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
                     <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
                         <h4 className='w-[100%] text-[15px] font-normal text-white '>Order Management</h4>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <h4 className='w-[100%] text-[15px] font-normal pl-9' onClick={() => dispatch(push({ id: 3, name: "ORDERS" }))}>Orders</h4>
+                        <h4 className='w-[100%] text-[15px] font-normal pl-9' onClick={() => dispatch(push({ id: 3, name: "Orders" }))}>Orders</h4>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
 
                     <AccordionSummary id="panel1d-header "  >
                         <h4 className='w-[100%]   font-normal text-[15px] text-white '>PO Management</h4>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <h4 className='w-[100%] text-[15px] font-normal text-[15px] pl-9' onClick={() => dispatch(push({ id: 2, name: "PO REGISTER" }))}>PO REGISTER</h4>
+                        <h4 className='w-[100%] text-[15px] font-normal text-[15px] pl-9' onClick={() => dispatch(push({ id: 2, name: "PO Register" }))}>PO Register</h4>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+                <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
                     <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
                         <h4 className='w-[100%] text-[15px] font-normal text-white'>Pro Management</h4>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <h4 className='w-[100%] text-[15px] font-normal pl-9' onClick={() => dispatch(push({ id: 3, name: "ORDERS" }))}>Orders</h4>
+                        <h4 className='w-[100%] text-[15px] font-normal pl-9' onClick={() => dispatch(push({ id: 3, name: "Pro Management" }))}>Orders</h4>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+                <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
                     <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
                         <h4 className='w-[100%] text-[15px] font-normal text-white'>Inventory Mgmt</h4>
                     </AccordionSummary>
@@ -124,7 +124,7 @@ const CustomizedAccordions = () => {
                         <h4 className='w-[100%] text-[15px] font-normal pl-9' onClick={() => dispatch(push({ id: 3, name: "ORDERS" }))}>Orders</h4>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+                <Accordion expanded={expanded === 'panel5'} onChange={handleChange('panel5')}>
                     <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
                         <h4 className='w-[100%] text-[15px] font-normal text-white'>Production</h4>
                     </AccordionSummary>
@@ -132,7 +132,7 @@ const CustomizedAccordions = () => {
                         <h4 className='w-[100%] text-[15px] font-normal pl-9' onClick={() => dispatch(push({ id: 3, name: "ORDERS" }))}>Orders</h4>
                     </AccordionDetails>
                 </Accordion>
-                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+                <Accordion expanded={expanded === 'panel6'} onChange={handleChange('panel6')}>
                     <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
                         <h4 className='w-[100%] text-[15px] font-normal text-white'>Shipment</h4>
                     </AccordionSummary>

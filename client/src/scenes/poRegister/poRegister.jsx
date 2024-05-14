@@ -2,7 +2,7 @@ import React from "react"; // Don't forget to import React
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { useGetPoDataQuery } from '../../redux/service/poData';
 import { useMemo } from 'react';
-import { CircleLoaderComponent } from '../../components/Loaders';
+import Scenes from "../../components/loader/Loader";
 
 
 const columns = [
@@ -92,10 +92,11 @@ function DataTable({ data, totals }) {
 
   const renderTotalCell = (column) => {
     const totalValue = totals[column.field];
+    const cellStyle = { width: '100px', textAlign: 'right' };
     if (totalValue !== undefined) {
       const formattedTotal = totalValue.toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
       return (
-        <div key={column.field} className='text-[14px] font-semibold'>
+        <div key={column.field} className='text-[14px] font-semibold' style={cellStyle}>
           {formattedTotal}
         </div>
       );
@@ -103,6 +104,7 @@ function DataTable({ data, totals }) {
       return null;
     }
   };
+
 
   return (
     <DataGrid
@@ -178,17 +180,17 @@ function DataTable({ data, totals }) {
             <table className="total-width">
               <thead className='text-white '>
                 <tr className=" ">
-                  {columns.map(column => (
+                  {/* {columns.map(column => (
                     <th key={column.field} className='font-medium text-[14px] hidden'>
                       {column.headerName}
                     </th>
-                  ))}
+                  ))} */}
                 </tr>
               </thead>
-              <tbody className=' '>
-                <tr className="">
+              <tbody className='  '>
+                <tr className="w-[80%] ">
                   {columns.map(column => (
-                    <td key={column.field} className=' '>
+                    <td key={column.field} className=''>
                       {column.renderFooter ? column.renderFooter(column) : renderTotalCell(column)}
                     </td>
                   ))}
@@ -212,7 +214,7 @@ function DataTable({ data, totals }) {
 
 export default function PoRegister({ year, month, date, selectedSupplier, selectedArticleId }) {
   console.log(date, 'date');
-  const { data, isLoading, isFetching } = useGetPoDataQuery({ finYearData: JSON.stringify(year || ''), filterMonth: JSON.stringify(month || ''), filterSupplier: JSON.stringify(selectedSupplier || ''), filterArticleId: JSON.stringify(selectedArticleId || '') });
+  const { data, isLoading, isFetching } = useGetPoDataQuery({ finYearData: JSON.stringify(year || ''), filterMonth: JSON.stringify(month || ''), filterSupplier: JSON.stringify(selectedSupplier || ''), filterArticleId: JSON.stringify(selectedArticleId || ''), filterDate: JSON.stringify(date || '') });
   const poData = useMemo(() => (data?.data ? data.data : []), [data]);
   const totals = {
     q1: poData.reduce((sum, row) => sum + (row.q1 || 0), 0),
@@ -224,20 +226,15 @@ export default function PoRegister({ year, month, date, selectedSupplier, select
 
   return (
     <>
-      {/* {(isLoading || isFetching)
-        ?
-        <CircleLoaderComponent />
-        : */}
-      <div className='text-center align-center bg-gray-200 w-full h-full scrollbar overflow-auto'>
-        <div className='h-[100%] overflow-auto'>
+      <div className='text-center bg-gray-200 w-full h-full scrollbar overflow-auto'>
+        <div className='h-[100%] overflow-auto flex items-center justify-center'>
 
-          <DataTable data={poData} totals={totals} />
-
+          {isLoading ? <Scenes /> : <DataTable data={poData} totals={totals} />}
 
         </div>
 
       </div>
-      {/* } */}
+
     </>
 
 

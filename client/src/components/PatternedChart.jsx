@@ -26,7 +26,7 @@ export default function ChartsOverviewDemo({ taxValue }) {
                 { data: csgstArr, label: "CSGST" },
                 { data: igstArr, label: "IGST" },
             ]}
-
+            colors={['#303030', '#adb612']}
             height={290}
             xAxis={[{ data: Object.keys(groupedByMonth), scaleType: 'band' }]}
             margin={{ left: 80 }}

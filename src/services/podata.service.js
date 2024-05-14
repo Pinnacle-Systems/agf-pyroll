@@ -5,11 +5,21 @@ import { getSupplierWiseMonthlyReceivables, monthWiseDataSupplierReceivables } f
 export async function get(req, res) {
     const connection = await getConnection(res);
     try {
-        const { finYearData, filterMonth, filterSupplier, filterArticleId } = req.query;
-        console.log(filterMonth, 8);
-        console.log(finYearData, 8);
-        const fltrYearData = finYearData ? JSON.parse(finYearData).map(item => `'${item}'`) : [];
+        const { finYearData, filterMonth, filterSupplier, filterArticleId, filterDate } = req.query;
+
+        // date filter
+        const formattedDates = filterDate ? JSON.parse(filterDate) : [];
+        const startDate = formattedDates.length > 0 ? formattedDates[0] : null;
+        const endDate = formattedDates.length > 1 ? formattedDates[1] : null;
+
+        const filterDateWiseQ1 = startDate && endDate ? `AND Q1.DOCDate BETWEEN TO_DATE('${startDate}', 'YYYY-MM-DD') AND TO_DATE('${endDate}', 'YYYY-MM-DD')` : '';
+        const filterDateWiseQ2 = startDate && endDate ? `AND Q2.DOCDate BETWEEN TO_DATE('${startDate}', 'YYYY-MM-DD') AND TO_DATE('${endDate}', 'YYYY-MM-DD')` : '';
+        const filterDateWiseQ3 = startDate && endDate ? `AND Q3.DOCDate BETWEEN TO_DATE('${startDate}', 'YYYY-MM-DD') AND TO_DATE('${endDate}', 'YYYY-MM-DD')` : '';
+        const filterDateWiseQ4 = startDate && endDate ? `AND Q4.DOCDate BETWEEN TO_DATE('${startDate}', 'YYYY-MM-DD') AND TO_DATE('${endDate}', 'YYYY-MM-DD')` : '';
+        const filterDateWiseM = startDate && endDate ? `AND M.DOCDate BETWEEN TO_DATE('${startDate}', 'YYYY-MM-DD') AND TO_DATE('${endDate}', 'YYYY-MM-DD')` : '';
+
         //year filter
+        const fltrYearData = finYearData ? JSON.parse(finYearData).map(item => `'${item}'`) : [];
         const fltrYearClauseQ1 = fltrYearData.length > 0 ? `AND Q1.FINYR IN (${fltrYearData})` : '';
         const fltrYearClauseQ2 = fltrYearData.length > 0 ? `AND Q2.FINYR IN(${fltrYearData})` : '';
         const fltrYearClauseQ3 = fltrYearData.length > 0 ? `AND Q3.FINYR IN(${fltrYearData})` : '';
@@ -31,34 +41,34 @@ export async function get(req, res) {
 
         const sql = `SELECT SUPPLIER,
         (SELECT SUM(Q1.POQTY * Q1.PRICE)
-        FROM YFPURREG Q1
-        WHERE 1=1 ${fltrYearClauseQ1}   ${fltrMonthQ1}
+        FROM MISYFPURREG Q1
+        WHERE 1=1 ${fltrYearClauseQ1}   ${fltrMonthQ1} ${filterDateWiseQ1}
         AND EXTRACT(MONTH FROM Q1.DOCDATE) IN (4,5,6)
         AND Q1.SUPPLIER = M.SUPPLIER) AS Q1, 
         (SELECT SUM(Q2.POQTY * Q2.PRICE)
-        FROM YFPURREG Q2
-        WHERE 1=1 ${fltrYearClauseQ2}   ${fltrMonthQ2}
+        FROM MISYFPURREG Q2
+        WHERE 1=1 ${fltrYearClauseQ2}   ${fltrMonthQ2}  ${filterDateWiseQ2}
         AND EXTRACT(MONTH FROM Q2.DOCDATE) IN (7,8,9)
         AND Q2.SUPPLIER = M.SUPPLIER) AS Q2,
         (SELECT SUM(Q3.POQTY * Q3.PRICE)
-        FROM YFPURREG Q3
-        WHERE 1=1  ${fltrYearClauseQ3}   ${fltrMonthQ3}
+        FROM MISYFPURREG Q3
+        WHERE 1=1  ${fltrYearClauseQ3}   ${fltrMonthQ3}  ${filterDateWiseQ3}
         AND EXTRACT(MONTH FROM Q3.DOCDATE) IN (10,11,12)
         AND Q3.SUPPLIER = M.SUPPLIER) AS Q3,
         (SELECT SUM(Q4.POQTY * Q4.PRICE)
-        FROM YFPURREG Q4
-        WHERE 1=1  ${fltrYearClauseQ4}   ${fltrMonthQ4}
+        FROM MISYFPURREG Q4
+        WHERE 1=1  ${fltrYearClauseQ4}   ${fltrMonthQ4}  ${filterDateWiseQ4}
         AND EXTRACT(MONTH FROM Q4.DOCDATE) IN (1,2,3)
         AND Q4.SUPPLIER = M.SUPPLIER) AS Q4,
         SUM(POQTY * PRICE) AS TOTAL
-        FROM YFPURREG M
+        FROM MISYFPURREG M
         WHERE 1=1 
     ${fltrYearClauseM}
     ${fltrMonthM}
     ${filterSupp}
     ${filterArtId}
+    ${filterDateWiseM}
         GROUP BY M.SUPPLIER`
-
         const result = await connection.execute(sql);
         let resp = result.rows.map(po => ({
             supplier: po[0], q1: po[1], q2: po[2], q3: po[3], q4: po[4], price: po[5]
@@ -102,7 +112,7 @@ export async function getSupplier(req, res) {
     try {
         const { } = req.query;
         const sql = `
-        SELECT DISTINCT SUPPLIER FROM YFPURREG`
+        SELECT DISTINCT SUPPLIER FROM MISYFPURREG`
 
         const result = await connection.execute(sql)
 
@@ -125,7 +135,7 @@ export async function getArticleId(req, res) {
     try {
         const { } = req.query;
         const result = await connection.execute(`
-        SELECT DISTINCT ARTICLEID FROM YFPURREG
+        SELECT DISTINCT ARTICLEID FROM MISYFPURREG
      `)
         let resp = result.rows.map(po => ({
             articleId: po[0]
@@ -143,23 +153,24 @@ export async function getArticleId(req, res) {
 export async function getSuppEfficency(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
+        const { suppEffFin } = req.query;
+        console.log(suppEffFin, 'finye');
         const sql =
             `
-        select * from (select supplier, sum(poqty) as poqty
-        from misyfpurreg
-        group by supplier
-        order by poqty desc)
-        where rownum <= 5
+            select * from (select supplier, sum(poqty) as poqty
+            from misyfpurreg 
+            where  misyfpurreg.FINYR = ${suppEffFin.replace(/"/g, '\'')}
+            group by supplier
+            order by poqty desc)
+            where rownum <= 5
      `
+        console.log(sql, 'sql');
 
-        console.log(sql, '35');
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
             supplier: po[0],
             poQty: po[1]
         }))
-        console.log(resp, 'resp');
         return res.json({ statusCode: 0, data: resp })
     }
     catch (err) {
@@ -174,23 +185,24 @@ export async function getSuppEfficency(req, res) {
 export async function getTopItems(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
+        const { finYearData } = req.query;
+
         const sql =
             `
             select * from (select ARTICLEID, sum(poqty) as poqty
             from misyfpurreg
+             where  misyfpurreg.FINYR = ${finYearData.replace(/"/g, '\'')}
             group by ARTICLEID
             order by poqty desc)
-            where rownum <= 10
+            where rownum <= 10 
      `
 
-        console.log(sql, '35');
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
             articleId: po[0],
             poQty: po[1]
         }))
-        console.log(resp, 'resp');
+
         return res.json({ statusCode: 0, data: resp })
     }
     catch (err) {
@@ -238,14 +250,14 @@ export async function getTopFiveSuppTurnOvr(req, res) {
                     order by amount desc
                 ) where rowNum <= 5                
      `
-        console.log(sql, '35');
+
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
             docDte: po[0],
             supplier: po[1],
             amount: po[2],
         }))
-        console.log(resp, 'resp');
+
         return res.json({ statusCode: 0, data: resp })
 
     }
@@ -260,22 +272,22 @@ export async function getTopFiveSuppTurnOvr(req, res) {
 export async function getOverAllSupplierContribution(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
+        const { suppContribution } = req.query;
 
 
         const sql =
             `
-            select supplier,Round(sum(poQty * price)) as poQty,finyr from misyfpurreg where finyr = '23-24'
+            select supplier,Round(sum(poQty * price)) as poQty,finyr from misyfpurreg where finyr = ${suppContribution.replace(/"/g, '\'')}
             and poQty > '5000'  group by supplier, finyr              
      `
-        console.log(sql, '35');
+
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
 
             supplier: po[0],
             poQty: po[1],
         }))
-        console.log(resp, 'resp');
+
         return res.json({ statusCode: 0, data: resp })
 
     }
@@ -297,7 +309,7 @@ export async function getMostPaidTaxVal(req, res) {
             TRIM(TO_CHAR(DUEDATE,'Mon')) || TRIM(TO_CHAR(DUEDATE,'yy')) AS MonYr,
             taxTemp
      FROM misyfpurreg
-     WHERE misyfpurreg.docDate >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -5) -- Filter for the last 6 months starting from the current month
+     WHERE misyfpurreg.docDate >= ADD_MONTHS(TRUNC(SYSDATE, 'MM'), -5) 
            AND TRUNC(DUEDATE, 'MM') < TRUNC(SYSDATE, 'MM')
      GROUP BY TRIM(TO_CHAR(DUEDATE,'Mon')), TRIM(TO_CHAR(DUEDATE,'yy')), taxTemp
      ORDER BY 
@@ -318,7 +330,7 @@ export async function getMostPaidTaxVal(req, res) {
          END,
          taxTemp ASC
      `
-        console.log(sql, '35');
+
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
 
@@ -329,7 +341,7 @@ export async function getMostPaidTaxVal(req, res) {
 
 
         }))
-        console.log(resp, 'resp');
+
         return res.json({ statusCode: 0, data: resp })
 
     }
