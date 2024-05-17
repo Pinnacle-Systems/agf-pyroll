@@ -12,7 +12,7 @@ const ordManagement = createApi({
         getOrdManagementData: builder.query({
             query: () => {
                 return {
-                    url: ORD_MANAGEMENT,
+                    url: `${ORD_MANAGEMENT}`,
                     method: 'GET',
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8',
@@ -21,12 +21,89 @@ const ordManagement = createApi({
             },
             providesTags: ['ordManagement'],
         }),
-
+        getShippedData: builder.query({
+            query: () => {
+                return {
+                    url: `${ORD_MANAGEMENT}/getShippedData`,
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                }
+            },
+            providesTags: ['ordManagement'],
+        }),
+        getOcrPending: builder.query({
+            query: () => {
+                return {
+                    url: `${ORD_MANAGEMENT}/getOcrPending`,
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                }
+            },
+            providesTags: ['ordManagement'],
+        }),
+        getWIPData: builder.query({
+            query: () => {
+                return {
+                    url: `${ORD_MANAGEMENT}/getWIPData`,
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                }
+            },
+            providesTags: ['ordManagement'],
+        }),
+        getProfitLossData: builder.query({
+            query: () => {
+                return {
+                    url: `${ORD_MANAGEMENT}/getProfitLossData`,
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                }
+            },
+            providesTags: ['ordManagement'],
+        }),
+        getCapPlanData: builder.query({
+            query: () => {
+                return {
+                    url: `${ORD_MANAGEMENT}/getCapPlanData`,
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                }
+            },
+            providesTags: ['ordManagement'],
+        }),
+        getFabStsData: builder.query({
+            query: () => {
+                return {
+                    url: `${ORD_MANAGEMENT}/getFabStsData`,
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                }
+            },
+            providesTags: ['ordManagement'],
+        }),
     }),
 })
 
 export const {
     useGetOrdManagementDataQuery,
+    useGetShippedDataQuery,
+    useGetOcrPendingQuery,
+    useGetWIPDataQuery,
+    useGetProfitLossDataQuery,
+    useGetCapPlanDataQuery,
+    useGetFabStsDataQuery
 } = ordManagement;
 
 export default ordManagement;

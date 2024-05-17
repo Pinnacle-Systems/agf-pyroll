@@ -1,10 +1,10 @@
 import React from 'react';
 import CanvasJSReact from '@canvasjs/react-charts';
 
-const CanvasJS = CanvasJSReact.CanvasJS;
-const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
-const App = ({ shipped, canceled, inHand }) => {
+const App = ({ shipped, canceled, inHand, shipDone, plTaken, plNotTaken }) => {
+    const CanvasJS = CanvasJSReact.CanvasJS;
+    const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
     const options = {
         height: 60,

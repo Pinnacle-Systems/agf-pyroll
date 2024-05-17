@@ -8,15 +8,13 @@ function getRandomNumber() {
 export function getData() {
     return [
         ["Label", "Value"],
-        ["Memory", getRandomNumber()],
-        ["CPU", getRandomNumber()],
-        ["Network", getRandomNumber()],
+        ["Target", getRandomNumber()],
     ];
 }
 
 export const options = {
     width: 400,
-    height: 120,
+    height: 520,
     redFrom: 90,
     redTo: 100,
     yellowFrom: 75,
@@ -27,24 +25,24 @@ export const options = {
     }
 };
 
-export function GoogleGuageChart() {
+export function GoogleGaugeChart() {
     const [data, setData] = useState(getData);
 
     useEffect(() => {
         const id = setInterval(() => {
             setData(getData());
-        }, 3000);
+        }, 8000);
 
         return () => {
             clearInterval(id);
         };
-    });
+    }, []);
 
     return (
         <Chart
             chartType="Gauge"
             width="100%"
-            height=""
+            height="100%"
             data={data}
             options={options}
         />

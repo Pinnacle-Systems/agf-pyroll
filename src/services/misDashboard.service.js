@@ -96,7 +96,9 @@ export async function getOrdersInHandMonthWise(req, res) {
             FROM DUAL
         `
         )
+
         const sql = monthArr.join('union')
+        console.log(sql, 'sql');
         let result = await connection.execute(`select * from (${sql}) order by yearOnly,monthOnly`);
         result = result.rows.map(row => ({
             date: row[0], planned: row[3], actual: row[4]

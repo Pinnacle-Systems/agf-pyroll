@@ -17,7 +17,7 @@ const StackedBarChart = ({ monthlyReceivables }) => {
         series: seriesData,
         chart: {
             type: 'bar',
-            height: 300,
+            height: 350,
             stacked: true,
             stackType: '100%',
             toolbar: {
@@ -48,7 +48,7 @@ const StackedBarChart = ({ monthlyReceivables }) => {
     };
 
     useEffect(() => {
-        const chart = new ApexCharts(document.querySelector("#chart"), options);
+        const chart = new ApexCharts(document.querySelector("#StackedChart"), options);
         chart.render();
 
         return () => {
@@ -56,7 +56,7 @@ const StackedBarChart = ({ monthlyReceivables }) => {
         };
     }, [options, monthlyReceivables]);
 
-    return <div id="chart" />;
+    return <div id="StackedChart" />;
 };
 
 export default StackedBarChart;
