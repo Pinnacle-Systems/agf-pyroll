@@ -296,8 +296,8 @@ export async function getFabStsData(req, res) {
         const { } = req.query;
         const sql =
             `
-            SELECT A.PLANDELMON,A.NOOFORD,B.NOOFORD PEND,A.BUYDELDATE FROM (
-                SELECT COUNT(A.ORDERNO) NOOFORD,A.PLANDELMON,MAX(A.BUYERDELDATE) BUYDELDATE FROM MISORDSALESVAL A 
+            SELECT A.PLANDELMON,A.NOOFORD,B.NOOFORD REC,A.NOOFORD-NVL(B.NOOFORD,0) BAL FROM (
+                SELECT COUNT(A.ORDERNO) NOOFORD,A.PLANDELMON,MAX(A.BUYERDELDATE) DELDATE FROM MISORDSALESVAL A 
                 WHERE A.STATUS NOT IN ('Completed','Cancel')
                 AND A.PLANDELMON IN (
                 SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
@@ -312,7 +312,7 @@ export async function getFabStsData(req, res) {
                 GROUP BY A.PLANDELMON
                 ) A 
                 LEFT JOIN (SELECT COUNT(A.ORDERNO) NOOFORD,A.PLANDELMON FROM MISORDSALESVAL A 
-                WHERE A.FABST = 'NO' AND A.CUTST <> 'YES' AND A.STATUS NOT IN ('Completed','Cancel')
+                WHERE A.FABST = 'NO' AND A.BALQTY > 0 AND A.STATUS NOT IN ('Completed','Cancel')
                 AND A.PLANDELMON IN (
                 SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
                 WHERE TO_DATE(SYSDATE) BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
@@ -325,14 +325,48 @@ export async function getFabStsData(req, res) {
                 )  
                 GROUP BY A.PLANDELMON
                 ) B ON A.PLANDELMON = B.PLANDELMON
-                ORDER BY BUYDELDATE
+                ORDER BY DELDATE
      `
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
             month: po[0],
             ord: po[1],
-            pend: po[2],
-            delDate: po[3]
+            rec: po[2],
+            pend: po[3]
+        }))
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
+
+export async function getYFActVsPln(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { chart } = req.query;
+        const sql =
+            `   
+            SELECT act, planExp, orderno, PLANDELMON
+            FROM (
+                SELECT SUM(yfActualExp) AS act, SUM(yfplanExp) AS planExp, orderno, PLANDELMON
+                FROM MISORDSALESVAL
+                WHERE finyr = '23-24' AND PLANDELMON = 'October 2023'
+                GROUP BY orderno, PLANDELMON
+                HAVING SUM(yfplanExp) IS NOT NULL
+            ORDER BY act DESC) T
+          ${chart ? '  where rownum <=5' : ''}
+     `
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+            actual: po[0],
+            planed: po[1],
+            ordeNo: po[2],
+            PlanMnth: po[3]
         }))
         return res.json({ statusCode: 0, data: resp })
     }

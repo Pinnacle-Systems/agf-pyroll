@@ -8,7 +8,7 @@ export default function DropdownData({ selectedYear, setSelectedYear }) {
   const [lastItem, setLastItem] = useState(null);
   const { data: finYr } = useGetFinYrQuery()
   const finYear = finYr?.data ? finYr.data : []
-
+  console.log(lastItem, 'options');
   useEffect(() => {
     const mappedOptions = finYear.map((item) => ({
       name: item.finYr,

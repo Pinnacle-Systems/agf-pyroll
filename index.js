@@ -9,7 +9,7 @@ const oracledb = require('oracledb');
 oracledb.initOracleClient({ libDir: "C:\\oracle\\instantclient_19_20" });
 
 import {
-  finYear,
+  commonMast,
   poRegister,
   supplier,
   poData,
@@ -39,7 +39,7 @@ BigInt.prototype['toJSON'] = function () {
 
 app.use('/poRegister', poRegister)
 
-app.use('/finYear', finYear)
+app.use('/commonMast', commonMast)
 
 app.use('/supplier', supplier)
 

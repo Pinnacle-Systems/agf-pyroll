@@ -2,12 +2,12 @@ import React, { useEffect } from 'react';
 import Chart from 'react-apexcharts';
 import ApexCharts from 'apexcharts';
 
-const StackedBarChart = ({ monthlyReceivables }) => {
+const StackedBarChart = ({ monthlyReceivables, id, fabStatus }) => {
+    console.log(monthlyReceivables, 'month');
+    const categories = monthlyReceivables?.monthData || fabStatus || [];
 
-    const categories = monthlyReceivables?.monthData || [];
 
-
-    const seriesData = (monthlyReceivables?.supplierData || []).map(item => ({
+    const seriesData = (monthlyReceivables?.supplierData || fabStatus || []).map(item => ({
         name: item.supplier,
         data: item.monthWisePoReceivable
     }));
@@ -48,15 +48,15 @@ const StackedBarChart = ({ monthlyReceivables }) => {
     };
 
     useEffect(() => {
-        const chart = new ApexCharts(document.querySelector("#StackedChart"), options);
+        const chart = new ApexCharts(document.querySelector(`#${id}`), options);
         chart.render();
 
         return () => {
             chart.destroy();
         };
-    }, [options, monthlyReceivables]);
+    }, [options, monthlyReceivables, id]);
 
-    return <div id="StackedChart" />;
+    return <div id={id} />;
 };
 
 export default StackedBarChart;

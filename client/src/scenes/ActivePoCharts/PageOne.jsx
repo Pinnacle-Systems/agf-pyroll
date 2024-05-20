@@ -53,7 +53,7 @@ const PageOne = ({ selectedYear }) => {
             <div className='w-full flex'>
 
                 <div className='w-[44%] m-3  bg-white rounded '>
-                    <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>PO Receivable Qty's For Next 3 Month's Based On Supplier </h1><StackedBarChart monthlyReceivables={monthlyReceivables} /></div>
+                    <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>PO Receivable Qty's For Next 3 Month's Based On Supplier </h1><StackedBarChart monthlyReceivables={monthlyReceivables} id={`poReaceivables`} /></div>
                 <div className='w-[66%]  m-3  bg-white rounded'>
                     <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Supplier Contribution Based On Turn Over</h1>
                     <div className=''>< TreeMapChart overAllSuppCon={overAllSuppCon} /></div>

@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import PageOne from "./PageOne";
 import PageTwo from "./PageTwo";
 import BasicDemo from "../../Ui Component/modelUi";
+import DropdownData from "../../Ui Component/modelUi";
 
 const ActivePoCharts = () => {
     const [selectedYear, setSelectedYear] = useState('');
@@ -29,7 +30,9 @@ const ActivePoCharts = () => {
                             </div>
 
                         )}  </div>
-                    <div className=" "><BasicDemo selectedYear={selectedYear} setSelectedYear={setSelectedYear} /></div></div>
+                    <div className=" "><DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} /></div>
+
+                </div>
 
                 <div className="w-full">
                     {tabs.find(i => i.name === currentActiveTab)?.component}

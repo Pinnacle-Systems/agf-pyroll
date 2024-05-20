@@ -20,13 +20,20 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
     //Shipped
     const shipDone = shippedData?.data.map(item => item?.shipped ? item.shipped : 0)
     const plTaken = shippedData?.data.map(item => item?.plTaken ? item.plTaken : 0)
-    const plNotTaken = shippedData?.data.map(item => item?.plNotTaken ? item.plNotTaken : 0)
     const ocrPend = shippedData?.data.map(item => item?.ocrPend ? item.ocrPend : 0)
+    const plNotTaken = shippedData?.data.map(item => {
+        const plNotTakenValue = item?.plNotTaken ? item.plNotTaken : 0;
+        const ocrPendValue = item?.ocrPend ? item.ocrPend : 0;
+        return plNotTakenValue - ocrPendValue;
+    });
+
+
     //ocrPEndData
     const ocrTotal = ocrPendData?.data.map(item => item?.ocrPend ? item.ocrPend : 0)
     const fabOcrPend = ocrPendData?.data.map(item => item?.fabOcrPend ? item.fabOcrPend : 0)
     const cutOcrPend = ocrPendData?.data.map(item => item?.cutOcrPend ? item.cutOcrPend : 0)
     const proOcrPend = ocrPendData?.data.map(item => item?.proOcrPend ? item.proOcrPend : 0)
+    console.log(plNotTaken, ocrTotal);
 
     //wip Data
     const totalWip = wipData?.data.map(item => item?.noOfOrd ? item.noOfOrd : 0)
@@ -34,8 +41,7 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
     const wipCutData = wipData?.data.map(item => item?.wipCut ? item.wipCut : 0)
     const wipProData = wipData?.data.map(item => item?.wipPro ? item.wipData : 0)
 
-    const newCustomers = misData?.data?.newCustomers;
-    const topCustomers = misData?.data?.topCustomers;
+
     const loss = misData?.data?.loss;
 
     const data = [
@@ -53,8 +59,8 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
             borderColor: "#62AAA3",
             value: `${(shipDone || 0).toLocaleString()}`,
             previousValue: `${plTaken || 0}`,
-            change: `${plNotTaken || 0}`,
-            trend: `${ocrPend || 0}`
+            change: `${ocrPend || 0}`,
+            trend: `${plNotTaken || 0}`,
         },
         {
             name: "OCR Pending",
@@ -164,14 +170,15 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
                 type: "stackedBar100",
                 color: "#E74C3C",
                 dataPoints: [
-                    { label: "P&L Not Taken", y: plNotTaken[0] },
+                    { label: "OCR Pending", y: ocrPend[0] },
+
                 ]
             },
             {
                 type: "stackedBar100",
                 color: "#96A669",
                 dataPoints: [
-                    { label: "OCR Pending", y: ocrPend[0] },
+                    { label: "P&L Not Taken", y: plNotTaken[0] },
                 ]
             },]
 
@@ -349,11 +356,11 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
                                     <div className='text-xl font-semibold text-green-500' style={{ color: colorsSet1[i] }}>{val.previousValue}</div>
                                 </span>
                                 <span>
-                                    <div className='text-sm'>{val.name === "Orders" ? "WIP" : val.name === "Shipped" ? "P$L Pending" : val.name === "OCR Pending" ? "Cutting" : val.name === "WIP" ? "WIP Cut" : val.name}</div>
+                                    <div className='text-sm'>{val.name === "Orders" ? "WIP" : val.name === "Shipped" ? "OCR Pend" : val.name === "OCR Pending" ? "Cutting" : val.name === "WIP" ? "WIP Cut" : val.name}</div>
                                     <div className='text-xl font-semibold text-blue-500' style={{ color: colorsSet2[i] }}>{val.change}</div>
                                 </span>
                                 <div className='  justify-center text-center'>
-                                    <div className='text-sm'>{val.name === "Orders" ? "Canceled" : val.name === "Shipped" ? "OCR Pend" : val.name === "OCR Pending" ? "Production" : val.name === "WIP" ? "Production" : val.name}</div>
+                                    <div className='text-sm'>{val.name === "Orders" ? "Canceled" : val.name === "Shipped" ? "Com Pend" : val.name === "OCR Pending" ? "Production" : val.name === "WIP" ? "Production" : val.name}</div>
                                     <div className='text-xl font-semibold flex items-center justify-center text-red-500' style={{ color: colorsSet3[i] }}>
                                         {val.trend}
                                     </div>

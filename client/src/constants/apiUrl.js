@@ -1,6 +1,6 @@
 export const BASE_URL = 'http://192.168.1.37:8080'
 export const PO_REGISTER = '/poRegister'
-export const FIN_YEAR = '/finYear'
+export const COMMON_MAST = '/commonMast'
 export const SUPPLIER = '/supplier'
 export const PO_DATA = '/poData'
 export const MIS_DASHBOARD = '/misDashboard'

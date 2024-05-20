@@ -29,7 +29,7 @@ const CapacityPlanner = ({ plData }) => {
             showInLegend: true,
             indexLabel: "{y}",
             indexLabelFontColor: "white",
-            yValueFormatString: "#,###'%'",
+            yValueFormatString: "#,###",
             dataPoints: plData.map(item => ({ label: item.customer, y: item.profit })),
             barThickness: 50, // Increase the bar height by adjusting this value
             indexLabelFontSize: 10,
@@ -38,9 +38,9 @@ const CapacityPlanner = ({ plData }) => {
             color: "#b91c1c",
             name: "Loss",
             showInLegend: true,
-            indexLabel: "{y}%",
+            indexLabel: "{y}",
             indexLabelFontColor: "white",
-            yValueFormatString: "#,###'%'",
+            yValueFormatString: "#,###",
             dataPoints: plData.map(item => ({ label: item.customer, y: item.loss })),
             barThickness: 50, // Increase the bar height by adjusting this value
             indexLabelFontSize: 10,

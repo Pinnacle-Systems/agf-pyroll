@@ -93,6 +93,19 @@ const ordManagement = createApi({
             },
             providesTags: ['ordManagement'],
         }),
+        getYFActVsPln: builder.query({
+            query: ({ params }) => {
+                return {
+                    url: `${ORD_MANAGEMENT}/getYFActVsPln`,
+                    method: 'GET',
+                    params,
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                }
+            },
+            providesTags: ['ordManagement'],
+        }),
     }),
 })
 
@@ -103,7 +116,8 @@ export const {
     useGetWIPDataQuery,
     useGetProfitLossDataQuery,
     useGetCapPlanDataQuery,
-    useGetFabStsDataQuery
+    useGetFabStsDataQuery,
+    useGetYFActVsPlnQuery
 } = ordManagement;
 
 export default ordManagement;

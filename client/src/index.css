@@ -321,3 +321,12 @@ body {
   width: 4.5rem;
 
 }
+
+.dropdown-panel-black {
+  font-size: 10px;
+  width: auto !important;
+}
+
+.p-dropdown-items {
+  width: 30rem;
+}
