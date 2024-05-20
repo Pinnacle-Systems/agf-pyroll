@@ -25,13 +25,13 @@ app.use(cors())
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
-const path = __dirname + '/src/views/';
+const path = __dirname + '/client/build/';
 
 app.use(express.static(path));
 
-// app.get('/', function (req, res) {
-//   res.sendFile(path + "index.html");
-// });
+app.get('/', function (req, res) {
+  res.sendFile(path + "index.html");
+});
 
 BigInt.prototype['toJSON'] = function () {
   return parseInt(this.toString());
