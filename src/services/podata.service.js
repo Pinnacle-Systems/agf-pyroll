@@ -27,6 +27,7 @@ export async function get(req, res) {
         const fltrYearClauseM = fltrYearData.length > 0 ? `AND M.FINYR IN(${fltrYearData})` : '';
         //month filter
         const monthFilter = filterMonth ? JSON.parse(filterMonth).map(item => `'${item}'`) : [];
+        console.log();
         const fltrMonthQ1 = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM Q1.DOCDATE)IN (${monthFilter})` : '';
         const fltrMonthQ2 = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM Q2.DOCDATE)IN (${monthFilter})` : '';
         const fltrMonthQ3 = monthFilter.length > 0 ? `AND EXTRACT(MONTH FROM Q3.DOCDATE)IN (${monthFilter})` : '';

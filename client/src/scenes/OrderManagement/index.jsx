@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import Header from './Header'
 import ApexChart from '../../components/negativeValChart'
 import CardWrapper from '../../components/CardWrapper'
@@ -8,20 +8,23 @@ import { GoogleGaugeChart, GoogleGuageChart } from '../../components/GoogleGuage
 import NegativeChart from '../../components/negativeValChart'
 import { useGetCapPlanDataQuery, useGetFabStsDataQuery, useGetProfitLossDataQuery, useGetYFActVsPlnQuery } from '../../redux/service/orderManagement'
 import Scene from '../../components/loader/Loader'
-import ProfitLossChart from '../../components/negativeValChart'
+
 import CapacityPlanner from '../../components/CapacityPlanChart'
-import StackedBarChart from '../../components/StackedBar'
+
 import FabStsChart from '../../components/FabStatusChart'
-import ChartTable from '../../components/ChartTableCombo'
+import ChartTable from './ChartTableCombo'
+import DropdownData from '../../Ui Component/modelUi'
 
 const OrderManagement = () => {
-    const { data: proLsData, isLoading: isPlLoading } = useGetProfitLossDataQuery()
-    const { data: capPlaData, isLoading: isCapPlanLoading } = useGetCapPlanDataQuery()
-    const { data: fabSts, isLoading: isFabStsLoading } = useGetFabStsDataQuery()
+    const { data: proLsData, isLoading: isPlLoading } = useGetProfitLossDataQuery({ parama: {} })
+    const { data: capPlaData, isLoading: isCapPlanLoading } = useGetCapPlanDataQuery({ parama: {} })
+    const { data: fabSts, isLoading: isFabStsLoading } = useGetFabStsDataQuery({ parama: {} })
+    const [selectedYear, setSelectedYear] = useState('');
+    const profitLossData = useMemo(() => proLsData?.data ? proLsData?.data : [], [proLsData])
+    const capcityPlaData = useMemo(() => capPlaData?.data ? capPlaData?.data : [], [capPlaData])
 
-    const profitLossData = proLsData?.data ? proLsData?.data : []
-    const capcityPlaData = capPlaData?.data ? capPlaData?.data : []
-    const fabricSts = fabSts?.data ? fabSts?.data : []
+    const fabricSts = useMemo(() => fabSts?.data ? fabSts?.data : [], [fabSts])
+
     const [plData, setPlData] = useState(null)
     const [capPlanData, setCapPlanData] = useState(null)
     const [fabStatus, setFabStatus] = useState(null)
@@ -29,29 +32,32 @@ const OrderManagement = () => {
     useEffect(() => {
         if (!isPlLoading) {
             setPlData(profitLossData)
+        }
+        if (!isCapPlanLoading) {
             setCapPlanData(capcityPlaData)
+        }
+        if (!isFabStsLoading) {
             setFabStatus(fabricSts)
         }
+    }, [isPlLoading, profitLossData, isCapPlanLoading, capcityPlaData, isFabStsLoading, fabricSts])
 
-    }, [plData, isPlLoading, capPlanData, isCapPlanLoading, fabStatus, isFabStsLoading])
     if (!plData || isPlLoading || !capPlanData || isCapPlanLoading || !fabStatus || isFabStsLoading) {
         return <Scene />
     }
+
     console.log(fabStatus, 'plData');
     return (
-        <div className='h-full w-full overflow-auto px-1 mb-[100px]'>
+        <div className='h-full w-full overflow-auto'>
             <div className=''> <Header /></div>
-            <div className='grid grid-cols-1 h-[100%]
-                '>
-                <div><CardWrapper name={'Fabric Planned vs Actual Price'}><ChartTable /></CardWrapper></div>
-                <div><CardWrapper name={'Profit & Loss Buyer Wise'}><NegativeChart plData={plData} /></CardWrapper></div>
-                <div className='grid grid-cols-2'>
+            <div className='grid grid-cols-1 h-[100%]'>
+                <div><CardWrapper name={'Fabric Cost-Plan vs Actual'}><ChartTable /></CardWrapper>
+                </div>
+                <div className='grid grid-cols-3 pb-4'>
+                    <div><CardWrapper name={'Profit & Loss Buyer Wise'}><DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} /> <NegativeChart plData={plData} /></CardWrapper></div>
                     <div className='h-full'><CardWrapper name={'Next 6 Month Production Capacity '}><CapacityPlanner capPlanData={capPlanData} /></CardWrapper></div>
-                    <div><CardWrapper name={'Upcomming 3 Months Fabric Status'}><FabStsChart fabStatus={fabStatus} id={'upCommingFabSts'}
-                    /></CardWrapper></div>
+                    <div><CardWrapper name={'Upcoming 3 Months Fabric Status'}><FabStsChart fabStatus={fabStatus} id={'upCommingFabSts'} /></CardWrapper></div>
                 </div>
             </div>
-
         </div>
     )
 }

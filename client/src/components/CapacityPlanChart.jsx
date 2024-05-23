@@ -7,7 +7,7 @@ const ApexChart = ({ capPlanData }) => {
     console.log(lowBookings, 'low');
     const options = {
         chart: {
-            height: 350,
+
             type: 'bar',
             events: {
                 click: function (chart, w, e) {
@@ -52,13 +52,15 @@ const ApexChart = ({ capPlanData }) => {
     ];
     return (
         <div>
-            <div id="chart">
-                <ReactApexChart options={options} series={series} type="bar" height={350} />
+            <div id="chart" className='h-full'>
+                <div className='flex items-center justify-center pt-0 gap-5'>
+                    <span className='text-red-600 text-lg'>
+                        Overflow</span><span className='text-lime-700 text-lg'>
+                        Average</span><span className='text-black-600 text-lg'>
+                        low</span></div>
             </div>
-            <div className='flex items-center justify-center gap-5'><span className='text-red-600 text-lg'>
-                Overflow</span><span className='text-lime-700 text-lg'>
-                    Average</span><span className='text-black-600 text-lg'>
-                    low</span></div>
+            <ReactApexChart options={options} series={series} type="bar" height={400} />
+
             <div id="html-dist"></div>
         </div>
     );

@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { get, getCapPlanData, getFabStsData, getOcrPending, getProfitLossData, getShippedData, getWIPData, getYFActVsPln } from '../services/orderManagement.service.js';
+import { get, getCapPlanData, getFabStsData, getOcrPending, getPreBudget, getProfitLossData, getShippedData, getWIPData, getYFActVsPln } from '../services/orderManagement.service.js';
 
 
 
@@ -21,4 +21,6 @@ router.get('/getCapPlanData', getCapPlanData)
 router.get('/getFabStsData', getFabStsData)
 
 router.get('/getYFActVsPln', getYFActVsPln)
+
+router.get('/getPreBudget', getPreBudget)
 export default router;

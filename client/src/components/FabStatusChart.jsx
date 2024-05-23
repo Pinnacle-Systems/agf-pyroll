@@ -22,7 +22,7 @@ const FabStsChart = ({ fabStatus }) => {
         options: {
             chart: {
                 type: 'bar',
-                height: 350,
+                height: 400,
                 stacked: true,
                 stackType: '100%'
             },
@@ -44,9 +44,9 @@ const FabStsChart = ({ fabStatus }) => {
                 opacity: 1
             },
             legend: {
-                position: 'right',
+                position: 'top',
                 offsetX: 0,
-                offsetY: 50
+                offsetY: 0
             },
         }
     });
@@ -67,7 +67,7 @@ const FabStsChart = ({ fabStatus }) => {
     return (
         <div>
             <div id="html-dist">
-                <ReactApexChart options={chartData.options} series={chartData.series} type="bar" height={350} />
+                <ReactApexChart options={chartData.options} series={chartData.series} type="bar" height={400} />
             </div>
         </div>
     );

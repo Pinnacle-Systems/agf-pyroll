@@ -96,7 +96,7 @@ const CustomizedAccordions = () => {
                         <h4 className='w-[100%] text-[15px] font-normal text-white '>Order Management</h4>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <h4 className='w-[100%] text-[15px] font-normal pl-9' onClick={() => dispatch(push({ id: 3, name: "Orders" }))}>Orders</h4>
+                        <h4 className='w-[100%] text-[15px] font-normal pl-9' onClick={() => dispatch(push({ id: 3, name: "Order Status" }))}>Order Status</h4>
                     </AccordionDetails>
                 </Accordion>
                 <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>

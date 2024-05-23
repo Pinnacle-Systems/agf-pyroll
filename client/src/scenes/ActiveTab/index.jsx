@@ -22,7 +22,7 @@ const ActiveTabList = () => {
     const tabs = {
         "DASHBOARD": <MisDashboard />,
         "PO Register": <PoRegister />,
-        'Orders': <OrderManagement />,
+        'Order Status': <OrderManagement />,
     };
 
     const innerWidth = window.innerWidth;

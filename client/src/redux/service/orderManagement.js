@@ -10,10 +10,11 @@ const ordManagement = createApi({
     tagTypes: ['ordManagement'],
     endpoints: (builder) => ({
         getOrdManagementData: builder.query({
-            query: () => {
+            query: ({ params }) => {
                 return {
                     url: `${ORD_MANAGEMENT}`,
                     method: 'GET',
+                    params,
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8',
                     },
@@ -22,10 +23,11 @@ const ordManagement = createApi({
             providesTags: ['ordManagement'],
         }),
         getShippedData: builder.query({
-            query: () => {
+            query: ({ params }) => {
                 return {
                     url: `${ORD_MANAGEMENT}/getShippedData`,
                     method: 'GET',
+                    params,
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8',
                     },
@@ -34,10 +36,11 @@ const ordManagement = createApi({
             providesTags: ['ordManagement'],
         }),
         getOcrPending: builder.query({
-            query: () => {
+            query: ({ params }) => {
                 return {
                     url: `${ORD_MANAGEMENT}/getOcrPending`,
                     method: 'GET',
+                    params,
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8',
                     },
@@ -46,10 +49,24 @@ const ordManagement = createApi({
             providesTags: ['ordManagement'],
         }),
         getWIPData: builder.query({
-            query: () => {
+            query: ({ params }) => {
                 return {
                     url: `${ORD_MANAGEMENT}/getWIPData`,
                     method: 'GET',
+                    params,
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                }
+            },
+            providesTags: ['ordManagement'],
+        }),
+        getPreBudget: builder.query({
+            query: ({ params }) => {
+                return {
+                    url: `${ORD_MANAGEMENT}/getPreBudget`,
+                    method: 'GET',
+                    params,
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8',
                     },
@@ -58,10 +75,11 @@ const ordManagement = createApi({
             providesTags: ['ordManagement'],
         }),
         getProfitLossData: builder.query({
-            query: () => {
+            query: ({ params }) => {
                 return {
                     url: `${ORD_MANAGEMENT}/getProfitLossData`,
                     method: 'GET',
+                    params,
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8',
                     },
@@ -70,10 +88,11 @@ const ordManagement = createApi({
             providesTags: ['ordManagement'],
         }),
         getCapPlanData: builder.query({
-            query: () => {
+            query: ({ params }) => {
                 return {
                     url: `${ORD_MANAGEMENT}/getCapPlanData`,
                     method: 'GET',
+                    params,
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8',
                     },
@@ -82,10 +101,11 @@ const ordManagement = createApi({
             providesTags: ['ordManagement'],
         }),
         getFabStsData: builder.query({
-            query: () => {
+            query: ({ params }) => {
                 return {
                     url: `${ORD_MANAGEMENT}/getFabStsData`,
                     method: 'GET',
+                    params,
                     headers: {
                         'Content-type': 'application/json; charset=UTF-8',
                     },
@@ -117,7 +137,8 @@ export const {
     useGetProfitLossDataQuery,
     useGetCapPlanDataQuery,
     useGetFabStsDataQuery,
-    useGetYFActVsPlnQuery
+    useGetYFActVsPlnQuery,
+    useGetPreBudgetQuery
 } = ordManagement;
 
 export default ordManagement;

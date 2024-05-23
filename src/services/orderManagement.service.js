@@ -2,8 +2,8 @@ import { getConnection } from "../constants/db.connection.js";
 export async function get(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
-
+        const { filterYear } = req.query;
+        console.log(filterYear, 'filterYear');
 
         const sql =
             `
@@ -14,20 +14,20 @@ export async function get(req, res) {
              FROM MISORDSALESVAL B 
              WHERE B.STATUS NOT IN ('Cancel')
              AND NVL(B.SHIPQTY,0) > 0
-             AND B.FINYR = '23-24'
+             AND B.FINYR = '${filterYear}'
              GROUP BY B.FINYR) AS ShipDone,
              (SELECT COUNT(C.ORDERNO) 
              FROM MISORDSALESVAL C 
              WHERE C.STATUS NOT IN ('Cancel','Completed')
              AND NVL(C.SHIPQTY,0) = 0 
-             AND C.FINYR =  '23-24'
+             AND C.FINYR =  '${filterYear}'
              GROUP BY C.FINYR) AS NotDone,
                 (SELECT COUNT(D.ORDERNO) 
              FROM MISORDSALESVAL D 
-             WHERE D.status = 'Cancel' AND D.FINYR =  '23-24'
+             WHERE D.status = 'Cancel' AND D.FINYR =  '${filterYear}'
              GROUP BY D.FINYR) AS Canceled
           FROM MISORDSALESVAL A 
-          where A.finYr =  '23-24' 
+          where A.finYr =  '${filterYear}' 
           GROUP BY A.FINYR
           ORDER BY NOOFORD
           
@@ -58,7 +58,7 @@ export async function get(req, res) {
 export async function getShippedData(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
+        const { filterYear } = req.query;
 
 
         const sql =
@@ -67,21 +67,21 @@ export async function getShippedData(req, res) {
             (
             SELECT COUNT(B.ORDERNO) NOOFORD FROM MISORDSALESVAL B 
             WHERE B.STATUS NOT IN ('Cancel','Completed')
-            AND B.FINYR = '23-24' 
+            AND B.FINYR = '${filterYear}' 
              AND NVL(B.SHIPQTY,0) > 0 
             ) as PLNotTaken,
             (SELECT COUNT(C.ORDERNO) NOOFORD FROM MISORDSALESVAL C 
             WHERE C.STATUS = 'Completed'
-            And C.finyr = '23-24'
+            And C.finyr = '${filterYear}'
             ) as PlTAken,
             (SELECT COUNT(D.ORDERNO) NOOFORD FROM MISORDSALESVAL D 
              WHERE ( D.COCR = 'NO' OR D.POCR = 'NO' OR D.YFOCR = 'NO') AND D.SHIPQTY > 0  AND D.STATUS NOT IN ('Completed','Cancel') 
-             And D.finyr = '23-24'
+             And D.finyr = '${filterYear}'
           ) as ocrPend
              FROM MISORDSALESVAL A 
             WHERE A.STATUS NOT IN ('Cancel')
              AND NVL(A.SHIPQTY,0) > 0 
-            AND A.FINYR = '23-24' 
+            AND A.FINYR = '${filterYear}' 
             GROUP BY A.FINYR
             ORDER BY 1
             
@@ -112,7 +112,7 @@ export async function getShippedData(req, res) {
 export async function getOcrPending(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
+        const { filterYear } = req.query;
 
 
         const sql =
@@ -129,7 +129,7 @@ export async function getOcrPending(req, res) {
            )as fabOcrPend FROM MISORDSALESVAL A 
            WHERE ( A.COCR = 'NO' OR A.POCR = 'NO' OR A.YFOCR = 'NO') AND A.SHIPQTY > 0 
             AND A.STATUS NOT IN ('Completed','Cancel') 
-            AND A.finYr = '23-24'
+            AND A.finYr = '${filterYear}'
            GROUP BY A.FINYR
            ORDER BY 1
            
@@ -162,24 +162,24 @@ export async function getOcrPending(req, res) {
 export async function getWIPData(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
+        const { filterYear } = req.query;
 
 
         const sql =
             `
-            select  COUNT(A.ORDERNO) NOOFORD,
+            SELECT  COUNT(A.ORDERNO) NOOFORD,
             (SELECT COUNT(B.ORDERNO) NOOFORD FROM MISORDSALESVAL B 
-           WHERE B.FABST = 'NO' AND B.CUTST <> 'YES' AND B.STATUS NOT IN ('Completed','Cancel') And  B.finyr = '23-24'
+           WHERE B.FABST = 'NO'  AND B.STATUS NOT IN ('Completed','Cancel') AND  B.FINYR = '${filterYear}'
+           AND NVL(B.SHIPQTY,0) = 0
            )WIPFAB,
            (SELECT COUNT(C.ORDERNO) NOOFORD FROM MISORDSALESVAL C 
-           WHERE C.CUTST = 'NO' AND C.PRODST <> 'YES' AND C.STATUS NOT IN ('Completed','Cancel') And C.finyr = '23-24'
-           ) as WIPCUT,
+           WHERE C.CUTST = 'NO' AND C.STATUS NOT IN ('Completed','Cancel') AND C.FINYR = '${filterYear}'
+           AND NVL(C.SHIPQTY,0) = 0
+           ) AS WIPCUT,
            (SELECT COUNT(D.ORDERNO) NOOFORD FROM MISORDSALESVAL D 
-           WHERE D.PRODST = 'YES' AND NVL(D.SHIPQTY,0) = 0 AND D.STATUS NOT IN ('Completed','Cancel')  And D.finyr = '23-24') as PRODCUT
-            FROM MISORDSALESVAL A WHERE(A.FABST = 'NO' or A.CUTST <> 'YES' or A.CUTST = 'NO' or A.PRODST <> 'YES'
-           or A.PRODST = 'YES' or NVL(A.SHIPQTY,0) = 0
-             ) AND A.STATUS NOT IN ('Completed','Cancel') 
-           AND A.finyr = '23-24' group by A.finyr 
+           WHERE D.PRODST = 'NO' AND NVL(D.SHIPQTY,0) = 0 AND D.STATUS NOT IN ('Completed','Cancel')  AND D.FINYR = '${filterYear}') AS PRODCUT
+            FROM MISORDSALESVAL A WHERE NVL(A.SHIPQTY,0) = 0 AND A.STATUS NOT IN ('Completed','Cancel') 
+           AND A.FINYR = '${filterYear}' GROUP BY A.FINYR
            
             
      `
@@ -207,24 +207,76 @@ export async function getWIPData(req, res) {
         await connection.close()
     }
 }
+export async function getPreBudget(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { filterYear } = req.query;
 
+
+        const sql =
+            `
+            SELECT 
+            A.FINYR,
+             COUNT(A.ORDERNO) NOOFORD,
+            COUNT(CASE WHEN A.APPROVALSTATUS = 'APPROVED' THEN A.ORDERNO END) AS NOOFORD_APPROVED,
+            COUNT(CASE WHEN A.APPROVALSTATUS <> 'APPROVED' OR A.APPROVALSTATUS IS NULL THEN A.ORDERNO END) AS NOOFORD_APPROVAL_PENDING,
+            COUNT(CASE WHEN A.APPROVALSTATUS = 'APPROVED' AND A.STATUS = 'Cancel' THEN A.ORDERNO END) AS NOOFORD_AFTER_APPROVAL_CANCEL
+        FROM 
+            MISORDSALESVAL A
+        WHERE 
+            A.PREBUD = 'YES' and A.finyr = '${filterYear}'
+        GROUP BY 
+            A.FINYR
+        ORDER BY 
+            A.FINYR
+     `
+
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+
+
+            finYr: po[0],
+            noOfOrd: po[1],
+            approved: po[2],
+            appPending: po[3],
+            cancelAfterApp: po[4],
+
+
+        }))
+
+        return res.json({ statusCode: 0, data: resp })
+
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
+// chart data
 export async function getProfitLossData(req, res) {
     const connection = await getConnection(res)
     try {
         const { } = req.query;
         const sql =
             `
-         SELECT  SUM(CASE WHEN A.Actprofit < 0 THEN nvl(A.Actprofit,0) ELSE 0 END) AS loss,
-SUM(CASE WHEN A.Actprofit > 0 THEN nvl(A.Actprofit,0) ELSE 0 END) AS profit,customer
-FROM MISORDSALESVAL A
-WHERE a.finyr = '23-24'
-group by customer
+            SELECT customer, PROFIT
+            FROM (
+                SELECT customer, SUM(ACTPROFIT) AS PROFIT
+                FROM MISORDSALESVAL
+                WHERE finyr = '23-24'
+                GROUP BY customer
+                ORDER BY PROFIT DESC
+            ) p
+            WHERE  PROFIT IS NOT NULL
      `
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
-            loss: po[0],
+
+            customer: po[0],
             profit: po[1],
-            customer: po[2],
         }))
         return res.json({ statusCode: 0, data: resp })
     }
@@ -346,35 +398,50 @@ export async function getFabStsData(req, res) {
 }
 
 export async function getYFActVsPln(req, res) {
-    const connection = await getConnection(res)
+    const connection = await getConnection(res);
     try {
-        const { chart } = req.query;
-        const sql =
-            `   
-            SELECT act, planExp, orderno, PLANDELMON
-            FROM (
-                SELECT SUM(yfActualExp) AS act, SUM(yfplanExp) AS planExp, orderno, PLANDELMON
-                FROM MISORDSALESVAL
-                WHERE finyr = '23-24' AND PLANDELMON = 'October 2023'
-                GROUP BY orderno, PLANDELMON
-                HAVING SUM(yfplanExp) IS NOT NULL
-            ORDER BY act DESC) T
-          ${chart ? '  where rownum <=5' : ''}
-     `
-        const result = await connection.execute(sql)
+        const { filterMonth, filterSupplier, filterYear } = req.query;
+        console.log(filterMonth, filterSupplier, filterYear, '352');
+
+        let sql;
+
+        if (filterMonth || filterSupplier || filterYear) {
+            sql = `
+            SELECT B.orderNo,
+             B.customer,
+              B.plandelmon,
+              B.orderQty,
+               SUM(A.PAMOUNT)as plAmt,
+                SUM(A.AAMOUNT)as actAmt
+FROM MISYARNFABRICVALUE A
+JOIN MISORDSALESVAL B ON A.ORDERNO = B.ORDERNO
+WHERE A.PROCESSNAME = 'FABRIC' AND B.customer = '${filterSupplier}' AND B.FInyr = '${filterYear}'
+and plandelmon ='${filterMonth}'
+GROUP BY B.orderNo, B.customer, B.plandelmon,B.orderQty
+ 
+            `;
+            console.log(sql, '416');
+        } else {
+
+            res.status(200).json({ message: 'filterMonth and filterSupplier are required' });
+            return;
+        }
+        console.log(sql, 'sql');
+        const result = await connection.execute(sql);
         let resp = result.rows.map(po => ({
-            actual: po[0],
-            planed: po[1],
-            ordeNo: po[2],
-            PlanMnth: po[3]
-        }))
-        return res.json({ statusCode: 0, data: resp })
-    }
-    catch (err) {
+            ordeNo: po[0],
+            customer: po[1],
+            PlanMnth: po[2],
+            qty: po[3],
+            planed: po[4],
+            actual: po[5]
+        }));
+
+        return res.json({ statusCode: 0, data: resp });
+    } catch (err) {
         console.error('Error retrieving data:', err);
         res.status(500).json({ error: 'Internal Server Error' });
-    }
-    finally {
-        await connection.close()
+    } finally {
+        await connection.close();
     }
 }

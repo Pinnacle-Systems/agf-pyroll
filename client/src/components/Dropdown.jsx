@@ -21,10 +21,7 @@ export default function MenuSimple({ type, setType }) {
             name: "Monthly",
             value: "MONTH",
         },
-        // {
-        //     name: "Quartely",
-        //     value: "Q",
-        // },
+
     ]
 
     return (

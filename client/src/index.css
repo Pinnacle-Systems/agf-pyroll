@@ -315,18 +315,20 @@ body {
   outline: none;
 }
 
-.dropdown-panel-black .p-dropdown-items-wrapper {
-  background-color: white !important;
-  border-radius: 8px;
-  width: 4.5rem;
-
-}
-
-.dropdown-panel-black {
+.custom-table-cell {
   font-size: 10px;
-  width: auto !important;
+
 }
 
-.p-dropdown-items {
-  width: 30rem;
+.custom-table-cell:not(:first-child) {
+
+  width: 200px;
+}
+
+
+.total-row {
+  position: sticky;
+  bottom: 0;
+  background-color: white;
+  z-index: 1000;
 }

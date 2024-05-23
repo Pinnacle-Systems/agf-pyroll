@@ -6,8 +6,8 @@ import CardWrapper from './CardWrapper';
 import CanvasJSReact from '@canvasjs/react-charts';
 
 
-const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
-    console.log(wipData, 'wipData');
+const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData, preBudget }) => {
+
     const CanvasJS = CanvasJSReact.CanvasJS;
     const CanvasJSChart = CanvasJSReact.CanvasJSChart;
 
@@ -39,36 +39,41 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
     const totalWip = wipData?.data.map(item => item?.noOfOrd ? item.noOfOrd : 0)
     const wipFabYarnData = wipData?.data.map(item => item?.wipFab ? item.wipFab : 0)
     const wipCutData = wipData?.data.map(item => item?.wipCut ? item.wipCut : 0)
-    const wipProData = wipData?.data.map(item => item?.wipPro ? item.wipData : 0)
+    const wipProData = wipData?.data.map(item => item?.wipPro ? item.wipPro : 0)
 
 
-    const loss = misData?.data?.loss;
+    //Pre budjet Data
+    const noOfOrd = preBudget?.data.map(item => item?.noOfOrd ? item.noOfOrd : 0)
+    const approved = preBudget?.data.map(item => item?.approved ? item.approved : 0)
+    const appPending = preBudget?.data.map(item => item?.appPending ? item.appPending : 0)
+    const cancelAfterApp = preBudget?.data.map(item => item?.cancelAfterApp ? item.cancelAfterApp : 0)
+
 
     const data = [
         {
             name: "Orders",
             borderColor: "#1F588B",
             value: `${(totalTurnOver || 0).toLocaleString()}`,
-            previousValue: `${shipped || 0}`,
-            change: `${inHand || 0}`,
-            trend: `${canceled || 0}`
+            previousValue: `${(shipped || 0).toLocaleString()}`,
+            change: `${(inHand || 0).toLocaleString()}`,
+            trend: `${(canceled || 0).toLocaleString()}`
         }
         ,
         {
             name: "Shipped",
             borderColor: "#62AAA3",
             value: `${(shipDone || 0).toLocaleString()}`,
-            previousValue: `${plTaken || 0}`,
-            change: `${ocrPend || 0}`,
-            trend: `${plNotTaken || 0}`,
+            previousValue: `${(plTaken || 0).toLocaleString()}`,
+            change: `${(ocrPend || 0).toLocaleString()}`,
+            trend: `${(plNotTaken || 0).toLocaleString()}`,
         },
         {
             name: "OCR Pending",
             borderColor: "border-[#96A669]",
             value: `${(ocrTotal || 0).toLocaleString()}`,
-            previousValue: `${fabOcrPend || 0}`,
-            change: `${(cutOcrPend || 0)}`,
-            trend: `${(proOcrPend || 0)}`
+            previousValue: `${(fabOcrPend || 0).toLocaleString()}`,
+            change: `${(cutOcrPend || 0).toLocaleString()}`,
+            trend: `${(proOcrPend || 0).toLocaleString()}`
         },
         {
             name: "WIP",
@@ -79,12 +84,12 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
             trend: `${wipProData || 0}`
         },
         {
-            name: "Loss",
+            name: "Pre Budget",
             borderColor: "border-[#D49B37]",
-            value: `${(loss?.currentValue || 0).toLocaleString()}`,
-            previousValue: `${loss?.prevValue || 0}`,
-            change: `${getDifferenceInPercentage(loss?.prevValue || 0, loss?.currentValue || 0)}%`,
-            trend: (loss?.prevValue < loss?.currentValue) ? UP_TREND_ICON : DOWN_TREND_ICON
+            value: `${(noOfOrd || 0).toLocaleString()}`,
+            previousValue: `${(approved || 0).toLocaleString()}`,
+            change: `${(appPending || 0).toLocaleString()}`,
+            trend: `${(cancelAfterApp || 0).toLocaleString()}`
         },
     ]
     const options1 = {
@@ -276,7 +281,7 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
                 type: "stackedBar100",
                 color: "#9B59B6",
                 dataPoints: [
-                    { label: "Cancelled", wipProData: 0 },
+                    { label: "Cancelled", y: wipProData[0] },
                 ]
             },]
 
@@ -310,23 +315,23 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
         data: [
             {
                 type: "stackedBar100",
-                color: "#adb612",
+                color: "#D49B37",
                 dataPoints: [
-                    { label: "P&L Taken", y: plTaken[0] },
+                    { label: "Approved", y: approved[0] },
                 ]
             },
             {
                 type: "stackedBar100",
-                color: "#7f7f7f",
+                color: "#1ABC9C",
                 dataPoints: [
-                    { label: "P&L Not Taken", y: plNotTaken[0] },
+                    { label: "App oending", y: appPending[0] },
                 ]
             },
             {
                 type: "stackedBar100",
-                color: "#7f7f7",
+                color: "#3498DB",
                 dataPoints: [
-                    { label: "Cancelled", y: 0 },
+                    { label: "Cancel", y: cancelAfterApp[0] },
                 ]
             },]
 
@@ -338,29 +343,31 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData }) => {
     return (
         <div className='flex justify-evenly w-full h-full '>
             {data.map((val, i) =>
-                <div key={i} className='w-[24.5%] h-full text-center '>
+                <div key={i} className='w-[24.5%] h-[14%] text-center '>
                     <CardWrapper name={val.name} >
-                        <div className={`h-full flex flex-col justify-between items-between  bg-white border-4 cuttedBorder${i + 1} `}>
+                        <div className={`h-[8rem] flex flex-col justify-between items-between  bg-white border-4 cuttedBorder${i + 1} `}>
                             <div className='pt-2'>
                                 <span className='  text-2xl font-bold'>
                                     {val.value}
                                 </span>
 
                             </div>
-                            <div className=' h-[2rem] flex items-center'>  <CanvasJSChart options={val.name === 'Orders' ? options1 : val.name === 'Shipped' ? options2 : val.name === 'OCR Pending' ? options3 : val.name === 'WIP' ? options4 : val.name === 'Loss' ? options2 : null} />
+                            <div className=' h-[2rem] flex items-center'>  <CanvasJSChart options={val.name === 'Orders' ? options1 : val.name === 'Shipped' ? options2 : val.name === 'OCR Pending' ? options3 : val.name === 'WIP' ? options4 : val.name === 'Pre Budget' ? options5 : null} />
 
                             </div>
-                            <div className=' flex justify-evenly items-center text-gray-800 text-[12px] h-[5%]'>
+                            <div className=' flex justify-evenly items-center text-gray-800 text-[12px] '>
                                 <span>
-                                    <div className='text-sm'>{val.name === "Orders" ? "Shipped" : val.name === "Shipped" ? "P$L Taken" : val.name === "OCR Pending" ? "Yarn & Fab" : val.name === "WIP" ? "WIP Fab" : val.name}</div>
+                                    <div className='text-sm'>{val.name === "Orders" ? "Shipped" : val.name === "Shipped" ? "P$L Taken" : val.name === "OCR Pending" ? "Yarn & Fab" : val.name === "WIP" ? "WIP Fab" : val.name === "Pre Budget" ? "Approved" : null}</div>
+
                                     <div className='text-xl font-semibold text-green-500' style={{ color: colorsSet1[i] }}>{val.previousValue}</div>
                                 </span>
                                 <span>
-                                    <div className='text-sm'>{val.name === "Orders" ? "WIP" : val.name === "Shipped" ? "OCR Pend" : val.name === "OCR Pending" ? "Cutting" : val.name === "WIP" ? "WIP Cut" : val.name}</div>
+                                    <div className='text-sm'>{val.name === "Orders" ? "WIP" : val.name === "Shipped" ? "OCR Pend" : val.name === "OCR Pending" ? "Cutting" : val.name === "WIP" ? "WIP Cut" : val.name === 'Pre Budget' ? 'App Pend' : null}</div>
                                     <div className='text-xl font-semibold text-blue-500' style={{ color: colorsSet2[i] }}>{val.change}</div>
                                 </span>
                                 <div className='  justify-center text-center'>
-                                    <div className='text-sm'>{val.name === "Orders" ? "Canceled" : val.name === "Shipped" ? "Com Pend" : val.name === "OCR Pending" ? "Production" : val.name === "WIP" ? "Production" : val.name}</div>
+                                    <div className='text-sm'>{val.name === "Orders" ? "Canceled" : val.name === "Shipped" ? "P&L Pending" : val.name === "OCR Pending" ? "Production" : val.name === "WIP" ? "Production" : val.name === 'Pre Budget' ? 'Cancel' : null}</div>
+
                                     <div className='text-xl font-semibold flex items-center justify-center text-red-500' style={{ color: colorsSet3[i] }}>
                                         {val.trend}
                                     </div>

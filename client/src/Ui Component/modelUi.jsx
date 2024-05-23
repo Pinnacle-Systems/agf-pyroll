@@ -24,14 +24,14 @@ export default function DropdownData({ selectedYear, setSelectedYear }) {
   }, [finYear]);
 
   return (
-    <div className="card flex justify-content-center ">
+    <div className="card flex justify-end items-center">
       <Dropdown
         value={selectedYear}
         onChange={(e) => setSelectedYear(e.value)}
         options={options}
         placeholder={`${lastItem || 'No data'}`}
-        className="w-full md:w-15rem "
-        style={{ backgroundColor: 'white', borderRadius: '2px', width: '4.5rem' }}
+        className="w-full  "
+        style={{ backgroundColor: 'white', borderRadius: '2px', width: '4.5rem', fontSize: '12px', display: 'flex', flexDirection: 'flex-end' }}
         panelClassName="dropdown-panel-black"
         optionLabel={(option) => (
           <span style={{ backgroundColor: 'white' }}>{option.name}</span>
