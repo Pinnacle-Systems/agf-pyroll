@@ -1,67 +1,88 @@
 import React from 'react';
-import ReactApexChart from 'react-apexcharts';
+import Chart from 'react-apexcharts';
 
 const ApexChart = ({ capPlanData }) => {
-    const colors = ['#4d7c0f'];
-    const lowBookings = Math.min(...capPlanData.map(item => item.booked));
-    console.log(lowBookings, 'low');
-    const options = {
-        chart: {
-
-            type: 'bar',
-            events: {
-                click: function (chart, w, e) {
-                    // console.log(chart, w, e)
-                }
+    const seriesData = capPlanData.map(item => ({
+        x: item.month,
+        y: item.booked,
+        strokeColor: "#775DD0",
+        series: [
+            {
+                name: 'Filled',
+                value: item.capacity.toLocaleString(),
+                strokeWidth: 1,
+                strokeDashArray: 2,
+            },
+        ],
+        goals: [
+            {
+                name: 'Capacity',
+                value: item.capacity,
+                strokeWidth: 1,
+                strokeDashArray: 2,
+                strokeColor: '#775DD0'
             }
+        ],
+    }));
+
+    const options = {
+        series: [
+            {
+                name: 'Filled',
+                data: seriesData,
+            },
+        ],
+        chart: {
+            height: 450,
+            type: 'bar',
         },
-        colors: capPlanData.map(item => (item.booked > item.capacity ? '#FF0000' : item.booked <= lowBookings ? '#000000' : colors[capPlanData.indexOf(item) % colors.length])),
         plotOptions: {
             bar: {
-                columnWidth: '45%',
+                horizontal: true,
                 distributed: true,
-            }
+            },
         },
+        colors: capPlanData.map((item, index) => {
+            const percentCapacity = parseFloat(item.booked) / parseFloat(item.capacity) * 100;
+            if (percentCapacity > 110) return '#FF5733';
+            if (percentCapacity < 100) return '#FFC107';
+            if (percentCapacity > 105) return '#32CD32';
+            return '#775DD0';
+        }),
         dataLabels: {
-            enabled: true
+            enabled: true,
+            formatter: function (val, opt) {
+                const goals = opt.w.config.series[opt.seriesIndex].data[opt.dataPointIndex].goals;
+                if (goals && goals.length) {
+                    return `${val.toLocaleString()} / ${goals[0].value.toLocaleString()}`;
+                }
+                return val.toLocaleString();
+            },
+            style: {
+                colors: ['#ffffff'],
+            },
+            background: {
+                enabled: true,
+                foreColor: 'grey',
+                borderRadius: 2,
+                dropShadow: {
+                    enabled: true,
+                },
+            },
         },
         legend: {
-            show: false
+            show: true,
+            showForSingleSeries: true,
+            customLegendItems: ['Capacity', 'Booked', 'Going To Fill', 'Over Flow'],
+            markers: {
+                fillColors: ['#775DD0', '#32CD32', '#FFC107', '#FF5733'],
+            },
         },
-        xaxis: {
-            categories: capPlanData.map(item => item.month),
-            labels: {
-                style: {
-
-                    fontSize: '12px'
-                }
-            }
-        }
     };
 
-    const series = [
-        {
-            name: 'Booked',
-            data: capPlanData.map(item => ({
-                x: item.month,
-                y: item.booked,
-                low: item.booked <= lowBookings,
-                high: item.booked > item.capacity
-            }))
-        }
-    ];
     return (
-        <div>
-            <div id="chart" className='h-full'>
-                <div className='flex items-center justify-center pt-0 gap-5'>
-                    <span className='text-red-600 text-lg'>
-                        Overflow</span><span className='text-lime-700 text-lg'>
-                        Average</span><span className='text-black-600 text-lg'>
-                        low</span></div>
-            </div>
-            <ReactApexChart options={options} series={series} type="bar" height={400} />
-
-            <div id="html-dist"></div>
+        <div id="chart">
+            <Chart options={options} series={options.series} type="bar" height={450} />
         </div>
     );
 };

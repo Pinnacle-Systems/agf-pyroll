@@ -124,6 +124,7 @@ function DataTable({ data, totals }) {
       disableRowSelectionOnClick
 
       getRowClassName={getRowClassName}
+      paginationMode="server"
 
       sx={{
         '& .MuiDataGrid-columnHeader': {

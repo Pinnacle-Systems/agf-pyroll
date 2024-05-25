@@ -332,3 +332,11 @@ body {
   background-color: white;
   z-index: 1000;
 }
+
+.highcharts-credits {
+  display: none;
+}
+
+.fontWeightBold {
+  font-weight: bold;
+}

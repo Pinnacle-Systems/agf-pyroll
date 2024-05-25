@@ -259,19 +259,21 @@ export async function getPreBudget(req, res) {
 export async function getProfitLossData(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
+        const { filterYear } = req.query;
+        console.log(filterYear, 'filterYear');
         const sql =
             `
             SELECT customer, PROFIT
             FROM (
                 SELECT customer, SUM(ACTPROFIT) AS PROFIT
                 FROM MISORDSALESVAL
-                WHERE finyr = '23-24'
+                WHERE finyr = '${filterYear}'
                 GROUP BY customer
                 ORDER BY PROFIT DESC
             ) p
             WHERE  PROFIT IS NOT NULL
      `
+        console.log(sql, 'sql276');
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
 
@@ -413,12 +415,12 @@ export async function getYFActVsPln(req, res) {
               B.orderQty,
                SUM(A.PAMOUNT)as plAmt,
                 SUM(A.AAMOUNT)as actAmt
-FROM MISYARNFABRICVALUE A
+               FROM MISYARNFABRICVALUE A
 JOIN MISORDSALESVAL B ON A.ORDERNO = B.ORDERNO
 WHERE A.PROCESSNAME = 'FABRIC' AND B.customer = '${filterSupplier}' AND B.FInyr = '${filterYear}'
 and plandelmon ='${filterMonth}'
 GROUP BY B.orderNo, B.customer, B.plandelmon,B.orderQty
- 
+
             `;
             console.log(sql, '416');
         } else {

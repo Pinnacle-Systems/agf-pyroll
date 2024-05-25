@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { Chart } from "react-google-charts";
-import DropdownData from "../Ui Component/modelUi";
 
 export const options = {
     allowHtml: true,
@@ -8,7 +7,6 @@ export const options = {
     cssClassNames: {
         tableCell: 'custom-table-cell',
     },
-
 };
 
 export const formatters = [
@@ -23,22 +21,25 @@ export const formatters = [
 
 export function App({ plData }) {
     const data = [
-        ["Customer", "Profit"], // Headers
+        ["Customer", "Profit/Loss", "Percentage"], // Headers
         ...plData.map(item => [
             item.customer,
-            item.profit
+            item.profit,
+            (item.profit / plData.reduce((total, item) => total + item.profit, 0) * 100).toFixed(2) + "%"
         ])
     ];
-    const [selectedYear, setSelectedYear] = useState('');
+
     return (
-        <div><Chart
-            chartType="Table"
-            width="100%"  // Set the desired width here
-            height="110%"
-            data={data}
-            options={options}
-            formatters={formatters}
-        /></div>
+        <div>
+            <Chart
+                chartType="Table"
+                width="100%"  // Set the desired width here
+                height="110%"
+                data={data}
+                options={options}
+                formatters={formatters}
+            />
+        </div>
     );
 }
 
