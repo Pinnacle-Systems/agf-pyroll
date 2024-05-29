@@ -18,18 +18,19 @@ import DropdownDt from '../../Ui Component/dropDownParam'
 
 const OrderManagement = () => {
     const [selectedYear, setSelectedYear] = useState('');
+    const [plData, setPlData] = useState(null)
+    const [capPlanData, setCapPlanData] = useState(null)
+    const [fabStatus, setFabStatus] = useState(null)
+    const [selected, setSelected] = useState(null)
     const { data: proLsData, isLoading: isPlLoading } = useGetProfitLossDataQuery({ params: { filterYear: (selectedYear?.name ? selectedYear.name : '' || selectedYear) } })
-    console.log(selectedYear, 'selected');
-    const { data: capPlaData, isLoading: isCapPlanLoading } = useGetCapPlanDataQuery({ params: {} })
+    console.log(selected, 'selected');
+    const { data: capPlaData, isLoading: isCapPlanLoading } = useGetCapPlanDataQuery({ params: { filterCom: (selected?.name ? selected.name : '' || selected) } })
     const { data: fabSts, isLoading: isFabStsLoading } = useGetFabStsDataQuery({ params: {} })
     const profitLossData = useMemo(() => proLsData?.data ? proLsData?.data : [], [proLsData])
     const capcityPlaData = useMemo(() => capPlaData?.data ? capPlaData?.data : [], [capPlaData])
 
     const fabricSts = useMemo(() => fabSts?.data ? fabSts?.data : [], [fabSts])
 
-    const [plData, setPlData] = useState(null)
-    const [capPlanData, setCapPlanData] = useState(null)
-    const [fabStatus, setFabStatus] = useState(null)
 
     useEffect(() => {
         if (!isPlLoading) {
@@ -47,7 +48,7 @@ const OrderManagement = () => {
         return <Scene />
     }
 
-    console.log(fabStatus, 'plData');
+    console.log(capPlanData, 'capPlanData');
     return (
         <div className='h-full w-full overflow-auto'>
             <div className=''> <Header /></div>
@@ -59,7 +60,7 @@ const OrderManagement = () => {
                         <div className='flex items-center justify-end w-full text-center'> <label className=' pb-1 text-sm text-center pt-[2px]'>Select :</label> <DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} /> </div>
                         <NegativeChart plData={plData} />
                     </CardWrapper></div>
-                    <div className='h-full'><CardWrapper name={'Next 6 Month Production Capacity '}><DropdownDt /><CapacityPlanner capPlanData={capPlanData} /></CardWrapper></div>
+                    <div className='h-full'><CardWrapper name={'Next 6 Month Production Capacity '}><CapacityPlanner capPlanData={capPlanData} selected={selected} setSelected={setSelected} /></CardWrapper></div>
                     <div><CardWrapper name={'Upcoming 3 Months Fabric Status'}><FabStsChart fabStatus={fabStatus} id={'upCommingFabSts'} /></CardWrapper></div>
                 </div>
             </div>

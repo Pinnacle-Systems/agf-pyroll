@@ -43,7 +43,7 @@ const Dashboard = () => {
         chart: {
             type: 'line',
             scrollablePlotArea: {
-                minWidth: orderCount < 10 ? 300 : orderCount < 20 ? 500 : orderCount <= 40 ? 1500 : orderCount <= 65 ? 2000 : orderCount < 85 ? 2500 : orderCount < 120 ? 3000 : orderCount < 140 ? 3500 : 300,
+                minWidth: orderCount < 10 ? 300 : orderCount < 20 ? 500 : orderCount <= 40 ? 1500 : orderCount <= 65 ? 2000 : orderCount < 85 ? 2500 : orderCount < 120 ? 3000 : orderCount < 150 ? 3500 : 300,
                 scrollPositionX: 0
             }
         },
@@ -146,8 +146,8 @@ const Dashboard = () => {
         { field: 'serial', headerName: 'S/No', maxWidth: 40, maxHeight: 15 },
         { field: 'orderNo', headerName: 'Order No', maxWidth: 90 },
         { field: 'qty', headerName: 'Qty', maxWidth: 20, align: 'right' },
-        { field: 'plannedPrice', headerName: 'Planned Price', valueFormatter, flex: 1, align: 'right', headerAlign: 'right', maxWidth: 100 },
-        { field: 'actualPrice', headerName: 'Actual Price', valueFormatter, align: 'right', headerAlign: 'right', maxWidth: 100 },
+        { field: 'plannedPrice', headerName: 'Planned Price', valueFormatter, flex: 1, align: 'right', headerAlign: 'right', minWidth: 110 },
+        { field: 'actualPrice', headerName: 'Actual Price', valueFormatter, align: 'right', headerAlign: 'right', maxWidth: 110 },
     ];
 
     const theme = createTheme({
@@ -196,7 +196,7 @@ const Dashboard = () => {
                 </div>
                 {console.log(selectedBuyer, selectedMonth, 'buyer')}
                 <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
-                    <div style={{ flex: '70%', minWidth: '70%' }} className='flex flex-col'>
+                    <div style={{ flex: '66%', minWidth: '66%' }} className='flex flex-col'>
                         <HighchartsReact
                             highcharts={Highcharts}
                             options={options}

@@ -317,7 +317,12 @@ body {
 
 .custom-table-cell {
   font-size: 10px;
+  text-align: right;
+}
 
+.custom-header-row {
+  text-align: left;
+  /* Align headers (e.g., "Customer") to the left */
 }
 
 .custom-table-cell:not(:first-child) {
@@ -325,6 +330,10 @@ body {
   width: 200px;
 }
 
+.custom-table-cell:nth-child(2) {
+  text-align: left;
+  width: 200px;
+}
 
 .total-row {
   position: sticky;
@@ -339,4 +348,17 @@ body {
 
 .fontWeightBold {
   font-weight: bold;
+}
+
+.dropdown-panel-black {
+
+  border-radius: 5px;
+  font-size: 12px;
+  width: 1rem;
+  border: 2px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+
 }

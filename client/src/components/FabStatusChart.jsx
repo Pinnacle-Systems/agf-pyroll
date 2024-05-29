@@ -1,15 +1,24 @@
 import React, { useState, useEffect } from 'react';
 import ReactApexChart from 'react-apexcharts';
-import DropdownCom from '../Ui Component/modelParam';
+import Box from '@mui/material/Box';
+import { DataGrid, GridToolbarContainer } from '@mui/x-data-grid';
+import { useGetFabStsDataQuery } from '../redux/service/orderManagement';
+import Modal from '../Ui Component/popUpModel';
 
 const FabStsChart = ({ fabStatus }) => {
     const [showModal, setShowModal] = useState(false);
     const [modalContent, setModalContent] = useState(null);
+    const [month, setMonth] = useState(null);
+    const [barVal, setBarVal] = useState(null);
+    const { data: fabSts, isLoading: isFabStsLoading } = useGetFabStsDataQuery({ params: { itemWise: true, modalContent, month } });
 
     const closeModal = () => {
         setShowModal(false);
         setModalContent(null);
     };
+
+    const fabricSts = fabSts?.data ? fabSts?.data : [];
+    console.log(fabricSts, 'fab');
 
     const seriesData = [
         {
@@ -36,9 +45,13 @@ const FabStsChart = ({ fabStatus }) => {
                     dataPointSelection: (event, chartContext, config) => {
                         const seriesIndex = config.seriesIndex;
                         const dataPointIndex = config.dataPointIndex;
-                        const value = chartData.series[seriesIndex].data[dataPointIndex];
+                        const value = seriesIndex === 0 ? 'Completed' : 'WIP';
+                        const monthData = categories[dataPointIndex];
+                        const barValue = chartData.series[seriesIndex].data[dataPointIndex];
                         setModalContent(value);
                         setShowModal(true);
+                        setMonth(monthData);
+                        setBarVal(barValue);
                     }
                 }
             },
@@ -79,65 +92,119 @@ const FabStsChart = ({ fabStatus }) => {
             }
         }));
     }, [fabStatus]);
+
     const columns = [
-        { field: 'id', headerName: 'ID', width: 90 },
+        { field: 'id', headerName: 'S/N', width: 20 },
+        { field: 'ordNo', headerName: 'Order No', width: 90 },
+        { field: 'fabric', headerName: 'Fabric', width: 480 },
+        { field: 'pDesign', headerName: 'Design', width: 80 },
+        { field: 'pDia', headerName: 'Dia', width: 80, align: 'right' },
+        { field: 'pkDia', headerName: 'KDia', width: 15, align: 'right' },
+        { field: 'reqQty', headerName: 'Req Qty', width: 80, align: 'right' },
+    ];
+
+    const rows = fabricSts.map((item, index) => ({
+        id: index + 1,
+        ordNo: item.ordNo,
+        fabric: item.fabric,
+        pDesign: item.pDesign,
+        pDia: item.pDia,
+        pkDia: item.pkDia,
+        reqQty: Number(item.reqQty.toFixed(2)).toLocaleString(),  // Format reqQty with comma separation and fixed 9 decimal places
+    }));
+
+    console.log(barVal, 'll');
+
+    const columnGroupingModel = [
         {
-            field: 'firstName',
-            headerName: 'First name',
-            width: 150,
-            editable: true,
-        },
-        {
-            field: 'lastName',
-            headerName: 'Last name',
-            width: 150,
-            editable: true,
-        },
-        {
-            field: 'age',
-            headerName: 'Age',
-            type: 'number',
-            width: 110,
-            editable: true,
-        },
-        {
-            field: 'fullName',
-            headerName: 'Full name',
-            description: 'This column has a value getter and is not sortable.',
-            sortable: false,
-            width: 160,
-            valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+            groupId: `Fabric status for the month of ${month}`,
+            children: [
+                { field: 'id' },
+                { field: 'ordNo' },
+                { field: 'fabric' },
+                { field: 'pDesign' },
+                { field: 'pDia' },
+                { field: 'pkDia' },
+                { field: 'reqQty' },
+            ],
+            headerAlign: 'center',
+            headerClass: modalContent === 'WIP' ? 'red-header' : 'green-header',
+            renderHeaderGroup: (params) => (
+                <GridToolbarContainer >
+                    <div className=' w-full gap-44 flex justify-between'>
+                        <div>
+                            {params.groupId}
+                        </div>
+                        <div className='flex-end'>
+                            Status: {modalContent === 'WIP' ? 'Pending' : 'Received'} ({barVal})
+                        </div>
+                    </div>
+                </GridToolbarContainer>
+            )
         },
     ];
 
-    const rows = [
-        { id: 1, lastName: 'Snow', firstName: 'Jon', age: 14 },
-        { id: 2, lastName: 'Lannister', firstName: 'Cersei', age: 31 },
-        { id: 3, lastName: 'Lannister', firstName: 'Jaime', age: 31 },
-        { id: 4, lastName: 'Stark', firstName: 'Arya', age: 11 },
-        { id: 5, lastName: 'Targaryen', firstName: 'Daenerys', age: null },
-        { id: 6, lastName: 'Melisandre', firstName: null, age: 150 },
-        { id: 7, lastName: 'Clifford', firstName: 'Ferrara', age: 44 },
-        { id: 8, lastName: 'Frances', firstName: 'Rossini', age: 36 },
-        { id: 9, lastName: 'Roxie', firstName: 'Harvey', age: 65 },
-    ];
+    const onModalClose = () => setShowModal(false);
     return (
-        <div>
+        <div >
             <div id="html-dist">
                 <ReactApexChart options={chartData.options} series={chartData.series} type="bar" height={450} />
             </div>
-            {showModal && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-                    <div className="bg-white p-4 rounded-lg shadow-lg  flex h-44">
+            <div className=''>
+                <Modal onClose={onModalClose} isOpen={showModal} >
+                    <div className=" flex h-[100%]">
                         <div>
-                            <h2>Value: {modalContent}</h2>
-                            <DropdownCom />
+                            <Box sx={{ width: '100%', height: '100%' }}>
+                                <div style={{ height: '100%', overflowY: 'auto' }}>
+                                    <DataGrid
+                                        rows={rows}
+                                        experimentalFeatures={{ columnGrouping: true }}
+                                        columns={columns}
+                                        pageSize={5}
+                                        paginationMode="server"
+                                        disableSelectionOnClick
+                                        editMode="row"
+                                        rowHeight={24}
+                                        hideFooterSelectedRowCount
+                                        columnHeaderHeight={30}
+                                        autoHeight
+                                        columnGroupingModel={columnGroupingModel}
+                                        sx={{
+                                            '& .MuiDataGrid-columnHeader': {
+                                                background: 'linear-gradient(180deg, #afafae, #ffffff)',
+                                                textAlign: 'center',
+                                                fontSize: '14px',
+                                                fontWeight: '400',
+                                                borderColor: '#E5E7EB',
+                                                borderWidth: 1,
+                                                borderStyle: 'solid',
+                                            },
+                                            '& .MuiDataGrid-footerContainer': {
+                                                display: 'none'
+                                            },
+                                            '& .MuiDataGrid-cell': {
+                                                fontSize: '11px',
+                                                padding: '1px',
+                                                borderWidth: 1
+                                            },
+                                            '& .MuiDataGrid-columnHeaderTitleContainer.MuiDataGrid-withBorderColor': {
+                                                fontSize: '16px',
+                                                fontWeight: 'bold',
+                                            },
+                                        }}
+                                        hideFooterPagination
+                                        disableColumnSelector
+                                        disableDensitySelector
+                                        disableRowSelectionOnClick
+                                    />
+                                </div>
+                            </Box>
                         </div>
-                        <button onClick={closeModal} className="bg-red-500 h-5  text-white flex justify-end rounded items-center p-1">x</button>
+
+
                     </div>
-                </div>
-            )}
-        </div>
+                </Modal></div >
+        </div >
     );
 };
 

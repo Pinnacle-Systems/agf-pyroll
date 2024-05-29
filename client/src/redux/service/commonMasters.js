@@ -46,13 +46,27 @@ const commonMast = createApi({
             },
             providesTags: ['commonMast'],
         }),
+        getCompCodeData: builder.query({
+            query: ({ params }) => {
+                return {
+                    url: `${COMMON_MAST}/getCompCodeData`,
+                    method: 'GET',
+                    params,
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                }
+            },
+            providesTags: ['commonMast'],
+        }),
     }),
 })
 
 export const {
     useGetFinYearQuery,
     useGetBuyerNameQuery,
-    useGetMonthQuery
+    useGetMonthQuery,
+    useGetCompCodeDataQuery,
 } = commonMast;
 
 export default commonMast;

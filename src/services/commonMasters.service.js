@@ -74,4 +74,27 @@ export async function getMonthData(req, res) {
     }
 }
 
+export async function getCompCodeData(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { } = req.query;
+        const sql =
+            `
+        SELECT A.COMPCODE FROM MONTHLYPAYFRQ A group by A.COMPCODE`
+        console.log(sql, '84');
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+            com: po[0]
+        }))
+
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
 

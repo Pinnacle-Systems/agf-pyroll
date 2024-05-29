@@ -8,7 +8,7 @@ export default function DropdownData({ selectedYear, setSelectedYear }) {
   const [lastItem, setLastItem] = useState(null);
   const { data: finYr } = useGetFinYrQuery()
   const finYear = finYr?.data ? finYr.data : []
-  console.log(lastItem, 'options');
+  console.log(options, 'optionsyr');
   useEffect(() => {
     const mappedOptions = finYear.map((item) => ({
       name: item.finYr,
@@ -30,7 +30,7 @@ export default function DropdownData({ selectedYear, setSelectedYear }) {
         onChange={(e) => setSelectedYear(e.value)}
         options={options}
         placeholder={`${lastItem || 'No data'}`}
-        className="w-full  "
+
         style={{ backgroundColor: 'white', borderRadius: '2px', width: '4.5rem', fontSize: '12px', display: 'flex', flexDirection: 'flex-end' }}
         panelClassName="dropdown-panel-black"
         optionLabel={(option) => (

@@ -273,7 +273,7 @@ export async function getProfitLossData(req, res) {
             ) p
             WHERE  PROFIT IS NOT NULL
      `
-        console.log(sql, 'sql276');
+
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
 
@@ -291,104 +291,156 @@ export async function getProfitLossData(req, res) {
     }
 }
 export async function getCapPlanData(req, res) {
-    const connection = await getConnection(res)
+    const connection = await getConnection(res);
+
     try {
-        const { } = req.query;
-        const sql =
-            `
-            SELECT B.*,A.PLANDELMON MONTH,A.ORDERQTY BOOKED,A.BUYERDELDATE FROM (
-                SELECT SUM(A.ORDERQTY) ORDERQTY ,A.PLANDELMON,MAX(A.BUYERDELDATE) BUYERDELDATE FROM MISORDSALESVAL A 
-                WHERE A.STATUS NOT IN ('Completed','Cancel')
-                AND A.PLANDELMON IN (
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE TO_DATE(SYSDATE) BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                UNION
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE LAST_DAY(TO_DATE(SYSDATE))+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                UNION
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE LAST_DAY(LAST_DAY(TO_DATE(SYSDATE))+1)+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                UNION
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE LAST_DAY(LAST_DAY(LAST_DAY(TO_DATE(SYSDATE))+1)+1)+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                UNION
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE LAST_DAY(LAST_DAY(LAST_DAY(LAST_DAY(TO_DATE(SYSDATE))+1)+1)+1)+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                UNION
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE LAST_DAY(LAST_DAY(LAST_DAY(LAST_DAY(LAST_DAY(TO_DATE(SYSDATE))+1)+1)+1)+1)+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                )  
-                GROUP BY A.PLANDELMON
+        const { getByMonth, clickedMonth, filterCom } = req.query;
+
+        // Log the query parameters to check their values
+        console.log('Query Parameters:', { clickedMonth, filterCom });
+
+        if (clickedMonth !== undefined) {
+            const sql = `
+                SELECT A.CUSTOMER, A.BUYERPONO, A.ORDERNO, SUM(A.ORDERQTY) ORDERQTY, SUM(A.OVALUE) OVALUE FROM (
+                    SELECT A.CUSTOMER, A.BUYERPONO, A.ORDERNO, A.ORDERQTY ORDERQTY, (A.ORDERQTY * A.BUYERPRICE * A.CONVALUE) OVALUE 
+                    FROM MISORDSALESVAL A 
+                    WHERE A.PLANDELMON = :clickedMonth
+                ) A
+                GROUP BY A.CUSTOMER, A.BUYERPONO, A.ORDERNO
+                ORDER BY 1, 2, 3, 4
+            `;
+            const result = await connection.execute(sql, { clickedMonth });
+            const resp = result.rows.map(po => ({
+                customer: po[0],
+                buyerPo: po[1],
+                ordNo: po[2],
+                oQty: po[3],
+                Oval: po[4]
+            }));
+            return res.json({ statusCode: 0, data: resp });
+        } else if (filterCom !== undefined) {
+            let sql
+            sql = `
+                SELECT B.*, A.PLANDELMON MONTH, A.ORDERQTY BOOKED, A.BUYERDELDATE FROM (
+                    SELECT SUM(A.ORDERQTY) ORDERQTY, A.PLANDELMON, MAX(A.BUYERDELDATE) BUYERDELDATE 
+                    FROM MISORDSALESVAL A 
+                    WHERE A.STATUS NOT IN ('Completed', 'Cancel')
+                    AND A.PLANDELMON IN (
+                        SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+                        WHERE TO_DATE(SYSDATE) BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = '${filterCom}'
+                        UNION
+                        SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+                        WHERE LAST_DAY(TO_DATE(SYSDATE)) + 1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = '${filterCom}'
+                        UNION
+                        SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+                        WHERE LAST_DAY(LAST_DAY(TO_DATE(SYSDATE)) + 1) + 1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = '${filterCom}'
+                        UNION
+                        SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+                        WHERE LAST_DAY(LAST_DAY(LAST_DAY(TO_DATE(SYSDATE)) + 1) + 1) + 1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = '${filterCom}'
+                        UNION
+                        SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+                        WHERE LAST_DAY(LAST_DAY(LAST_DAY(LAST_DAY(TO_DATE(SYSDATE)) + 1) + 1) + 1) + 1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = '${filterCom}'
+                        UNION
+                        SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+                        WHERE LAST_DAY(LAST_DAY(LAST_DAY(LAST_DAY(LAST_DAY(TO_DATE(SYSDATE)) + 1) + 1) + 1) + 1) + 1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = '${filterCom}'
+                    )  
+                    GROUP BY A.PLANDELMON
                 ) A
                 CROSS JOIN (
-                SELECT LISTAGG(B.DPARAM,',') WITHIN GROUP (ORDER BY 1) COMPANY,SUM(B.DVALUE) CAPACITY FROM MISREQTAB A
-                JOIN MISREQTABDET B ON A.MISREQTABID = B.MISREQTABID
-                WHERE A.TYPENAME = 'COMPANY CAPACITY'
+                    SELECT LISTAGG(B.DPARAM, ',') WITHIN GROUP (ORDER BY 1) COMPANY, SUM(B.DVALUE) CAPACITY 
+                    FROM MISREQTAB A
+                    JOIN MISREQTABDET B ON A.MISREQTABID = B.MISREQTABID
+                    WHERE A.TYPENAME = 'COMPANY CAPACITY'
                 ) B
                 ORDER BY BUYERDELDATE
-     `
-        const result = await connection.execute(sql)
-        let resp = result.rows.map(po => ({
-            company: po[0],
-            capacity: po[1],
-            month: po[2],
-            booked: po[3]
-        }))
-        return res.json({ statusCode: 0, data: resp })
-    }
-    catch (err) {
+            `;
+            console.log('SQL Query:', sql);
+            const result = await connection.execute(sql);
+            const resp = result.rows.map(po => ({
+                company: po[0],
+                capacity: po[1],
+                month: po[2],
+                booked: po[3]
+            }));
+            return res.json({ statusCode: 0, data: resp });
+        } else {
+            return res.status(400).json({ error: 'Invalid query parameters' });
+        }
+
+    } catch (err) {
         console.error('Error retrieving data:', err);
         res.status(500).json({ error: 'Internal Server Error' });
-    }
-    finally {
-        await connection.close()
+    } finally {
+        await connection.close();
     }
 }
+
+
+
 export async function getFabStsData(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
-        const sql =
-            `
-            SELECT A.PLANDELMON,A.NOOFORD,B.NOOFORD REC,A.NOOFORD-NVL(B.NOOFORD,0) BAL FROM (
-                SELECT COUNT(A.ORDERNO) NOOFORD,A.PLANDELMON,MAX(A.BUYERDELDATE) DELDATE FROM MISORDSALESVAL A 
-                WHERE A.STATUS NOT IN ('Completed','Cancel')
-                AND A.PLANDELMON IN (
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE TO_DATE(SYSDATE) BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                UNION
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE LAST_DAY(TO_DATE(SYSDATE))+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                UNION
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE LAST_DAY(LAST_DAY(TO_DATE(SYSDATE))+1)+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                )  
-                GROUP BY A.PLANDELMON
-                ) A 
-                LEFT JOIN (SELECT COUNT(A.ORDERNO) NOOFORD,A.PLANDELMON FROM MISORDSALESVAL A 
-                WHERE A.FABST = 'NO' AND A.BALQTY > 0 AND A.STATUS NOT IN ('Completed','Cancel')
-                AND A.PLANDELMON IN (
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE TO_DATE(SYSDATE) BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                UNION
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE LAST_DAY(TO_DATE(SYSDATE))+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                UNION
-                SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
-                WHERE LAST_DAY(LAST_DAY(TO_DATE(SYSDATE))+1)+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
-                )  
-                GROUP BY A.PLANDELMON
-                ) B ON A.PLANDELMON = B.PLANDELMON
-                ORDER BY DELDATE
-     `
-        const result = await connection.execute(sql)
-        let resp = result.rows.map(po => ({
-            month: po[0],
-            ord: po[1],
-            rec: po[2],
-            pend: po[3]
-        }))
-        return res.json({ statusCode: 0, data: resp })
+        const { itemWise, modalContent, month } = req.query;
+        if (itemWise) {
+            const sql = `SELECT * FROM MISFABSTATUS A  WHERE A.PLANDELMON = '${month}' AND A.STATUS = '${modalContent}'
+        ORDER BY 1,2,3,4,5,6,7`
+            console.log(sql);
+            const result = await connection.execute(sql)
+            let resp = result.rows.map(po => ({
+                ordNo: po[0],
+                fabric: po[1],
+                pDesign: po[2],
+                pDia: po[3],
+                pkDia: po[4],
+                reqQty: po[5],
+                inQty: po[6],
+                balQty: po[7],
+                plnMnth: po[8],
+                plDt: po[9],
+                sts: po[10],
+            }))
+            return res.json({ statusCode: 0, data: resp })
+        } else {
+            const sql =
+                `
+        SELECT A.PLANDELMON,A.NOOFORD,B.NOOFORD REC,A.NOOFORD-NVL(B.NOOFORD,0) BAL FROM (
+            SELECT COUNT(A.ORDERNO) NOOFORD,A.PLANDELMON,MAX(A.PLANDT) DELDATE FROM MISFABSTATUS A 
+            WHERE A.PLANDELMON IN (
+            SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+            WHERE TO_DATE(SYSDATE) BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
+            UNION
+            SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+            WHERE LAST_DAY(TO_DATE(SYSDATE))+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
+            UNION
+            SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+            WHERE LAST_DAY(LAST_DAY(TO_DATE(SYSDATE))+1)+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
+            )  
+            GROUP BY A.PLANDELMON
+            ) A 
+            LEFT JOIN (SELECT COUNT(A.ORDERNO) NOOFORD,A.PLANDELMON FROM MISFABSTATUS A WHERE A.BALQTY <= 0
+            AND A.PLANDELMON IN (
+            SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+            WHERE TO_DATE(SYSDATE) BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
+            UNION
+            SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+            WHERE LAST_DAY(TO_DATE(SYSDATE))+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
+            UNION
+            SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+            WHERE LAST_DAY(LAST_DAY(TO_DATE(SYSDATE))+1)+1 BETWEEN A.STDT AND A.ENDT AND A.COMPCODE = 'BVK'
+            )  
+            GROUP BY A.PLANDELMON
+            ) B ON A.PLANDELMON = B.PLANDELMON
+            ORDER BY DELDATE
+ `
+            const result = await connection.execute(sql)
+            let resp = result.rows.map(po => ({
+                month: po[0],
+                ord: po[1],
+                rec: po[2],
+                pend: po[3]
+            }))
+            return res.json({ statusCode: 0, data: resp })
+        }
     }
     catch (err) {
         console.error('Error retrieving data:', err);
@@ -403,7 +455,6 @@ export async function getYFActVsPln(req, res) {
     const connection = await getConnection(res);
     try {
         const { filterMonth, filterSupplier, filterYear } = req.query;
-        console.log(filterMonth, filterSupplier, filterYear, '352');
 
         let sql;
 
