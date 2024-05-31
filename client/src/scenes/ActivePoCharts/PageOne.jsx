@@ -28,19 +28,19 @@ const PageOne = ({ selectedYear }) => {
 
 
     return (
-        <div className='bg-gray-200'>
+        <div className=''>
             <div className='grid grid-cols-3 w-full '>
                 <div className='w-[98%] m-3 bg-white rounded'>
-                    <div className='flex w-full text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-between h-[30px] border-2 border-[#E0E0E0] text-gray-800'>
-                        <h1 className='text-gray-800 grow'>Top Items</h1>
 
-                    </div>
+                    <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Top Items</h1>
+
+
                     <div className=''><SortedBarChart topItems={topItems} /></div>
                 </div>
                 <div className='w-[98%] m-3 bg-white rounded'>
-                    <div className='flex w-full text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-between h-[30px] border-2 border-[#E0E0E0] text-gray-800'>
-                        <h1 className='text-gray-800 grow'>Supplier Efficiency</h1>
-                    </div>
+
+                    <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Supplier Efficiency</h1>
+
                     <div className=''>< PieActiveArc suppEfficiency={suppEfficiency} /></div>
 
                 </div>

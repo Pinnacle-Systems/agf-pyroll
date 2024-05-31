@@ -6,7 +6,7 @@ const PieChart = () => {
     const { data } = useGetMisDashboardOrdersInHandQuery({})
     const ordersInHandBuyerWise = data?.data || [];
     return (
-        <div className='w-full h-full mt-5'>
+        <div className='w-full h-full mt-2'>
             <PieChartTemplate id={`mis-ordersinhand${Math.random()}`} data={ordersInHandBuyerWise} valueField='value' categoryField='buyer' />
         </div>
     )

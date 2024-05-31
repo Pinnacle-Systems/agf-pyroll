@@ -126,6 +126,19 @@ const ordManagement = createApi({
             },
             providesTags: ['ordManagement'],
         }),
+        getOrderStsBuyerWise: builder.query({
+            query: ({ params }) => {
+                return {
+                    url: ORD_MANAGEMENT + "/orderStsBuyerWise",
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    params
+                }
+            },
+            providesTags: ['ordManagement'],
+        }),
     }),
 })
 
@@ -138,7 +151,8 @@ export const {
     useGetCapPlanDataQuery,
     useGetFabStsDataQuery,
     useGetYFActVsPlnQuery,
-    useGetPreBudgetQuery
+    useGetPreBudgetQuery,
+    useGetOrderStsBuyerWiseQuery
 } = ordManagement;
 
 export default ordManagement;

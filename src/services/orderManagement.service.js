@@ -498,3 +498,65 @@ GROUP BY B.orderNo, B.customer, B.plandelmon,B.orderQty
         await connection.close();
     }
 }
+
+
+export async function getOrderStatusBuyerWise(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { } = req.query;
+
+        const sql =
+            `
+            SELECT A.FINYR,A.CUSTOMER,SUM(NOOFORD) NOOFORD,SUM(PLTAKEN) PLTAKEN,SUM(CANORD) CANORD,SUM(OCRCOM) OCRCOM,SUM(OCRFOR) OCRFOR,SUM(ACTIVE) ACTIVE FROM 
+            (SELECT A.FINYR,A.CUSTOMER,COUNT(A.ORDERNO) NOOFORD,0 PLTAKEN,0 CANORD,0 OCRCOM,0 OCRFOR,0 ACTIVE FROM MISORDSALESVAL A
+            GROUP BY A.FINYR,A.CUSTOMER
+            UNION ALL
+            SELECT A.FINYR,A.CUSTOMER,0 NOOFORD,COUNT(A.ORDERNO) PLTAKEN,0 CANORD,0 OCRCOM,0 OCRFOR,0 ACTIVE FROM MISORDSALESVAL A
+            WHERE A.ACTPROFIT IS NOT NULL
+            GROUP BY A.FINYR,A.CUSTOMER
+            UNION ALL
+            SELECT A.FINYR,A.CUSTOMER,0 NOOFORD,0 PLTAKEN,COUNT(A.ORDERNO) CANORD,0 OCRCOM,0 OCRFOR,0 ACTIVE FROM MISORDSALESVAL A
+            WHERE A.STATUS = 'Cancel'
+            GROUP BY A.FINYR,A.CUSTOMER
+            UNION ALL
+            SELECT A.FINYR,A.CUSTOMER,0 NOOFORD,0 PLTAKEN,0 CANORD,COUNT(A.ORDERNO) OCRCOM,0 OCRFOR,0 ACTIVE FROM MISORDSALESVAL A
+            WHERE A.COCR = 'YES' AND A.POCR = 'YES' AND A.YFOCR = 'YES' AND A.AOCR = 'YES' AND A.ACTPROFIT IS NULL
+            GROUP BY A.FINYR,A.CUSTOMER
+            UNION ALL
+            SELECT A.FINYR,A.CUSTOMER,0 NOOFORD,0 PLTAKEN,0 CANORD,0 OCRCOM,COUNT(A.ORDERNO) OCRFOR,0 ACTIVE FROM MISORDSALESVAL A
+            WHERE A.COCR <> 'YES' AND A.POCR <> 'YES' AND A.YFOCR <> 'YES' AND A.AOCR <> 'YES' AND A.ACTPROFIT IS NULL
+            AND A.ORDERNO IN (SELECT A.IONO FROM GTOCRSMENTRYDET A)
+            GROUP BY A.FINYR,A.CUSTOMER
+            UNION ALL
+            SELECT A.FINYR,A.CUSTOMER,0 NOOFORD,0 PLTAKEN,0 CANORD,0 OCRCOM,0 OCRFOR,COUNT(A.ORDERNO) ACTIVE FROM MISORDSALESVAL A
+            WHERE A.STATUS = 'In Hand'
+            GROUP BY A.FINYR,A.CUSTOMER
+            ) A
+            GROUP BY A.FINYR,A.CUSTOMER
+            ORDER BY 1,2
+     `
+
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+
+            year: po[0],
+            customer: po[1],
+            orderQty: po[2],
+            plTaken: po[3],
+            cancelOrder: po[4],
+            ocrCom: po[5],
+            ocrFor: po[6],
+            active: po[7],
+
+
+        }))
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}

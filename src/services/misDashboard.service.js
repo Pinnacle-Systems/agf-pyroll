@@ -156,3 +156,34 @@ export async function getActualVsBudgetValueMonthWise(req, res) {
         await connection.close()
     }
 }
+export async function getYearlyComp(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { } = req.query;
+
+        const sql =
+            `
+            SELECT A.FINYR,A.CUSTOMER,SUM(A.ORDERQTY) ORDERQTY FROM MISORDSALESVAL A
+            GROUP BY A.FINYR,A.CUSTOMER
+            ORDER BY 2,1,3
+     `
+
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+
+            year: po[0],
+            customer: po[1],
+            orderQty: po[2],
+
+        }))
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
+

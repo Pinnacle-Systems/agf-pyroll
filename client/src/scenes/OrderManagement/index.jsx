@@ -15,6 +15,7 @@ import FabStsChart from '../../components/FabStatusChart'
 import ChartTable from './ChartTableCombo'
 import DropdownData from '../../Ui Component/modelUi'
 import DropdownDt from '../../Ui Component/dropDownParam'
+import DataTable from './ManagementTable'
 
 const OrderManagement = () => {
     const [selectedYear, setSelectedYear] = useState('');
@@ -52,7 +53,9 @@ const OrderManagement = () => {
     return (
         <div className='h-full w-full overflow-auto'>
             <div className=''> <Header /></div>
-            <div className='grid grid-cols-1 h-[100%]'>
+            <div className='flex flex-col h-[100%] pt-2'>
+                <div className=' h-[50%] w-[40%]'><CardWrapper name={'Order Status Buyer Wise'}> <DataTable /> </CardWrapper></div>
+
                 <div><CardWrapper name={'Fabric Cost-Plan vs Actual'}><ChartTable /></CardWrapper>
                 </div>
                 <div className='grid grid-cols-3 pb-4'>

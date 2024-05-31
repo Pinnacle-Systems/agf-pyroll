@@ -32,7 +32,7 @@ const PieChartTemplate = ({ data = [], valueField = '', categoryField = '', colo
         };
     }, [data, valueField, categoryField, colorList]);
 
-    return <div id="chartdiv" style={{ width: '100%', height: '100%' }} className={className}></div>;
+    return <div id="chartdiv" style={{ width: '100%', height: 350 }} className={className}></div>;
 };
 
 export default PieChartTemplate;
