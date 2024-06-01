@@ -16,6 +16,7 @@ import ChartTable from './ChartTableCombo'
 import DropdownData from '../../Ui Component/modelUi'
 import DropdownDt from '../../Ui Component/dropDownParam'
 import DataTable from './ManagementTable'
+import OrderVsShipped from './OrderVsShipped'
 
 const OrderManagement = () => {
     const [selectedYear, setSelectedYear] = useState('');
@@ -53,21 +54,28 @@ const OrderManagement = () => {
     return (
         <div className='h-full w-full overflow-auto'>
             <div className=''> <Header /></div>
-            <div className='flex flex-col h-[100%] pt-2'>
-                <div className=' h-[50%] w-[40%]'><CardWrapper name={'Order Status Buyer Wise'}> <DataTable /> </CardWrapper></div>
 
-                <div><CardWrapper name={'Fabric Cost-Plan vs Actual'}><ChartTable /></CardWrapper>
-                </div>
-                <div className='grid grid-cols-3 pb-4'>
-                    <div><CardWrapper name={'Profit & Loss Buyer Wise'}>
-                        <div className='flex items-center justify-end w-full text-center'> <label className=' pb-1 text-sm text-center pt-[2px]'>Select :</label> <DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} /> </div>
-                        <NegativeChart plData={plData} />
-                    </CardWrapper></div>
-                    <div className='h-full'><CardWrapper name={'Next 6 Month Production Capacity '}><CapacityPlanner capPlanData={capPlanData} selected={selected} setSelected={setSelected} /></CardWrapper></div>
-                    <div><CardWrapper name={'Upcoming 3 Months Fabric Status'}><FabStsChart fabStatus={fabStatus} id={'upCommingFabSts'} /></CardWrapper></div>
-                </div>
+            <div className='grid grid-cols-2 '>
+                <div className='w-full h-[100%]'>
+                    <DataTable /> </div>
+                <div className=''> <CardWrapper name={'Fabric Cost-Plan vs Actual'}>
+                    <OrderVsShipped />
+                </CardWrapper></div>
+
+            </div >
+            <div className='flex  h-[100%]'>
+                <CardWrapper name={'Fabric Cost-Plan vs Actual'}><ChartTable /></CardWrapper>
             </div>
-        </div>
+            <div className='grid grid-cols-3 '>
+                <div><CardWrapper name={'Profit & Loss Buyer Wise'}>
+                    <div className='flex items-center justify-end w-full text-center'> <label className='  text-sm text-center '>Select :</label> <DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} /> </div>
+                    <NegativeChart plData={plData} />
+                </CardWrapper></div>
+                <div className='h-full'><CardWrapper name={'Next 6 Month Production Capacity '}><CapacityPlanner capPlanData={capPlanData} selected={selected} setSelected={setSelected} /></CardWrapper></div>
+                <div><CardWrapper name={'Upcoming 3 Months Fabric Status'}><FabStsChart fabStatus={fabStatus} id={'upCommingFabSts'} /></CardWrapper></div>
+            </div>
+
+        </div >
     )
 }
 

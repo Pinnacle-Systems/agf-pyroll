@@ -183,7 +183,7 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData, preBudge
                 type: "stackedBar100",
                 color: "#96A669",
                 dataPoints: [
-                    { label: "P&L Not Taken", y: plNotTaken[0] },
+                    { label: "P&L Pending ", y: plNotTaken[0] },
                 ]
             },]
 
@@ -218,21 +218,21 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData, preBudge
                 type: "stackedBar100",
                 color: "#2196F3",
                 dataPoints: [
-                    { label: "P&L Taken", y: fabOcrPend[0] },
+                    { label: "Yarn & Fabric", y: fabOcrPend[0] },
                 ]
             },
             {
                 type: "stackedBar100",
                 color: "#9B59B6",
                 dataPoints: [
-                    { label: "P&L Not Taken", y: cutOcrPend[0] },
+                    { label: "Cutting", y: cutOcrPend[0] },
                 ]
             },
             {
                 type: "stackedBar100",
                 color: "#4CAF50",
                 dataPoints: [
-                    { label: "Cancelled", y: proOcrPend[0] },
+                    { label: "Production", y: proOcrPend[0] },
                 ]
             },]
 
@@ -267,21 +267,21 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData, preBudge
                 type: "stackedBar100",
                 color: "#D49B37",
                 dataPoints: [
-                    { label: "P&L Taken", y: wipFabYarnData[0] },
+                    { label: "WIP Fab", y: wipFabYarnData[0] },
                 ]
             },
             {
                 type: "stackedBar100",
                 color: "#3498DB",
                 dataPoints: [
-                    { label: "P&L Not Taken", y: wipCutData[0] },
+                    { label: "WIP cut", y: wipCutData[0] },
                 ]
             },
             {
                 type: "stackedBar100",
                 color: "#9B59B6",
                 dataPoints: [
-                    { label: "Cancelled", y: wipProData[0] },
+                    { label: "Production", y: wipProData[0] },
                 ]
             },]
 
@@ -324,7 +324,7 @@ const OrderMgmtNumCard = ({ misData, shippedData, ocrPendData, wipData, preBudge
                 type: "stackedBar100",
                 color: "#1ABC9C",
                 dataPoints: [
-                    { label: "App oending", y: appPending[0] },
+                    { label: "App pending", y: appPending[0] },
                 ]
             },
             {

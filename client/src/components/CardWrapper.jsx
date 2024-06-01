@@ -6,7 +6,7 @@ const CardWrapper = ({ name, children }) => {
             <div className={`bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800`}>
                 <span className='text-[16px] font-normal text-black'>{name}</span>
             </div>
-            <div className='h-[100%] p-1  '>
+            <div className='h-[80%] p-1  '>
                 {children}
             </div>
         </div>

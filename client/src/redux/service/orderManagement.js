@@ -139,6 +139,19 @@ const ordManagement = createApi({
             },
             providesTags: ['ordManagement'],
         }),
+        getPlanedVsActualSales: builder.query({
+            query: ({ params }) => {
+                return {
+                    url: ORD_MANAGEMENT + "/plannedVsActualSalesval",
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    params
+                }
+            },
+            providesTags: ['ordManagement'],
+        }),
     }),
 })
 
@@ -152,7 +165,8 @@ export const {
     useGetFabStsDataQuery,
     useGetYFActVsPlnQuery,
     useGetPreBudgetQuery,
-    useGetOrderStsBuyerWiseQuery
+    useGetOrderStsBuyerWiseQuery,
+    useGetPlanedVsActualSalesQuery,
 } = ordManagement;
 
 export default ordManagement;

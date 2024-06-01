@@ -560,3 +560,29 @@ export async function getOrderStatusBuyerWise(req, res) {
         await connection.close()
     }
 }
+export async function getPlanedVsActualSalesVal(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { } = req.query;
+        const sql =
+            `
+            SELECT A.ORDERNO,A.PLANSALESVAL,A.ACTSALVAL FROM MISORDSALESVAL A
+            WHERE A.CUSTOMER = 'TASC' AND A.PLANDELMON = 'January 2024'
+     `
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+
+            orderNo: po[0],
+            planSalesVal: po[1],
+            actSalesVal: po[2],
+        }))
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}

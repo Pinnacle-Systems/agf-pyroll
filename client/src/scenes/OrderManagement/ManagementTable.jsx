@@ -7,34 +7,58 @@ const DataTable = () => {
     const buyerWiseOrdSts = orderSts?.data ? orderSts?.data : [];
     console.log(buyerWiseOrdSts, 'comData');
 
-    // Preprocess data to group by year
+    // Preprocess data to group by customer
     const groupedData = buyerWiseOrdSts.reduce((acc, row) => {
-        const year = row.year;
-        if (!acc[year]) {
-            acc[year] = [];
+        const customer = row.customer;
+        if (!acc[customer]) {
+            acc[customer] = [];
         }
-        acc[year].push(row);
+        acc[customer].push(row);
         return acc;
     }, {});
 
+    const grandTotals = {
+        orderQty: 0,
+        plTaken: 0,
+        cancelOrder: 0,
+        ocrCom: 0,
+        ocrFor: 0,
+    };
+
     const renderGroupedData = () => {
-        return Object.keys(groupedData).map((year, index) => {
-            const rows = groupedData[year];
+        return Object.keys(groupedData).map((customer, index) => {
+            const rows = groupedData[customer];
+
+            // Update grand totals
+            rows.forEach(row => {
+                grandTotals.orderQty += row.orderQty;
+                grandTotals.plTaken += row.plTaken;
+                grandTotals.cancelOrder += row.cancelOrder;
+                grandTotals.ocrCom += row.ocrCom;
+                grandTotals.ocrFor += row.ocrFor;
+            });
+
             return (
                 <React.Fragment key={index}>
-                    <tr >
-                        <td rowSpan={rows.length} className="text-center align-middle border  border-black">{year}</td>
-                        <td className="border border-black text-right text-xs  p-1">{rows[0].customer}</td>
-                        <td className="border border-black text-right text-xs  p-1">{rows[0].orderQty}</td>
-                        <td className="border border-black text-right text-xs  p-1">{rows[0].plTaken}</td>
-                        <td className="border border-black text-right text-xs  p-1">{rows[0].cancelOrder}</td>
+                    <tr className=''>
+                        <td rowSpan={rows.length} className="text-center align-middle border border-gray-300 text-xs font-medium">{customer}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{rows[0].year}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{rows[0].orderQty}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{rows[0].plTaken}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{rows[0].cancelOrder}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{rows[0].ocrCom}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{rows[0].ocrFor}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{rows[0].orderQty + rows[0].plTaken + rows[0].cancelOrder + rows[0].ocrCom + rows[0].ocrFor}</td>
                     </tr>
                     {rows.slice(1).map((row, subIndex) => (
-                        <tr key={`${index}-${subIndex}`} className='even:bg-gray-200 odd:bg-white' >
-                            <td className="border border-black text-right text-xs p-1">{row.customer}</td>
-                            <td className="border border-black text-right  text-xs p-1">{row.orderQty}</td>
-                            <td className="border border-black text-right  text-xs p-1">{row.plTaken}</td>
-                            <td className="border border-black text-right  text-xs p-1">{row.cancelOrder}</td>
+                        <tr key={`${index}-${subIndex}`} className=''>
+                            <td className="border border-gray-300 text-right text-xs font-medium p-1">{row.year}</td>
+                            <td className="border border-gray-300 text-right text-xs font-medium p-1">{row.orderQty}</td>
+                            <td className="border border-gray-300 text-right text-xs font-medium p-1">{row.plTaken}</td>
+                            <td className="border border-gray-300 text-right text-xs font-medium p-1">{row.cancelOrder}</td>
+                            <td className="border border-gray-300 text-right text-xs font-medium p-1">{row.ocrCom}</td>
+                            <td className="border border-gray-300 text-right text-xs font-medium p-1">{row.ocrFor}</td>
+                            <td className="border border-gray-300 text-right text-xs font-medium p-1">{row.orderQty + row.plTaken + row.cancelOrder + row.ocrCom + row.ocrFor}</td>
                         </tr>
                     ))}
                 </React.Fragment>
@@ -42,22 +66,39 @@ const DataTable = () => {
         });
     };
 
+    const grandTotal = grandTotals.orderQty + grandTotals.plTaken + grandTotals.cancelOrder + grandTotals.ocrCom + grandTotals.ocrFor;
+
     return (
-        <div className='h-[100%] overflow-scroll'>
-            <table className="w-[100%] border-collapse  ">
+        <div className='h-[70vh] overflow-scroll '>
+            <h1 className='text-center font-normal text-[16px] bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-black'>Order Status Buyer Wise</h1>
+
+            <table className="w-[100%] h-[50vh] border-collapse">
                 <thead>
                     <tr>
-                        <th className="border border-black p-2 text-sm font-medium">Year</th>
-                        <th className="border border-black p-2 text-sm font-medium">Customer</th>
-                        <th className="border border-black p-2 text-sm font-medium">Order Quantity</th>
-                        <th className="border border-black p-2 text-sm font-medium">PL Taken</th>
-                        <th className="border border-black p-2 text-sm font-medium">Cancel Order</th>
+                        <th className="border border-gray-300 p-2 text-sm font-medium">Customer</th>
+                        <th className="border border-gray-300 p-2 text-sm font-medium">Year</th>
+                        <th className="border border-gray-300 p-2 text-sm font-medium">Order Qty</th>
+                        <th className="border border-gray-300 p-2 text-sm font-medium">PL Taken</th>
+                        <th className="border border-gray-300 p-2 text-sm font-medium">Cancel Order</th>
+                        <th className="border border-gray-300 p-2 text-sm font-medium">OCR Completed</th>
+                        <th className="border border-gray-300 p-2 text-sm font-medium">OCR Forwarded</th>
+                        <th className="border border-gray-300 p-2 text-sm font-medium">Total</th>
                     </tr>
                 </thead>
-                <tbody className="text-sm"> {/* Reduce font size */}
+                <tbody className="text-sm">
                     {renderGroupedData()}
+                    <tr className="bg-green-300 font-semibold ">
+                        <td colSpan={2} className="border border-gray-300 text-right text-xs font-medium p-1">Grand Total</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{grandTotals.orderQty}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{grandTotals.plTaken}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{grandTotals.cancelOrder}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{grandTotals.ocrCom}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{grandTotals.ocrFor}</td>
+                        <td className="border border-gray-300 text-right text-xs font-medium p-1">{grandTotal}</td>
+                    </tr>
                 </tbody>
-            </table></div>
+            </table>
+        </div>
     );
 };
 
