@@ -238,7 +238,7 @@ const Dashboard = () => {
                             disableRowSelectionOnClick
                         />
                     </div>
-                </div>) : (<div className='flex w-full h-full items-center justify-center'>
+                </div>) : (<div className='flex w-full h-[20rem] items-center justify-center'>
                     Select parameters
                 </div>)}
             </div>
