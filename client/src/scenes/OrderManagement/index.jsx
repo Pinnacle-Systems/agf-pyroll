@@ -58,12 +58,12 @@ const OrderManagement = () => {
             <div className='grid grid-cols-2 '>
                 <div className='w-full h-[100%]'>
                     <DataTable /> </div>
-                <div className=''> <CardWrapper name={'Fabric Cost-Plan vs Actual'}>
+                {/* <div className=''> <CardWrapper name={'Fabric Cost-Plan vs Actual'}>
                     <OrderVsShipped />
-                </CardWrapper></div>
+                </CardWrapper></div> */}
 
             </div >
-            <div className='flex  h-[100%]'>
+            <div className='grid grid-cols-1'>
                 <CardWrapper name={'Fabric Cost-Plan vs Actual'}><ChartTable /></CardWrapper>
             </div>
             <div className='grid grid-cols-3 '>

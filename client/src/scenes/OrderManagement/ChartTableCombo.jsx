@@ -195,7 +195,7 @@ const Dashboard = () => {
                     {console.log(yearData, 'yearData')}
                 </div>
                 {console.log(selectedBuyer, selectedMonth, 'buyer')}
-                <div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
+                {orderCount > 0 ? (<div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>
                     <div style={{ flex: '66%', minWidth: '66%' }} className='flex flex-col'>
                         <HighchartsReact
                             highcharts={Highcharts}
@@ -238,7 +238,9 @@ const Dashboard = () => {
                             disableRowSelectionOnClick
                         />
                     </div>
-                </div>
+                </div>) : (<div className='flex w-full h-full items-center justify-center'>
+                    Select parameters
+                </div>)}
             </div>
         </ThemeProvider>
     );
