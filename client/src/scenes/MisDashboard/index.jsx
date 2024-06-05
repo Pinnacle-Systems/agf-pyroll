@@ -17,16 +17,13 @@ const MisDashboard = () => {
                 <OrdersInHand />
                 <OrdersInHandMonthWise />
                 <ActualVsBudgetValueMonthWise />
-
             </div>
             <div className='w-full flex
             justify-center mt-2'>
-
-                {/* <div className='w-[100%]'> <BudgetVsActualReport /></div> */}
+                <div className='w-[100%]'> <BudgetVsActualReport /></div>
             </div>
             <div className='grid grid-cols-1 w-full overflow-scroll'>     <YearlyComparisionBuyerWise /></div>
             <div className='w-[35%]'><BuyerWiseRevenue /></div>
-
         </div>
     )
 }

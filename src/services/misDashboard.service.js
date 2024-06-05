@@ -220,32 +220,61 @@ export async function getBuyerWiseRevenue(req, res) {
 
 
 export async function getActualVsBudget(req, res) {
-    const connection = await getConnection(res)
+    const connection = await getConnection(res);
     try {
-        const { filterYear } = req.query;
+        const { filterMonth, filterSupplier, filterYear, filterAll } = req.query;
 
-        const sql =
-            `
-            SELECT A.orderNo,A.customer,A.budValue,A.ActValue FROM MISORDSALESVALBA A
-            WHERE A.FINYR = '23-24' 
-            ORDER BY 1,2,3,4
-     `
+        let sql = '';
+
+        if (filterAll === 'Detailed') {
+            sql = `
+                SELECT A.FINYR,A.ORDERNO,A.BUYERCODE,A.TYPENAME,A.YARNCOST,A.FABRICCOST,A.ACCCOST,A.CMTCOST,
+                A.OTHERCOST,A.SALECOST,A.ACTPROFIT,A.ACTPROFITPER,A.ORD,A.MON,A.ORDERNO GRP 
+                FROM MISORDBUDACTDETAILS A  
+                WHERE A.TYPENAME <> 'Detailed' AND A.finYr = :filterYear 
+                AND A.BUYERCODE = :filterSupplier  AND A.Mon = :filterMonth
+                ORDER BY BUYERCODE,ORDERNO,ORD`;
+        } else {
+            sql = `
+                SELECT A.FINYR,ORDERNO,A.BUYERCODE,A.TYPENAME,A.YARNCOST,A.FABRICCOST,A.ACCCOST,A.CMTCOST,
+                A.OTHERCOST,A.SALECOST,A.ACTPROFIT,A.ACTPROFITPER,A.ORD,A.MON,A.FINYR||A.MON GRP 
+                FROM MISORDBUDACTCDETAILS A 
+                WHERE A.TYPENAME <> 'Detailed1' AND A.BUYERCODE = :filterSupplier  
+                AND A.Mon = :filterMonth AND A.finYr = :filterYear 
+                ORDER BY BUYERCODE,ORDERNO,ORD`;
+        }
+
         console.log(sql, '2333');
-        const result = await connection.execute(sql)
+        const result = await connection.execute(sql, {
+            filterYear,
+            filterSupplier,
+            filterMonth,
+        });
         let resp = result.rows.map(po => ({
-            orderNo: po[0],
-            customer: po[1],
-            budgetValue: po[2],
-            actualValue: po[3]
+            finYr: po[0],
+            orderNo: po[1],
+            buyerCode: po[2],
+            typeName: po[3],
+            yarnCost: po[4],
+            fabricCost: po[5],
+            accCost: po[6],
+            cmtCost: po[7],
+            otherCost: po[8],
+            saleCost: po[9],
+            actProfit: po[10],
+            actProfitPer: po[11],
+            ord: po[12],
+            mon: po[13],
+        }));
 
-        }))
-        return res.json({ statusCode: 0, data: resp })
-    }
-    catch (err) {
+        return res.json({ statusCode: 0, data: resp });
+    } catch (err) {
         console.error('Error retrieving data:', err);
         res.status(500).json({ error: 'Internal Server Error' });
-    }
-    finally {
-        await connection.close()
+    } finally {
+        await connection.close();
     }
 }
+
+
+

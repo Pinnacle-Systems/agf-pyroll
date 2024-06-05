@@ -4,17 +4,21 @@ import DropdownCom from '../../../Ui Component/modelParam';
 import { useGetBuyerNameQuery, useGetFinYearQuery, useGetMonthQuery } from '../../../redux/service/commonMasters';
 
 const ComparisonTableWithProgressBar = () => {
+    const [selectedOption, setSelectedOption] = useState('Detailed1');
+    console.log(selectedOption, 'select');
+    const handleOptionChange = (event) => {
+        setSelectedOption(event.target.value);
+    };
     const [selectedBuyer, setSelectedBuyer] = useState('');
     const [selectedYear, setSelectedYear] = useState('2022');
     const [selectedMonth, setSelectedMonth] = useState('January');
     const [buyerNm, setBuyerNm] = useState([]);
     const [monthData, setMonthData] = useState([]);
     const [yearData, setYearData] = useState([]);
-    const { data: buyer, isLoading: isbuyerLoad } = useGetBuyerNameQuery({ params: {} });
+    const { data: buyer } = useGetBuyerNameQuery({ params: {} });
     const { data: month } = useGetMonthQuery({ params: { filterYear: selectedYear || '', filterBuyer: selectedBuyer || '' } });
     const { data: year } = useGetFinYearQuery({});
-    console.log(year, 'finyr');
-    const { data: actualVsBuget } = useGetBudgetVsActualQuery({ params: {} });
+    const { data: actualVsBuget } = useGetBudgetVsActualQuery({ params: { filterMonth: selectedMonth || '', filterSupplier: selectedBuyer || '', filterYear: selectedYear || '', filterAll: selectedOption } });
     const budgetVsActualData = actualVsBuget?.data || [];
 
     useEffect(() => {
@@ -24,16 +28,9 @@ const ComparisonTableWithProgressBar = () => {
             const finYearData = (year?.data ? year?.data : []).map((year) => year.finYear)
             setBuyerNm(buyerName);
             setMonthData(monData);
-            setYearData(finYearData)
+            setYearData(finYearData);
         }
     }, [buyer, month, year]);
-
-    const [searchValues, setSearchValues] = useState({
-        orderNo: '',
-        customer: '',
-        plannedPrice: '',
-        actualPrice: '',
-    });
 
     const valueFormatter = (value) => {
         const formattedValue = parseFloat(value ? value : 0).toFixed(2);
@@ -42,7 +39,7 @@ const ComparisonTableWithProgressBar = () => {
 
     // Grouping data by order number and customer
     const groupedOrders = budgetVsActualData.reduce((acc, order) => {
-        const key = `${order.orderNo}-${order.customer}`;
+        const key = `${order.orderNo}-${order.buyerCode}`;
         if (!acc[key]) {
             acc[key] = [];
         }
@@ -50,127 +47,105 @@ const ComparisonTableWithProgressBar = () => {
         return acc;
     }, {});
 
-    const handleSearchChange = (field, value) => {
-        setSearchValues((prevSearchValues) => ({ ...prevSearchValues, [field]: value }));
-    };
-
     return (
         <div className="flex flex-col w-full h-[64vh] pb-4">
             <div className="w-full overflow-scroll">
-                <div className="flex justify-end p-1 w-[100%]">
-                    <div className='flex items-center'>
-                        <label className='text-sm text-center pt-[2px]'>Select :</label>
+                <div className='flex gap-5 justify-end'>
+                    <div className="flex justify-end p-1 w-[100%]">
+                        <h2>Select:</h2>
+                        <div className=" flex px-2">
+                            <div className="flex items-center px-2">
+                                <input
+                                    type="radio"
+                                    id="Detailed1"
+                                    name="view"
+                                    value="Detailed1"
+                                    checked={selectedOption === 'Detailed1'}
+                                    onChange={handleOptionChange}
+                                    className="mr-2"
+                                />
+                                <label htmlFor="all" className="text-gray-700">All</label>
+                            </div>
+                            <div className="flex items-center">
+                                <input
+                                    type="radio"
+                                    id="Detailed"
+                                    name="view"
+                                    value="Detailed"
+                                    checked={selectedOption === 'Detailed'}
+                                    onChange={handleOptionChange}
+                                    className="mr-2"
+                                />
+                                <label htmlFor="detailed" className="text-gray-700">Detailed</label>
+                            </div>
+                        </div>
+
+                        <DropdownCom
+                            selectedBuyer={selectedBuyer}
+                            setSelectedBuyer={setSelectedBuyer}
+                            selectedMonth={selectedMonth}
+                            setSelectedMonth={setSelectedMonth}
+                            selectedYear={selectedYear}
+                            setSelectedYear={setSelectedYear}
+                            options={buyerNm}
+                            monthOptions={monthData}
+                            yearOptions={yearData}
+                            columnHeaderHeight={"30"}
+                        />
                     </div>
-                    <DropdownCom
-                        selectedBuyer={selectedBuyer}
-                        setSelectedBuyer={setSelectedBuyer}
-                        selectedMonth={selectedMonth}
-                        setSelectedMonth={setSelectedMonth}
-                        selectedYear={selectedYear}
-                        setSelectedYear={setSelectedYear}
-                        options={buyerNm}
-                        monthOptions={monthData}
-                        yearOptions={yearData}
-                        columnHeaderHeight={"30"}
-                    />
-                    {console.log(yearData, 'yearData')}
                 </div>
-                <table className="table w-full">
-                    <thead className="bg-[#ADB612]">
-                        <tr>
-                            <th className='w-6 text-[14px] font-semibold py-2 border border-gray-300'>S/No</th>
-                            <th className='w-24 class text-[14px] font-semibold border border-gray-300'>
-                                <div>Order No</div>
-                            </th>
-                            <th className='w-24 class text-[14px] font-semibold'>
-                                <div>Customer</div>
-                            </th>
-                            <th className='text-[14px] font-semibold border border-gray-300 w-8'>Type</th>
-                            <th className='text-[14px] font-semibold border border-gray-300 w-8'>Yarn</th>
-                            <th className='text-[14px] font-semibold border border-gray-300 w-8'>Fabric</th>
-                            <th className='text-[14px] font-semibold border border-gray-300 w-8'>Acc</th>
-                            <th className='text-[14px] font-semibold border border-gray-300 w-8'>CMT</th>
-                            <th className='text-[14px] font-semibold border border-gray-300 w-8'>Com Exp</th>
-                            <th className='text-[14px] font-semibold border border-gray-300 w-8'>Sales</th>
-                            <th className='text-[14px] font-semibold border border-gray-300 w-8'>Profit/Loss</th>
+                <table className="table w-[100%]">
+                    <thead className="bg-[#ADB612] w-[100%]">
+                        <tr className='w-full'>
+                            <th className='text-[14px] font-semibold py-2 border border-gray-300'>S/No</th>
+                            <th className='text-[14px] font-semibold border border-gray-300'>Order No</th>
+                            <th className='text-[14px] font-semibold border border-gray-300'>Customer</th>
+                            <th className='text-[14px] font-semibold border border-gray-300'>Type</th>
+                            <th className='text-[14px] font-semibold border border-gray-300'>Yarn</th>
+                            <th className='text-[14px] font-semibold border border-gray-300'>Fabric</th>
+                            <th className='text-[14px] font-semibold border border-gray-300'>Acc</th>
+                            <th className='text-[14px] font-semibold border border-gray-300'>CMT</th>
+                            <th className='text-[14px] font-semibold border border-gray-300'>Com Exp</th>
+                            <th className='text-[14px] font-semibold border border-gray-300'>Sales</th>
+                            <th className='text-[14px] font-semibold border border-gray-300'>Profit/Loss</th>
                         </tr>
                     </thead>
                     <tbody>
                         {Object.keys(groupedOrders).map((key, index) => (
                             <React.Fragment key={key}>
                                 {groupedOrders[key].map((order, subIndex) => (
-                                    <React.Fragment key={`${index}-${subIndex}`}>
+                                    <tr key={`${index}-${subIndex}`} className={'bg-white'}>
                                         {subIndex === 0 && (
-                                            <tr className={`${(index + subIndex) % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}>
+                                            <>
                                                 <td
                                                     className="text-[13px] text-black border border-gray-300 py-1"
-                                                    rowSpan={2}
+                                                    rowSpan={groupedOrders[key].length}
                                                 >
                                                     {index + 1}
                                                 </td>
                                                 <td
                                                     className="text-[13px] text-black border border-gray-300 py-1"
-                                                    rowSpan={2}
+                                                    rowSpan={groupedOrders[key].length}
                                                 >
                                                     {order.orderNo}
                                                 </td>
                                                 <td
                                                     className="text-[13px] text-black border border-gray-300 py-1"
-                                                    rowSpan={2}
+                                                    rowSpan={groupedOrders[key].length}
                                                 >
-                                                    {order.customer}
+                                                    {order.buyerCode}
                                                 </td>
-                                                <td className="text-[13px] text-black border border-gray-300 py-1">
-                                                    Budget
-                                                </td>
-                                                <td className="text-[13px] text-black border border-gray-300 py-1" align="right">
-                                                    {valueFormatter(order.budgetYarn)}
-                                                </td>
-                                                <td className="text-[13px] text-black border border-gray-300 py-1" align="right">
-                                                    {valueFormatter(order.budgetFabric)}
-                                                </td>
-                                                <td className="text-[13px] text-black border border-gray-300 py-1" align="right">
-                                                    {valueFormatter(order.budgetCmt)}
-                                                </td>
-                                                <td className="text-[13px] text-black border border-gray-300 py-1" align="right">
-                                                    {valueFormatter(order.budgetAccessory)}
-                                                </td>
-                                                <td className="text-[13px] text-black border border-gray-300 py-1" align="right">
-                                                    {valueFormatter(order.budgetSales)}
-                                                </td>
-                                                <td className="text-[13px] text-black border border-gray-300 py-1" align="right">
-                                                    {valueFormatter(order.budgetValue)}
-                                                </td>
-                                                <td className="text-[13px] text-black border border-gray-300 py-1" align="right">
-                                                    {valueFormatter(order.actualValue - order.budgetValue)}
-                                                </td>
-                                            </tr>
+                                            </>
                                         )}
-                                        <tr className={`${(index + subIndex) % 2 === 0 ? 'bg-gray-100' : 'bg-white'}`}>
-                                            <td className="text-[13px] text-black border border-gray-300 py-1 w-8">Actual</td>
-                                            <td className="text-[13px] text-black border border-gray-300 py-1 w-8" align="right">
-                                                {valueFormatter(order.actualYarn)}
-                                            </td>
-                                            <td className="text-[13px] text-black border border-gray-300 py-1 w-8" align="right">
-                                                {valueFormatter(order.actualFabric)}
-                                            </td>
-                                            <td className="text-[13px] text-black border border-gray-300 py-1 w-8" align="right">
-                                                {valueFormatter(order.actualCmt)}
-                                            </td>
-                                            <td className="text-[13px] text-black border border-gray-300 py-1 w-8" align="right">
-                                                {valueFormatter(order.actualAccessory)}
-                                            </td>
-                                            <td className="text-[13px] text-black border border-gray-300 py-1 w-8" align="right">
-                                                {valueFormatter(order.actualSales)}
-                                            </td>
-                                            <td className="text-[13px] text-black border border-gray-300 py-1 w-8" align="right">
-                                                {valueFormatter(order.actualValue)}
-                                            </td>
-                                            <td className="text-[13px] text-black border border-gray-300 py-1" align="right">
-                                                {valueFormatter(order.actualValue - order.budgetValue)}
-                                            </td>
-                                        </tr>
-                                    </React.Fragment>
+                                        <td className="text-[13px] text-black border border-gray-300 py-1">{order.typeName}</td>
+                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.yarnCost)}</td>
+                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.fabricCost)}</td>
+                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.accCost)}</td>
+                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.cmtCost)}</td>
+                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.otherCost)}</td>
+                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.saleCost)}</td>
+                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.actProfit)}</td>
+                                    </tr>
                                 ))}
                             </React.Fragment>
                         ))}
