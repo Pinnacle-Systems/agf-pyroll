@@ -54,14 +54,12 @@ const OrderManagement = () => {
     return (
         <div className='h-full w-full overflow-auto'>
             <div className=''> <Header /></div>
-
             <div className='grid grid-cols-2 '>
                 <div className='w-full h-[100%]'>
                     <DataTable /> </div>
-                {/* <div className=''> <CardWrapper name={'Fabric Cost-Plan vs Actual'}>
+                <div className=''> <CardWrapper name={'Order Value Vs Shipped Value'}>
                     <OrderVsShipped />
-                </CardWrapper></div> */}
-
+                </CardWrapper></div>
             </div >
             <div className='grid grid-cols-1'>
                 <CardWrapper name={'Fabric Cost-Plan vs Actual'}><ChartTable /></CardWrapper>

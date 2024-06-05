@@ -74,6 +74,32 @@ const MisDashboard = createApi({
             },
             providesTags: ['MisDashboard'],
         }),
+        getBuyerWiseRevenue: builder.query({
+            query: ({ params }) => {
+                return {
+                    url: MIS_DASHBOARD + "/buyerWiseRev",
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    params
+                }
+            },
+            providesTags: ['MisDashboard'],
+        }),
+        getBudgetVsActual: builder.query({
+            query: ({ params }) => {
+                return {
+                    url: MIS_DASHBOARD + "/actualVsBudget",
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    params
+                }
+            },
+            providesTags: ['MisDashboard'],
+        }),
 
     }),
 })
@@ -84,6 +110,8 @@ export const {
     useGetMisDashboardOrdersInHandMonthWiseQuery,
     useGetMisDashboardActualVsBudgetValueMonthWiseQuery,
     useGetYearlyCompQuery,
+    useGetBuyerWiseRevenueQuery,
+    useGetBudgetVsActualQuery
 
 } = MisDashboard;
 

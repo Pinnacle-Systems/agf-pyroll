@@ -563,12 +563,16 @@ export async function getOrderStatusBuyerWise(req, res) {
 export async function getPlanedVsActualSalesVal(req, res) {
     const connection = await getConnection(res)
     try {
-        const { } = req.query;
-        const sql =
-            `
-            SELECT A.ORDERNO,A.PLANSALESVAL,A.ACTSALVAL FROM MISORDSALESVAL A
-            WHERE A.CUSTOMER = 'TASC' AND A.PLANDELMON = 'January 2024'
-     `
+        const { filterMonth, filterSupplier, filterYear } = req.query;
+        let sql
+        if (filterMonth || filterYear || filterSupplier) {
+            sql =
+                `
+        SELECT A.ORDERNO,A.PLANSALESVAL,A.ACTSALVAL, A.finyr FROM MISORDSALESVAL A
+        WHERE A.CUSTOMER = '${filterSupplier}' AND A.PLANDELMON = '${filterMonth}' AND FINYR ='${filterYear}'
+ `
+        }
+
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
 

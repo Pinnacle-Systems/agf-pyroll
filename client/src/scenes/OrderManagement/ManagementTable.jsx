@@ -29,7 +29,6 @@ const DataTable = () => {
         return Object.keys(groupedData).map((customer, index) => {
             const rows = groupedData[customer];
 
-            // Update grand totals
             rows.forEach(row => {
                 grandTotals.orderQty += row.orderQty;
                 grandTotals.plTaken += row.plTaken;

@@ -164,7 +164,8 @@ function DataTable({ data, totals }) {
         },
         '& .MuiDataGrid-cell': {
           fontSize: '12.25px',
-          fontWeight: ''
+          fontWeight: '',
+          color: 'black'
 
         },
         '& MuiDataGrid-iconButtonContainer ': {

@@ -84,7 +84,7 @@ const Dashboard = () => {
                     fontSize: '10px'
                 },
                 formatter: function () {
-                    return this.value.toLocaleString(); // Display full value without abbreviation
+                    return this.value.toLocaleString();
                 }
             },
         },
@@ -171,7 +171,9 @@ const Dashboard = () => {
         },
     });
     const getRowClassName = (params) => {
-        return params.id === 'total' ? 'fontWeightBold' : '';
+        const rowClass = params.indexRelativeToCurrentPage % 2 === 0 ? 'bg-gray-100' : 'bg-white';
+        return params.id === 'total' ? 'fontWeightBold' : rowClass;
+
     };
     return (
         <ThemeProvider theme={theme}>
@@ -228,7 +230,9 @@ const Dashboard = () => {
                                 },
                                 '& .MuiDataGrid-footerContainer': {
                                     display: 'none'
-                                }
+                                }, '& .MuiDataGrid-cell': {
+                                    color: 'black',
+                                },
                             }}
                             hideFooterPagination
                             disableColumnFilter

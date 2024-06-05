@@ -31,7 +31,7 @@ const YearlyComChart = () => {
     const options = {
         chart: {
             type: 'line',
-            height: 500,
+            height: 550,
             scrollablePlotArea: {
                 minWidth: orderCount < 10 ? 300 : orderCount < 20 ? 500 : orderCount <= 40 ? 1500 : orderCount <= 65 ? 1500 : orderCount < 85 ? 2500 : orderCount < 120 ? 3000 : orderCount < 150 ? 3500 : 300,
                 scrollPositionX: 0
@@ -113,7 +113,7 @@ const YearlyComChart = () => {
     };
 
     return (
-        <div style={{ flex: '66%', minWidth: '66%' }} className='flex flex-col'>
+        <div style={{ minWidth: '66%' }} className='flex flex-col'>
             <HighchartsReact
                 highcharts={Highcharts}
                 options={options}

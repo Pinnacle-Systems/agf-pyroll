@@ -186,4 +186,66 @@ export async function getYearlyComp(req, res) {
         await connection.close()
     }
 }
+export async function getBuyerWiseRevenue(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { filterYear } = req.query;
 
+        const sql =
+            `
+            SELECT A.CUSTOMER,SUM(A.ACTSALVAL) FROM MISORDSALESVAL A
+            WHERE A.ACTSALVAL > 0 AND A.FINYR = '${filterYear}'
+            GROUP BY A.CUSTOMER
+            ORDER BY 1
+     `
+
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+
+            customer: po[0],
+            revenue: po[1],
+
+
+        }))
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
+
+
+export async function getActualVsBudget(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { filterYear } = req.query;
+
+        const sql =
+            `
+            SELECT A.orderNo,A.customer,A.budValue,A.ActValue FROM MISORDSALESVALBA A
+            WHERE A.FINYR = '23-24' 
+            ORDER BY 1,2,3,4
+     `
+        console.log(sql, '2333');
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+            orderNo: po[0],
+            customer: po[1],
+            budgetValue: po[2],
+            actualValue: po[3]
+
+        }))
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}

@@ -12,7 +12,7 @@ const OrderVsShipped = () => {
     const [buyerNm, setBuyerNm] = useState([]);
     const [monthData, setMonthData] = useState([])
     const [yearData, setYearData] = useState([])
-    const { data: plannedVsActualSales } = useGetPlanedVsActualSalesQuery({ params: {} });
+    const { data: plannedVsActualSales } = useGetPlanedVsActualSalesQuery({ params: { filterMonth: selectedMonth || '', filterSupplier: selectedBuyer || '', filterYear: selectedYear || '' } });
     const { data: buyer, isLoading: isbuyerLoad } = useGetBuyerNameQuery({ params: {} });
     const { data: month } = useGetMonthQuery({ params: { filterYear: selectedYear || '', filterBuyer: selectedBuyer || '' } })
     const { data: year } = useGetFinYearQuery({})
@@ -48,6 +48,11 @@ const OrderVsShipped = () => {
             categories: planVsActSales.map((item) => item.orderNo),
             title: {
                 text: 'Order No'
+            },
+            labels: {
+                style: {
+                    fontSize: '10px'
+                }
             }
         },
         yAxis: {
@@ -56,7 +61,10 @@ const OrderVsShipped = () => {
                 text: 'Value'
             },
             labels: {
-                format: '{value}%'
+                format: '{value}%',
+                style: {
+                    fontSize: '10px'
+                }
             },
             verticalAlign: 'top',
             layout: 'horizontal',
@@ -78,21 +86,22 @@ const OrderVsShipped = () => {
         },
         series: [
             {
-                name: 'Planned',
-                data: planVsActSales.map((item) => item.planSalesVal)
+                name: 'Shipped Val',
+                data: planVsActSales.map((item) => item.actSalesVal)
             },
             {
-                name: 'Actual',
-                data: planVsActSales.map((item) => item.actSalesVal)
+                name: 'Order Val',
+                data: planVsActSales.map((item) => item.planSalesVal)
             },
         ]
     };
 
+
     return (
         <div className='bg-white' style={{ minWidth: '100%', }}>
-            <div className="flex justify-end w-[50%] h-[1.5rem] z-40 ">
+            <div className="flex justify-end w-[60%] h-[1.75rem] z-[40%] ">
                 <div className='flex items-center'>
-                    <label className='text-sm text-center pt-[2px]'>Select :</label>
+                    <label className='text-sm text-center '>Select :</label>
                 </div>
                 <DropdownCom
                     selectedBuyer={selectedBuyer}

@@ -32,7 +32,7 @@ const PageOne = ({ selectedYear }) => {
             <div className='grid grid-cols-3 w-full '>
                 <div className='w-[98%] m-3 bg-white rounded'>
 
-                    <h1 className='text-center font-semibold text-lg bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-gray-800'>Top Items</h1>
+                    <h1 className='text-center font-semibold text-lg  text-center rounded-xs flex items-center justify-center h-[30px] border-2] text-gray-800'>Top Items</h1>
 
 
                     <div className=''><SortedBarChart topItems={topItems} /></div>
