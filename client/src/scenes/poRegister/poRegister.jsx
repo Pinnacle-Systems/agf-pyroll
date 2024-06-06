@@ -151,14 +151,7 @@ function DataTable({ data, totals }) {
           backgroundColor: '#ebe9e9',
 
         },
-        '& .even:hover': {
-          backgroundColor: 'white',
 
-        },
-        '& .odd:hover': {
-          backgroundColor: '#ebe9e9',
-
-        },
         '& .MuiDataGrid-titleContainer': {
           fontSize: '1rem', // Adjust the font size here
         },

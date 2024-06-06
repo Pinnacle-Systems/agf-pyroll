@@ -145,6 +145,11 @@ const FabStsChart = ({ fabStatus }) => {
     ];
 
     const onModalClose = () => setShowModal(false);
+
+    const getRowClassName = (params) => {
+        return params.indexRelativeToCurrentPage % 2 === 0 ? 'even' : 'odd';
+    };
+
     return (
         <div >
             <div id="html-dist">
@@ -169,6 +174,7 @@ const FabStsChart = ({ fabStatus }) => {
                                         columnHeaderHeight={30}
                                         autoHeight
                                         columnGroupingModel={columnGroupingModel}
+                                        getRowClassName={getRowClassName}
                                         sx={{
                                             '& .MuiDataGrid-columnHeader': {
                                                 background: 'linear-gradient(180deg, #afafae, #ffffff)',
@@ -191,6 +197,14 @@ const FabStsChart = ({ fabStatus }) => {
                                                 fontSize: '16px',
                                                 fontWeight: 'bold',
                                             },
+                                            '& .odd': {
+                                                backgroundColor: '#ebe9e9',
+
+                                            },
+                                            '& .even': {
+                                                backgroundColor: 'white',
+
+                                            },
                                         }}
                                         hideFooterPagination
                                         disableColumnSelector
@@ -200,11 +214,10 @@ const FabStsChart = ({ fabStatus }) => {
                                 </div>
                             </Box>
                         </div>
-
-
                     </div>
-                </Modal></div >
-        </div >
+                </Modal>
+            </div>
+        </div>
     );
 };
 

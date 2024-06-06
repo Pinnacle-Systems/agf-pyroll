@@ -6,7 +6,7 @@ import { useGetCapPlanDataQuery } from '../redux/service/orderManagement';
 import Box from '@mui/material/Box';
 import { DataGridPro } from '@mui/x-data-grid-pro';
 import { useDemoData } from '@mui/x-data-grid-generator';
-import { DataGrid, GridToolbarContainer } from '@mui/x-data-grid';
+import { DataGrid, GridToolbarContainer, gridClasses } from '@mui/x-data-grid';
 import { useGetCompCodeDataQuery } from '../redux/service/commonMasters';
 import DropdownDt from '../Ui Component/dropDownParam';
 const ApexChart = ({ capPlanData, selected, setSelected }) => {
@@ -156,6 +156,8 @@ const ApexChart = ({ capPlanData, selected, setSelected }) => {
             )
         },
     ];
+    const getRowClassName = (params) =>
+        `${params.row.id % 2 === 0 ? 'even' : 'odd'} ${gridClasses.row}`;
     return (
         <div id="chart">
             {showModal && (
@@ -179,6 +181,7 @@ const ApexChart = ({ capPlanData, selected, setSelected }) => {
                                                 hideFooterSelectedRowCount
                                                 columnHeaderHeight={30}
                                                 autoHeight
+                                                getRowClassName={getRowClassName}
                                                 columnGroupingModel={columnGroupingModel}
                                                 sx={{
                                                     '& .MuiDataGrid-columnHeader': {
@@ -201,6 +204,14 @@ const ApexChart = ({ capPlanData, selected, setSelected }) => {
                                                     '& .MuiDataGrid-columnHeaderTitleContainer.MuiDataGrid-withBorderColor': {
                                                         fontSize: '16px',
                                                         fontWeight: 'bold',
+                                                    },
+                                                    '& .odd': {
+                                                        backgroundColor: '#ebe9e9',
+
+                                                    },
+                                                    '& .even': {
+                                                        backgroundColor: 'white',
+
                                                     },
                                                 }}
                                                 hideFooterPagination
