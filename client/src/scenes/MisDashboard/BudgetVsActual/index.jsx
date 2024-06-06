@@ -5,7 +5,7 @@ import BudgetVsActualDetReport from './BudgetVsActualReport'
 
 const BudgetVsActualReport = () => {
     return (
-        <CardWrapper name={"Budget Vs Actual Report "}>
+        <CardWrapper name={"Budget Vs Actual Report For Shipped Orders"}>
             <BudgetVsActualDetReport />
         </CardWrapper>
     )

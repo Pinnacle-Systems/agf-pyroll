@@ -5,7 +5,6 @@ import { useGetBuyerNameQuery, useGetFinYearQuery, useGetMonthQuery } from '../.
 
 const ComparisonTableWithProgressBar = () => {
     const [selectedOption, setSelectedOption] = useState('Detailed1');
-    console.log(selectedOption, 'select');
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };
@@ -25,7 +24,7 @@ const ComparisonTableWithProgressBar = () => {
         if (buyer?.data || month?.data) {
             const buyerName = (buyer?.data ? buyer?.data : []).map((item) => item.buyerName);
             const monData = (month?.data ? month?.data : []).map((mon) => mon.month);
-            const finYearData = (year?.data ? year?.data : []).map((year) => year.finYear)
+            const finYearData = (year?.data ? year?.data : []).map((year) => year.finYear);
             setBuyerNm(buyerName);
             setMonthData(monData);
             setYearData(finYearData);
@@ -37,7 +36,6 @@ const ComparisonTableWithProgressBar = () => {
         return isNaN(formattedValue) ? '' : formattedValue.replace(/\B(?=(\d{3})+(?!\d))/g, ',');
     };
 
-    // Grouping data by order number and customer
     const groupedOrders = budgetVsActualData.reduce((acc, order) => {
         const key = `${order.orderNo}-${order.buyerCode}`;
         if (!acc[key]) {
@@ -47,13 +45,18 @@ const ComparisonTableWithProgressBar = () => {
         return acc;
     }, {});
 
+    const findActualProfit = (group, orderNo, buyerCode) => {
+        const actualOrder = group.find(order => order.orderNo === orderNo && order.buyerCode === buyerCode && order.typeName === 'ACTUAL');
+        return actualOrder ? actualOrder.actProfit : null;
+    };
+
     return (
         <div className="flex flex-col w-full h-[64vh] pb-4">
             <div className="w-full overflow-scroll">
                 <div className='flex gap-5 justify-end'>
                     <div className="flex justify-end p-1 w-[100%]">
                         <h2>Select:</h2>
-                        <div className=" flex px-2">
+                        <div className="flex px-2">
                             <div className="flex items-center px-2">
                                 <input
                                     type="radio"
@@ -113,40 +116,49 @@ const ComparisonTableWithProgressBar = () => {
                     <tbody>
                         {Object.keys(groupedOrders).map((key, index) => (
                             <React.Fragment key={key}>
-                                {groupedOrders[key].map((order, subIndex) => (
-                                    <tr key={`${index}-${subIndex}`} className={'bg-white'}>
-                                        {subIndex === 0 && (
-                                            <>
-                                                <td
-                                                    className="text-[13px] text-black border border-gray-300 py-1"
-                                                    rowSpan={groupedOrders[key].length}
-                                                >
-                                                    {index + 1}
-                                                </td>
-                                                <td
-                                                    className="text-[13px] text-black border border-gray-300 py-1"
-                                                    rowSpan={groupedOrders[key].length}
-                                                >
-                                                    {order.orderNo}
-                                                </td>
-                                                <td
-                                                    className="text-[13px] text-black border border-gray-300 py-1"
-                                                    rowSpan={groupedOrders[key].length}
-                                                >
-                                                    {order.buyerCode}
-                                                </td>
-                                            </>
-                                        )}
-                                        <td className="text-[13px] text-black border border-gray-300 py-1">{order.typeName}</td>
-                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.yarnCost)}</td>
-                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.fabricCost)}</td>
-                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.accCost)}</td>
-                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.cmtCost)}</td>
-                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.otherCost)}</td>
-                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.saleCost)}</td>
-                                        <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.actProfit)}</td>
-                                    </tr>
-                                ))}
+                                {groupedOrders[key].map((order, subIndex) => {
+                                    const actualProfit = findActualProfit(groupedOrders[key], order.orderNo, order.buyerCode, order.typeName === 'ACTUAL');
+                                    { console.log(actualProfit, 'actualProfit') }
+                                    return (
+                                        <tr
+                                            key={`${index}-${subIndex}`}
+                                            className={order.typeName === 'BUDGET' ? 'bg-gray-100' : 'bg-white'}
+                                        >
+                                            {subIndex === 0 && (
+                                                <>
+                                                    <td
+                                                        className={`text-[13px] text-black border border-gray-300 py-1 ${order.typeName === 'BUDGET' ? 'bg-white' : ''}`}
+                                                        rowSpan={groupedOrders[key].length}
+                                                    >
+                                                        {index + 1}
+                                                    </td>
+                                                    <td
+                                                        className={`text-[13px] text-black border border-gray-300 py-1 ${order.typeName === 'BUDGET' ? 'bg-white' : ''}`}
+                                                        rowSpan={groupedOrders[key].length}
+                                                    >
+                                                        {order.orderNo}
+                                                    </td>
+                                                    <td
+                                                        className={`text-[13px] text-black border border-gray-300 py-1 ${order.typeName === 'BUDGET' ? 'bg-white' : ''}`}
+                                                        rowSpan={groupedOrders[key].length}
+                                                    >
+                                                        {order.buyerCode}
+                                                    </td>
+                                                </>
+                                            )}
+                                            <td className="text-[13px] text-black border border-gray-300 py-1">{order.typeName}</td>
+                                            <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.yarnCost)}</td>
+                                            <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.fabricCost)}</td>
+                                            <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.accCost)}</td>
+                                            <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.cmtCost)}</td>
+                                            <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.otherCost)}</td>
+                                            <td className="text-[13px] text-black border border-gray-300 py-1 text-right">{valueFormatter(order.saleCost)}</td>
+                                            <td className={`text-[13px] text-black border border-gray-300 py-1 text-right ${order.typeName === 'BUDGET' && actualProfit !== null && order.actProfit < actualProfit ? 'text-black' : 'text-green-500'}`}>
+                                                {valueFormatter(order.actProfit)}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
                             </React.Fragment>
                         ))}
                     </tbody>

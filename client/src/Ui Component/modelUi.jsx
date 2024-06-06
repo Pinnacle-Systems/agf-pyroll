@@ -24,7 +24,8 @@ export default function DropdownData({ selectedYear, setSelectedYear }) {
   }, [finYear]);
 
   return (
-    <div className="card flex justify-end items-center">
+    <div className="card flex justify-end items-center   w-[100%] ">
+      <h4 className="text-[15px]">Select:</h4>
       <Dropdown
         value={selectedYear}
         onChange={(e) => setSelectedYear(e.value)}

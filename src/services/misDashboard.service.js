@@ -34,30 +34,20 @@ export async function get(req, res) {
 export async function getOrdersInHand(req, res) {
     const connection = await getConnection(res)
     try {
-        let result = await connection.execute(`
-        select * from (select customer, count(1) as orders
-        from MISORDSALESVAL 
-        where status = '${IN_HAND}'
-        group by customer
-        order by orders desc)
-        where rownum <= 10 
-union 
-select 'OTHERS' as customer, 
-(
- select sum(orders) from 
-        (
-        select customer, orders, 
-        rownum as row_num 
-        from (select customer, count(1) as orders
-                from MISORDSALESVAL 
-                where status = '${IN_HAND}'
-                group by customer
-                order by orders desc
-                )
-        ) where row_num > 10
-) as orders
-from dual
-        `);
+        const { filterYear } = req.query;
+
+        const sql = ` 
+        SELECT  customer, order_count
+        FROM (
+            SELECT  customer, COUNT(orderno) as order_count
+            FROM MISORDSALESVAL
+            WHERE status = 'In Hand'
+            and finyr = '${filterYear}'
+            GROUP BY status, customer
+            ORDER BY COUNT(orderno) DESC
+        )  where rownum < 10`
+        console.log(sql, '59');
+        let result = await connection.execute(sql);
         result = result.rows.map(row => ({
             buyer: row[0], value: row[1]
         }))

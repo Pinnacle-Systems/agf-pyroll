@@ -2,18 +2,15 @@ export async function getTurnOver(connection, type = "YEAR") {
     let result;
     if (type === "YEAR") {
         result = await connection.execute(`
-        select 
-COALESCE(ROUND(prevValue),0) as prevValue,
-COALESCE(ROUND(currentValue),0) as currentValue
-from (
-select 
-(select sum(actsalval) 
-from MISORDSALESVAL
-where extract(YEAR from bpodate) = extract(YEAR from CURRENT_DATE)) as currentValue,
-(select sum(actsalval) 
-from MISORDSALESVAL
-where extract(YEAR from bpodate) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -12) )) as prevValue
-from dual) a
+        SELECT 
+        COALESCE(ROUND(prevValue), 0) AS prevValue,
+        COALESCE(ROUND(currentValue), 0) AS currentValue
+    FROM (
+        SELECT 
+        (SELECT SUM(actsalval) FROM MISORDSALESVAL WHERE finyr = '23-24') AS prevValue,
+            (SELECT SUM(actsalval) FROM MISORDSALESVAL WHERE finyr = '24-25') AS currentValue
+        FROM dual
+    )
      `)
     } else if (type === "MONTH") {
         result = await connection.execute(`
@@ -53,11 +50,10 @@ from (
 select 
 (select sum(actprofit) 
 from MISORDSALESVAL
-where extract(YEAR from bpodate) = extract(YEAR from CURRENT_DATE)
-) as currentValue,
+WHERE finyr = '24-25') as currentValue,
 (select sum(actprofit) 
 from MISORDSALESVAL
-where extract(YEAR from bpodate) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -12) )) as prevValue
+WHERE finyr = '23-24') as prevValue
 from dual) a
      `)
     } else if (type === "MONTH") {
@@ -91,22 +87,24 @@ export async function getNewCustomers(connection, type = "YEAR") {
     let result;
     if (type === "YEAR") {
         result = await connection.execute(`
-        select 
+        SELECT 
         COALESCE(ROUND(prevValue),0) as prevValue,
-        COALESCE(ROUND(currentValue),0) as currentValue
-        from (
-        select 
-        (select sum(actsalval) 
-        from MISORDSALESVAL
-        where extract(YEAR from bpodate) = extract(YEAR from CURRENT_DATE)
-        and extract(YEAR from CUSCRDT) = extract(YEAR from CURRENT_DATE)
-        ) as currentValue,
-        (select sum(actsalval) 
-        from MISORDSALESVAL
-        where extract(YEAR from bpodate) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -12) )
-        and extract(YEAR from CUSCRDT) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -12))
-        ) as prevValue
-        from dual) a
+          COALESCE(ROUND(currentValue),0) as currentValue
+          from(
+          SELECT(  
+       SELECT
+        sum(MISORDSALESVAL.actsalval)
+       FROM MISORDSALESVAL 
+       LEFT JOIN GTFINANCIALYEAR ON GTFINANCIALYEAR.finyr = MISORDSALESVAL.finyr 
+       WHERE TO_CHAR(GTFINANCIALYEAR.STARTDATE, 'YYYY') = extract(YEAR from CUSCRDT) and MISORDSALESVAL.finyr= '24-25'
+       ) as currentValue,
+       (   
+       SELECT
+        sum(MISORDSALESVAL.actsalval)
+       FROM MISORDSALESVAL 
+       LEFT JOIN GTFINANCIALYEAR ON GTFINANCIALYEAR.finyr = MISORDSALESVAL.finyr 
+       WHERE TO_CHAR(GTFINANCIALYEAR.STARTDATE, 'YYYY') = extract(YEAR from CUSCRDT) and MISORDSALESVAL.finyr= '23-24'
+       ) as prevValue from dual)a
      `)
     } else if (type === "MONTH") {
         result = await connection.execute(`
@@ -147,7 +145,7 @@ export async function getTopCustomers(connection, type = "YEAR") {
         from (
         select customer, coalesce(sum(actsalval),0) as turnover
         from MISORDSALESVAL
-        where extract(YEAR from bpodate) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -12))
+        WHERE finyr = '23-24'
         group by customer order by turnover desc
         )
         where rownum <= 5
@@ -157,7 +155,7 @@ select round(sum(turnover))
 from (
 select customer, coalesce(sum(actsalval),0) as turnover
 from MISORDSALESVAL
-where extract(YEAR from bpodate) = extract(YEAR from CURRENT_DATE)
+WHERE finyr = '24-25' 
 group by customer order by turnover desc
 )
 where rownum <= 5
@@ -207,12 +205,12 @@ export async function getLoss(connection, type = "YEAR") {
         COALESCE(ROUND(currentValue),0) as currentValue
 from (
 select 
-(select sum(0 - actprofit) 
+(select sum( actprofit ) 
 from MISORDSALESVAL
-where extract(YEAR from bpodate) = extract(YEAR from CURRENT_DATE) and actprofit < 0) as currentValue  ,
-(select sum(0 - actprofit) 
+       WHERE finyr = '24-25'and actprofit<0) as currentValue  ,
+(select sum(actprofit  ) 
 from MISORDSALESVAL
-where extract(YEAR from bpodate) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, -12) ) and actprofit < 0) as prevValue
+       WHERE finyr = '23-24' and actprofit<0) as prevValue
 from dual) a
      `)
     } else if (type === "MONTH") {

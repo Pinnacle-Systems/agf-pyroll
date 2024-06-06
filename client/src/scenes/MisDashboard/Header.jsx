@@ -10,7 +10,7 @@ const Header = () => {
         <>
             <div className='bg-[#ADB612] h-[30px] flex justify-center items-center font-semibold'>
                 {/* <Dropdown type={type} setType={setType} /> */}
-                <h1>Current Year Status</h1>
+                <h1> Yearly Status</h1>
             </div>
             <div className='h-[25%]'>
                 <NumericCard misData={misData} />

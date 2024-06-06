@@ -20,7 +20,7 @@ const PieChartTemplate = ({ data = [], valueField = '', categoryField = '', colo
         series.dataFields.value = valueField;
         series.dataFields.category = categoryField;
         series.labels.template.wrap = true;
-        series.labels.template.maxWidth = 100;
+        series.labels.template.maxWidth = 60;
         series.labels.template.truncate = true;
 
         series.labels.template.fontSize = 11;
