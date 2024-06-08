@@ -6,6 +6,7 @@ import ActualVsBudgetValueMonthWise from './ActualVsBudgetValueMonthWise'
 import YearlyComparisionBuyerWise from './comParision'
 import BuyerWiseRevenue from './BuyerWiseRev'
 import BudgetVsActualReport from './BudgetVsActual'
+import ShortShip from './ShortShipment'
 
 
 
@@ -23,7 +24,8 @@ const MisDashboard = () => {
                 <div className='w-[100%]'> <BudgetVsActualReport /></div>
             </div>
             <div className='grid grid-cols-1 w-full overflow-scroll'>     <YearlyComparisionBuyerWise /></div>
-            <div className='w-[35%]'><BuyerWiseRevenue /></div>
+            <div className='flex w-full h-[80%] '>   <div className='w-[35%]'><BuyerWiseRevenue /></div>
+                <div className='w-[65%] h-[100%] overflow-y-scroll '><ShortShip /></div></div>
         </div>
     )
 }

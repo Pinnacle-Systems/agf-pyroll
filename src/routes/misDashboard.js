@@ -1,6 +1,6 @@
 import { Router } from 'express';
 
-import { get, getActualVsBudget, getActualVsBudgetValueMonthWise, getBuyerWiseRevenue, getOrdersInHand, getOrdersInHandMonthWise, getYearlyComp } from '../services/misDashboard.service.js';
+import { get, getActualVsBudget, getActualVsBudgetValueMonthWise, getBuyerWiseRevenue, getOrdersInHand, getOrdersInHandMonthWise, getShortShipmentRatio, getYearlyComp } from '../services/misDashboard.service.js';
 
 const router = Router();
 
@@ -17,5 +17,7 @@ router.get('/yearlyComp', getYearlyComp)
 router.get('/buyerWiseRev', getBuyerWiseRevenue)
 
 router.get('/actualVsBudget', getActualVsBudget)
+
+router.get('/shortShipment', getShortShipmentRatio)
 
 export default router;

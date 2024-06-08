@@ -266,5 +266,47 @@ export async function getActualVsBudget(req, res) {
     }
 }
 
+export async function getShortShipmentRatio(req, res) {
+    const connection = await getConnection(res)
+    try {
+        const { filterYear } = req.query;
 
+        const sql =
+            `
+            SELECT 
+            orderNo,
+            customer,
+            orderQty,
+            shipQty,
+            (shipQty - orderQty) AS difference,
+            ROUND((shipQty - orderQty) / orderQty * 100, 2) AS difference_percentage
+        FROM 
+            MISORDSALESVAL
+        WHERE 
+            status = 'Completed' 
+            AND finyr = '23-24'
+        ORDER BY 
+            orderQty DESC
+     `
+
+        const result = await connection.execute(sql)
+        let resp = result.rows.map(po => ({
+            orderNo: po[0],
+            customer: po[1],
+            orderQty: po[2],
+            shipQty: po[3],
+            diffrence: po[4]
+
+
+        }))
+        return res.json({ statusCode: 0, data: resp })
+    }
+    catch (err) {
+        console.error('Error retrieving data:', err);
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
+    finally {
+        await connection.close()
+    }
+}
 

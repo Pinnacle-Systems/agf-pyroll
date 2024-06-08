@@ -6,7 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { useGetYFActVsPlnQuery } from '../../redux/service/orderManagement';
 import { useGetBuyerNameQuery, useGetFinYearQuery, useGetMonthQuery } from '../../redux/service/commonMasters';
 import DropdownCom from '../../Ui Component/modelParam';
-
+import { HiOutlineRefresh } from "react-icons/hi";
 const Dashboard = () => {
     const [selectedMonth, setSelectedMonth] = useState('');
     const [selectedBuyer, setSelectedBuyer] = useState('');
@@ -14,7 +14,7 @@ const Dashboard = () => {
     const [buyerNm, setBuyerNm] = useState([]);
     const [monthData, setMonthData] = useState([])
     const [yearData, setYearData] = useState([])
-    const { data: fabPlVsActFull, isLoading: isyfActVsPlLoadingFull } = useGetYFActVsPlnQuery({ params: { filterMonth: selectedMonth || '', filterSupplier: selectedBuyer || '', filterYear: selectedYear || '' } });
+    const { data: fabPlVsActFull, isLoading: isyfActVsPlLoadingFull, refetch } = useGetYFActVsPlnQuery({ params: { filterMonth: selectedMonth || '', filterSupplier: selectedBuyer || '', filterYear: selectedYear || '' } });
     console.log(selectedYear, 'selectedTear');
     const { data: buyer, isLoading: isbuyerLoad } = useGetBuyerNameQuery({ params: {} });
     const { data: month } = useGetMonthQuery({ params: { filterYear: selectedYear || '', filterBuyer: selectedBuyer || '' } })
@@ -41,7 +41,7 @@ const Dashboard = () => {
     console.log(totalActual, 'toasl');
     const options = {
         chart: {
-            type: 'line',
+            type: 'column',
             scrollablePlotArea: {
                 minWidth: orderCount < 10 ? 300 : orderCount < 20 ? 500 : orderCount <= 40 ? 1500 : orderCount <= 65 ? 2000 : orderCount < 85 ? 2500 : orderCount < 120 ? 3000 : orderCount < 150 ? 3500 : 300,
                 scrollPositionX: 0
@@ -59,7 +59,7 @@ const Dashboard = () => {
                     fontSize: '10px'
                 }
             },
-            categories: fabPlVsActFullDt.map((order) => order.ordeNo.toString()),
+            categories: fabPlVsActFullDt.map((order) => order.ordeNo),
             labels: {
                 rotation: -90,
                 step: 1,
@@ -88,24 +88,14 @@ const Dashboard = () => {
                 }
             },
         },
-        tooltip: {
-            shared: true,
-            split: true,
-            stickOnContact: true,
-            style: {
-                fontSize: '10px'
-            },
-            formatter: function () {
-                const points = this.points.map(point => point.y.toLocaleString());
-                return `<b>Order No: ${this.x}</b><br/>Planned: ${points[0]}<br/>Actual: ${points[1]} `;
-            }
-        },
+
         plotOptions: {
-            line: {
-                lineWidth: 4,
+            column: {
+                pointWidth: 20,
+                stacking: 'percent',
                 states: {
                     hover: {
-                        lineWidth: 5
+                        pointWidth: 20
                     }
                 },
                 marker: {
@@ -178,7 +168,8 @@ const Dashboard = () => {
     return (
         <ThemeProvider theme={theme}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div className="flex justify-end">
+                <div className="flex justify-end ">
+
                     <div className='flex items-center'>
                         <label className='text-sm text-center pt-[2px]'>Select :</label>
                     </div>
@@ -194,7 +185,16 @@ const Dashboard = () => {
                         yearOptions={yearData}
                         columnHeaderHeight={"30"}
                     />
-                    {console.log(yearData, 'yearData')}
+                    <div className='flex  group relative'>
+                        <button
+                            className=' bg-sky-500 rounded-sm p-1 flex items-center justify-center h-[30px] text-center font-normal text-[16px] border-2 border-[#E0E0E0]'
+                            onClick={() => refetch()}>
+                            <HiOutlineRefresh />
+                        </button>
+                        <span className='group-hover:opacity-100 transition-opacity bg-gray-800 px-1 bottom-5 text-sm text-gray-100 rounded-md -translate-x-1/2 absolute opacity-0 z-40'>
+                            Refresh
+                        </span>
+                    </div>
                 </div>
                 {console.log(selectedBuyer, selectedMonth, 'buyer')}
                 {orderCount > 0 ? (<div style={{ display: 'flex', flexDirection: 'row', gap: '20px' }}>

@@ -4,13 +4,14 @@ import Box from '@mui/material/Box';
 import { DataGrid, GridToolbarContainer } from '@mui/x-data-grid';
 import { useGetFabStsDataQuery } from '../redux/service/orderManagement';
 import Modal from '../Ui Component/popUpModel';
+import { HiOutlineRefresh } from 'react-icons/hi';
 
 const FabStsChart = ({ fabStatus }) => {
     const [showModal, setShowModal] = useState(false);
     const [modalContent, setModalContent] = useState(null);
     const [month, setMonth] = useState(null);
     const [barVal, setBarVal] = useState(null);
-    const { data: fabSts, isLoading: isFabStsLoading } = useGetFabStsDataQuery({ params: { itemWise: true, modalContent, month } });
+    const { data: fabSts, isLoading: isFabStsLoading, refetch } = useGetFabStsDataQuery({ params: { itemWise: true, modalContent, month } });
 
     const closeModal = () => {
         setShowModal(false);
@@ -153,6 +154,17 @@ const FabStsChart = ({ fabStatus }) => {
     return (
         <div >
             <div id="html-dist">
+
+                <div className='flex  group relative justify-end'>
+                    <button
+                        className=' bg-sky-500 rounded-sm p-1 flex items-center justify-center h-[30px] text-center font-normal text-[16px] border-2 border-[#E0E0E0]'
+                        onClick={() => refetch()}>
+                        <HiOutlineRefresh />
+                    </button>
+                    <span className='group-hover:opacity-100 transition-opacity bg-gray-800 px-1 bottom-6 text-sm text-gray-100 rounded-md -translate-x-1/2 absolute opacity-0 z-40'>
+                        Refresh
+                    </span>
+                </div>
                 <ReactApexChart options={chartData.options} series={chartData.series} type="bar" height={450} />
             </div>
             <div className=''>

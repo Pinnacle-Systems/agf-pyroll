@@ -17,6 +17,7 @@ import DropdownData from '../../Ui Component/modelUi'
 import DropdownDt from '../../Ui Component/dropDownParam'
 import DataTable from './ManagementTable'
 import OrderVsShipped from './OrderVsShipped'
+import { HiOutlineRefresh } from 'react-icons/hi'
 
 const OrderManagement = () => {
     const [selectedYear, setSelectedYear] = useState('');
@@ -24,7 +25,7 @@ const OrderManagement = () => {
     const [capPlanData, setCapPlanData] = useState(null)
     const [fabStatus, setFabStatus] = useState(null)
     const [selected, setSelected] = useState(null)
-    const { data: proLsData, isLoading: isPlLoading } = useGetProfitLossDataQuery({ params: { filterYear: (selectedYear?.name ? selectedYear.name : '' || selectedYear) } })
+    const { data: proLsData, isLoading: isPlLoading, refetch: profitRefetch } = useGetProfitLossDataQuery({ params: { filterYear: (selectedYear?.name ? selectedYear.name : '' || selectedYear) } })
     console.log(selected, 'selected');
     const { data: capPlaData, isLoading: isCapPlanLoading } = useGetCapPlanDataQuery({ params: { filterCom: (selected?.name ? selected.name : '' || selected) } })
     const { data: fabSts, isLoading: isFabStsLoading } = useGetFabStsDataQuery({ params: {} })
@@ -66,7 +67,18 @@ const OrderManagement = () => {
             </div>
             <div className='grid grid-cols-3 '>
                 <div><CardWrapper name={'Profit & Loss Buyer Wise'}>
-                    <div className='flex items-center justify-end w-full text-center'> <label className='  text-sm text-center '>Select :</label> <DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} /> </div>
+                    <div className='flex items-center justify-end w-full text-center'> <DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
+                        <div className='flex  group relative'>
+                            <button
+                                className=' bg-sky-500 rounded-sm p-1 flex items-center justify-center h-[30px] text-center font-normal text-[16px] border-2 border-[#E0E0E0]'
+                                onClick={() => profitRefetch()}>
+                                <HiOutlineRefresh />
+                            </button>
+                            <span className='group-hover:opacity-100 transition-opacity bg-gray-800 px-1 bottom-6 text-sm text-gray-100 rounded-md -translate-x-1/2 absolute opacity-0 z-40'>
+                                Refresh
+                            </span>
+                        </div>
+                    </div>
                     <NegativeChart plData={plData} />
                 </CardWrapper></div>
                 <div className='h-full'><CardWrapper name={'Next 6 Month Production Capacity '}><CapacityPlanner capPlanData={capPlanData} selected={selected} setSelected={setSelected} /></CardWrapper></div>

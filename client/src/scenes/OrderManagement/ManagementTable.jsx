@@ -1,8 +1,9 @@
 import React from 'react';
 import { useGetOrderStsBuyerWiseQuery } from '../../redux/service/orderManagement';
+import { HiOutlineRefresh } from 'react-icons/hi';
 
 const DataTable = () => {
-    const { data: orderSts } = useGetOrderStsBuyerWiseQuery({ params: {} });
+    const { data: orderSts, refetch } = useGetOrderStsBuyerWiseQuery({ params: {} });
     console.log(orderSts, 'sts');
     const buyerWiseOrdSts = orderSts?.data ? orderSts?.data : [];
     console.log(buyerWiseOrdSts, 'comData');
@@ -64,12 +65,30 @@ const DataTable = () => {
             );
         });
     };
-
     const grandTotal = grandTotals.orderQty + grandTotals.plTaken + grandTotals.cancelOrder + grandTotals.ocrCom + grandTotals.ocrFor;
-
     return (
         <div className='h-[70vh] overflow-scroll '>
-            <h1 className='text-center font-normal text-[16px] bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-black'>Order Status Buyer Wise</h1>
+            <div className=' flex items-center'>
+                <h1 className='w-full text-center font-normal text-[16px] bg-gradient-to-b from-[#afafae] text-center rounded-xs flex items-center justify-center h-[30px] border-2 border-[#E0E0E0] text-black'>
+                    Order Status Buyer Wise
+                </h1>
+                <div className='  flex items-center justify-end'>
+                    <div className='flex  group relative'>
+                        <button
+                            className=' bg-sky-500 rounded-sm p-1 flex items-center justify-center h-[30px] text-center font-normal text-[16px] border-2 border-[#E0E0E0]'
+                            onClick={() => refetch()}>
+                            <HiOutlineRefresh />
+                        </button>
+                        <span className='group-hover:opacity-100 transition-opacity bg-gray-800 px-1 right-1 text-sm text-gray-100 rounded-md -translate-x-1/2 absolute opacity-0 z-40'>
+                            Refresh
+                        </span>
+                    </div>
+                </div>
+            </div>
+
+
+
+
 
             <table className="w-[100%] h-[50vh] border-collapse">
                 <thead>
@@ -97,7 +116,7 @@ const DataTable = () => {
                     </tr>
                 </tbody>
             </table>
-        </div>
+        </div >
     );
 };
 

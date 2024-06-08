@@ -100,6 +100,19 @@ const MisDashboard = createApi({
             },
             providesTags: ['MisDashboard'],
         }),
+        getShortShipmantRatio: builder.query({
+            query: ({ params }) => {
+                return {
+                    url: MIS_DASHBOARD + "/shortShipment",
+                    method: 'GET',
+                    headers: {
+                        'Content-type': 'application/json; charset=UTF-8',
+                    },
+                    params
+                }
+            },
+            providesTags: ['MisDashboard'],
+        }),
 
     }),
 })
@@ -111,7 +124,8 @@ export const {
     useGetMisDashboardActualVsBudgetValueMonthWiseQuery,
     useGetYearlyCompQuery,
     useGetBuyerWiseRevenueQuery,
-    useGetBudgetVsActualQuery
+    useGetBudgetVsActualQuery,
+    useGetShortShipmantRatioQuery
 
 } = MisDashboard;
 

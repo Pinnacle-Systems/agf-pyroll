@@ -9,12 +9,13 @@ import { useDemoData } from '@mui/x-data-grid-generator';
 import { DataGrid, GridToolbarContainer, gridClasses } from '@mui/x-data-grid';
 import { useGetCompCodeDataQuery } from '../redux/service/commonMasters';
 import DropdownDt from '../Ui Component/dropDownParam';
+import { HiOutlineRefresh } from 'react-icons/hi';
 const ApexChart = ({ capPlanData, selected, setSelected }) => {
 
     const [showModal, setShowModal] = useState(false);
     const [clickedMonth, setClickedMonth] = useState(null);
 
-    const { data: capPlaData, isLoading: isCapPlanLoading } = useGetCapPlanDataQuery({ params: { getByMonth: true, clickedMonth } })
+    const { data: capPlaData, isLoading: isCapPlanLoading, refetch } = useGetCapPlanDataQuery({ params: { getByMonth: true, clickedMonth } })
     const { data: compCode } = useGetCompCodeDataQuery({ params: {} })
 
     const seriesData = capPlanData.map(item => ({
@@ -230,7 +231,17 @@ const ApexChart = ({ capPlanData, selected, setSelected }) => {
 
                 </Modal>
             )}
-            <DropdownDt option={comCode} selected={selected} setSelected={setSelected} />
+            <div className='flex w-full justify-end'> <label htmlFor="">Select:</label> <DropdownDt option={comCode} selected={selected} setSelected={setSelected} />
+                <div className='flex  group relative'>
+                    <button
+                        className=' bg-sky-500 rounded-sm p-1 flex items-center justify-center h-[30px] text-center font-normal text-[16px] border-2 border-[#E0E0E0]'
+                        onClick={() => refetch()}>
+                        <HiOutlineRefresh />
+                    </button>
+                    <span className='group-hover:opacity-100 transition-opacity bg-gray-800 px-1 bottom-6 text-sm text-gray-100 rounded-md -translate-x-1/2 absolute opacity-0 z-40'>
+                        Refresh
+                    </span>
+                </div></div>
             <Chart options={options} series={options.series} type="bar" height={450} />
         </div>
     );

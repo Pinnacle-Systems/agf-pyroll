@@ -33,10 +33,10 @@ const OrderVsShipped = () => {
 
     const options = {
         chart: {
-            type: 'bar',
+            type: 'column',
             backgroundColor: '#ffffff',
             scrollablePlotArea: {
-                minHeight: orderCount < 10 ? 300 : orderCount < 20 ? 500 : orderCount <= 40 ? 1500 : orderCount <= 65 ? 2000 : orderCount < 85 ? 3500 : orderCount < 120 ? 4000 : orderCount < 150 ? 3500 : 4000,
+                minWidth: orderCount < 10 ? 300 : orderCount < 20 ? 500 : orderCount <= 40 ? 1500 : orderCount <= 65 ? 2000 : orderCount < 85 ? 3500 : orderCount < 120 ? 4000 : orderCount < 150 ? 3500 : 4000,
                 scrollPositionX: 0
             },
             height: 450
@@ -50,10 +50,15 @@ const OrderVsShipped = () => {
                 text: 'Order No'
             },
             labels: {
+                rotation: -90,
+                step: 1,
                 style: {
-                    fontSize: '10px'
+                    fontSize: '12px'
                 }
-            }
+            },
+            scrollbar: {
+                enabled: true
+            },
         },
         yAxis: {
             min: 0,
@@ -76,14 +81,20 @@ const OrderVsShipped = () => {
             layout: 'horizontal'
         },
         plotOptions: {
-            series: {
+            column: {
+                pointWidth: 20,
                 stacking: 'percent',
-                dataLabels: {
-                    enabled: true,
-                    format: '{point.y:.2f}'
-                }
+                states: {
+                    hover: {
+                        pointWidth: 20
+                    }
+                },
+                marker: {
+                    enabled: false
+                },
             }
         },
+
         series: [
             {
                 name: 'Shipped Val',
@@ -95,6 +106,7 @@ const OrderVsShipped = () => {
             },
         ]
     };
+
 
 
     return (

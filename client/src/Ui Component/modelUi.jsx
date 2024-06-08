@@ -5,6 +5,7 @@ import { useGetFinYrQuery } from "../redux/service/poData";
 export default function DropdownData({ selectedYear, setSelectedYear }) {
 
   const [options, setOptions] = useState([]);
+  const [selectLast, setSelectLast] = useState([])
   const [lastItem, setLastItem] = useState(null);
   const { data: finYr } = useGetFinYrQuery()
   const finYear = finYr?.data ? finYr.data : []
@@ -21,7 +22,15 @@ export default function DropdownData({ selectedYear, setSelectedYear }) {
         setSelectedYear(finYear[finYear.length - 1].finYr);
       }
     }
+
+    if (finYear.length > 0) {
+      setSelectLast(finYear[finYear.length - 1].finYr);
+      if (!selectedYear) {
+        setSelectedYear(finYear[finYear.length - 1].finYr);
+      }
+    }
   }, [finYear]);
+
 
   return (
     <div className="card flex justify-end items-center   w-[100%] ">

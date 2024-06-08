@@ -7,8 +7,7 @@ import { fontSize, fontWeight } from '@mui/system';
 
 Highcharts3D(Highcharts);
 
-const BuyerWiseRevenueGen = ({ selectedYear }) => {
-    const { data: buyerRev } = useGetBuyerWiseRevenueQuery({ params: { filterYear: (selectedYear?.name ? selectedYear.name : '' || selectedYear) } });
+const BuyerWiseRevenueGen = ({ buyerRev }) => {
     const buyerWiseRev = buyerRev?.data ? buyerRev?.data : [];
     console.log(buyerRev);
 

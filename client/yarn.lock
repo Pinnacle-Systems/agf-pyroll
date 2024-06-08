@@ -10887,10 +10887,10 @@
     "ansi-styles" "^5.0.0"
     "react-is" "^18.0.0"
 
-"primereact@^10.6.3":
-  "integrity" "sha512-1jCg81ebdmTGS5+1mbqNOLxTBD1Bcg9YqInrlghz9l2/akRIoSB9krnXEi14h8h/X4CH4EdAEHs0FF3Lj+IO8w=="
-  "resolved" "https://registry.npmjs.org/primereact/-/primereact-10.6.3.tgz"
-  "version" "10.6.3"
+"primereact@^10.6.6":
+  "integrity" "sha512-+C0Bt6vS/jh09DQVS4UXpVctbvqJDUC3t3mVdGmhmIINYD8kdfL3fvc3bUGniGxkKKzwkSYdAQXhZlcgj8LUgw=="
+  "resolved" "https://registry.npmjs.org/primereact/-/primereact-10.6.6.tgz"
+  "version" "10.6.6"
   dependencies:
     "@types/react-transition-group" "^4.4.1"
     "react-transition-group" "^4.4.1"
