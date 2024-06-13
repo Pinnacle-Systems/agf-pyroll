@@ -19,7 +19,7 @@ const BuyerWiseRevenueGen = ({ buyerRev }) => {
                 alpha: 40
             },
             backgroundColor: '#FFFFFF',
-            width: 450,
+            width: 650,
             height: 400
         },
         title: {
@@ -40,7 +40,7 @@ const BuyerWiseRevenueGen = ({ buyerRev }) => {
         },
         plotOptions: {
             pie: {
-                innerSize: 60,
+                innerSize: 100,
                 depth: 45,
                 dataLabels: {
                     formatter: function () {

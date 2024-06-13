@@ -2,50 +2,49 @@ import React, { useState, useEffect } from "react";
 import { Dropdown } from 'primereact/dropdown';
 import { useGetFinYrQuery } from "../redux/service/poData";
 
-export default function DropdownData({ selectedYear, setSelectedYear }) {
-
+export default function DropdownData({ selectedYear, setSelectedYear, previousYear = null, setPreviousYear = () => { } }) {
   const [options, setOptions] = useState([]);
-  const [selectLast, setSelectLast] = useState([])
   const [lastItem, setLastItem] = useState(null);
-  const { data: finYr } = useGetFinYrQuery()
-  const finYear = finYr?.data ? finYr.data : []
-  console.log(options, 'optionsyr');
+  const { data: finYr } = useGetFinYrQuery();
+  const finYear = finYr?.data ? finYr.data : [];
+  // const [previousYear, setPreviousYear] = useState(null);
   useEffect(() => {
     const mappedOptions = finYear.map((item) => ({
       name: item.finYr,
+      value: item.finYr,
     }));
     setOptions(mappedOptions);
 
     if (finYear.length > 0) {
-      setLastItem(finYear[finYear.length - 1].finYr);
+      const lastYear = finYear[finYear.length - 1].finYr;
+      setLastItem(lastYear);
+
       if (!selectedYear) {
-        setSelectedYear(finYear[finYear.length - 1].finYr);
+        setSelectedYear(lastYear);
+      }
+
+      const selectedIndex = finYear.findIndex(item => item.finYr === selectedYear);
+      if (selectedIndex > 0) {
+        const preYear = finYear[selectedIndex - 1].finYr
+        console.log(preYear);
+        setPreviousYear(preYear, 'pre');
+      } else {
+        setPreviousYear(null);
       }
     }
-
-    if (finYear.length > 0) {
-      setSelectLast(finYear[finYear.length - 1].finYr);
-      if (!selectedYear) {
-        setSelectedYear(finYear[finYear.length - 1].finYr);
-      }
-    }
-  }, [finYear]);
-
-
+  }, [finYear, selectedYear, setSelectedYear]);
+  console.log(previousYear, 'prev');
   return (
-    <div className="card flex justify-end items-center   w-[100%] ">
-      <h4 className="text-[15px]">Select:</h4>
+    <div className="flex justify-end items-center w-[100%]">
+      <h4 className="text-[15px]">Select: </h4>
       <Dropdown
         value={selectedYear}
         onChange={(e) => setSelectedYear(e.value)}
         options={options}
         placeholder={`${lastItem || 'No data'}`}
-
-        style={{ backgroundColor: 'white', borderRadius: '2px', width: '4.5rem', fontSize: '12px', display: 'flex', flexDirection: 'flex-end' }}
+        style={{ backgroundColor: 'white', borderRadius: '2px', width: '3rem', fontSize: '12px', display: 'flex', flexDirection: 'flex-end' }}
         panelClassName="dropdown-panel-black"
-        optionLabel={(option) => (
-          <span style={{ backgroundColor: 'white' }}>{option.name}</span>
-        )}
+        optionLabel="name" // Use the label correctly
       />
     </div>
   );

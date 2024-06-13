@@ -82,7 +82,7 @@ const OrderVsShipped = () => {
         },
         plotOptions: {
             column: {
-                pointWidth: 20,
+                pointWidth: 30,
                 stacking: 'percent',
                 states: {
                     hover: {
@@ -95,6 +95,36 @@ const OrderVsShipped = () => {
             }
         },
 
+        tooltip: {
+            shared: true,
+            split: true,
+            stickOnContact: true,
+            style: {
+                fontSize: '12px',
+            },
+            formatter: function () {
+                const points = this.points.map(point => {
+                    return { year: point.series.name, value: point.y };
+                });
+
+                const year1 = points.find(p => p.year === 'Order Val');
+                const year2 = points.find(p => p.year === 'Shipped Val');
+                const diff = year1 && year2 ? (year2.value - year1.value) : null;
+
+                return `
+                    <div style="">
+                        <b>OrderNo: ${this.x}</b><br/>
+                        ${points.map(point => `
+                            ${point.year}: <span style="width: auto; margin-left: 20px; color: ${point.year ? 'blue' : 'blue'}">${point.value.toLocaleString()}</span>`).join('<br>')}<br/>
+                      
+                    </div>
+                `;
+            }
+        }
+
+
+
+        ,
         series: [
             {
                 name: 'Shipped Val',
@@ -105,8 +135,7 @@ const OrderVsShipped = () => {
                 data: planVsActSales.map((item) => item.planSalesVal)
             },
         ]
-    };
-
+    }
 
 
     return (

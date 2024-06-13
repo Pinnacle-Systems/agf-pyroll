@@ -6,12 +6,13 @@ import { getTopCustomers, getProfit, getTurnOver, getNewCustomers, getLoss } fro
 export async function get(req, res) {
     const connection = await getConnection(res)
     try {
-        const { type } = req.query
-        const totalTurnOver = await getTurnOver(connection, type);
-        const profit = await getProfit(connection, type);
-        const newCustomers = await getNewCustomers(connection, type);
-        const topCustomers = await getTopCustomers(connection, type);
-        const loss = await getLoss(connection, type);
+        const { type, filterYear, previousYear } = req.query
+
+        const totalTurnOver = await getTurnOver(connection, type, filterYear, previousYear);
+        const profit = await getProfit(connection, type, filterYear, previousYear);
+        const newCustomers = await getNewCustomers(connection, type, filterYear, previousYear);
+        const topCustomers = await getTopCustomers(connection, type, filterYear, previousYear);
+        const loss = await getLoss(connection, type, filterYear, previousYear);
         return res.json({
             statusCode: 0, data: {
                 totalTurnOver,
@@ -46,7 +47,7 @@ export async function getOrdersInHand(req, res) {
             GROUP BY status, customer
             ORDER BY COUNT(orderno) DESC
         )  where rownum < 10`
-        console.log(sql, '59');
+
         let result = await connection.execute(sql);
         result = result.rows.map(row => ({
             buyer: row[0], value: row[1]
@@ -88,7 +89,7 @@ export async function getOrdersInHandMonthWise(req, res) {
         )
 
         const sql = monthArr.join('union')
-        console.log(sql, 'sql 101');
+
         let result = await connection.execute(`select * from (${sql}) order by yearOnly,monthOnly`);
         result = result.rows.map(row => ({
             date: row[0], planned: row[3], actual: row[4]
@@ -130,6 +131,7 @@ export async function getActualVsBudgetValueMonthWise(req, res) {
         `
         )
         const sql = monthArr.join('union')
+        console.log(sql, 'sql133');
         let result = await connection.execute(`select * from (${sql}) order by yearOnly,monthOnly`);
         result = result.rows.map(row => ({
             date: row[0], planned: row[3], actual: row[4]
@@ -234,7 +236,7 @@ export async function getActualVsBudget(req, res) {
                 ORDER BY BUYERCODE,ORDERNO,ORD`;
         }
 
-        console.log(sql, '2333');
+
         const result = await connection.execute(sql, {
             filterYear,
             filterSupplier,
@@ -269,25 +271,32 @@ export async function getActualVsBudget(req, res) {
 export async function getShortShipmentRatio(req, res) {
     const connection = await getConnection(res)
     try {
-        const { filterYear } = req.query;
-
-        const sql =
-            `
-            SELECT 
-            orderNo,
-            customer,
-            orderQty,
-            shipQty,
-            (shipQty - orderQty) AS difference,
-            ROUND((shipQty - orderQty) / orderQty * 100, 2) AS difference_percentage
-        FROM 
-            MISORDSALESVAL
-        WHERE 
-            status = 'Completed' 
-            AND finyr = '23-24'
-        ORDER BY 
-            orderQty DESC
-     `
+        const { filterYear, filterMonth, filterSupplier } = req.query;
+        let sql
+        if (filterMonth || filterSupplier || filterYear) {
+            sql =
+                `
+        SELECT 
+        orderNo,
+        customer,
+        orderQty,
+        shipQty,
+        (shipQty - orderQty) AS difference,
+        ROUND((shipQty - orderQty) / orderQty * 100, 2) AS difference_percentage
+    FROM 
+        MISORDSALESVAL
+    WHERE 
+        status = 'Completed' 
+        AND finyr = '${filterYear}'
+        AND customer = '${filterSupplier}'
+        AND ACTDELMON = '${filterMonth}'
+    ORDER BY 
+        difference_percentage DESC
+ `
+        } else {
+            res.status(200).json({ message: 'filterMonth and filterSupplier are required' });
+            return;
+        }
 
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
@@ -295,8 +304,8 @@ export async function getShortShipmentRatio(req, res) {
             customer: po[1],
             orderQty: po[2],
             shipQty: po[3],
-            diffrence: po[4]
-
+            diffrence: po[4],
+            percentage: po[5]
 
         }))
         return res.json({ statusCode: 0, data: resp })

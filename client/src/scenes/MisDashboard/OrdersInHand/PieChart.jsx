@@ -15,7 +15,8 @@ const PieChart = () => {
     console.log(ordersInHandBuyerWise, 'order');
     return (
         <div className='w-full h-full '>
-            <div className='flex w-full justify-end'><DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
+            <div className='flex w-full justify-end'>
+                <DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
                 <div className='flex  group relative'>
                     <button
                         className=' bg-sky-500 rounded-sm p-1 flex items-center justify-center h-[30px] text-center font-normal text-[16px] border-2 border-[#E0E0E0]'

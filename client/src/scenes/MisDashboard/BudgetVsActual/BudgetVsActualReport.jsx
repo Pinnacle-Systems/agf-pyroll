@@ -5,7 +5,7 @@ import { useGetBuyerNameQuery, useGetFinYearQuery, useGetMonthQuery } from '../.
 import { HiOutlineRefresh } from 'react-icons/hi';
 
 const ComparisonTableWithProgressBar = () => {
-    const [selectedOption, setSelectedOption] = useState('Detailed1');
+    const [selectedOption, setSelectedOption] = useState('Detailed');
     const handleOptionChange = (event) => {
         setSelectedOption(event.target.value);
     };

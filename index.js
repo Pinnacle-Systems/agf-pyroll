@@ -14,7 +14,8 @@ import {
   supplier,
   poData,
   misDashboard,
-  ordManagement
+  ordManagement,
+  user
 } from "./src/routes/index.js"
 
 const app = express()
@@ -48,7 +49,9 @@ app.use('/poData', poData)
 app.use('/misDashboard', misDashboard)
 
 app.use('/ordManagement', ordManagement)
-const PORT = 8080;
+
+app.use('/user', user)
+const PORT = 8000;
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}.`);

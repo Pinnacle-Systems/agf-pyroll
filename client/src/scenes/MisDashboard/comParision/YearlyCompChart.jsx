@@ -99,11 +99,11 @@ const YearlyComChart = () => {
         },
         plotOptions: {
             column: {
-                columnWidth: 8,
                 stacking: 'normal',
+                pointWidth: 30,
                 states: {
                     hover: {
-                        columnWidth: 8
+                        pointWidth: 30
                     }
                 },
                 marker: {
@@ -113,6 +113,7 @@ const YearlyComChart = () => {
         },
         series: series,
     };
+
 
     return (
         <div style={{ minWidth: '66%' }} className='flex flex-col'>

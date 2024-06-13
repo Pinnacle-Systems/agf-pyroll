@@ -54,12 +54,10 @@ const Dashboard = () => {
             text: ''
         },
         xAxis: {
-            title: {
-                style: {
-                    fontSize: '10px'
-                }
-            },
             categories: fabPlVsActFullDt.map((order) => order.ordeNo),
+            title: {
+                text: 'Order No'
+            },
             labels: {
                 rotation: -90,
                 step: 1,
@@ -88,7 +86,6 @@ const Dashboard = () => {
                 }
             },
         },
-
         plotOptions: {
             column: {
                 pointWidth: 20,
@@ -103,17 +100,36 @@ const Dashboard = () => {
                 },
             }
         },
+        legend: {
+            itemStyle: {
+                fontWeight: 'bold'
+            },
+            symbolHeight: 12,
+            symbolWidth: 12,
+            symbolRadius: 1,
+        },
         series: [
             {
                 name: 'Planned',
-                data: fabPlVsActFullDt.map((order) => [order.orderNo, order.planed]),
+                data: fabPlVsActFullDt.map((order) => ({
+                    y: order.planed,
+                    color: order.planed ? '#358CFB' : '#FB4A35'
+                })),
+                color: '#358CFB',
             },
             {
                 name: 'Actual',
-                data: fabPlVsActFullDt.map((order) => [order.orderNo, order.actual]),
+                data: fabPlVsActFullDt.map((order) => ({
+                    y: order.actual,
+                    color: order.actual ? '#FB4A35' : '#358CFB'
+                })),
+                color: '#FB4A35',
             },
         ],
     };
+
+
+
 
 
     const orderDataGridRows = [

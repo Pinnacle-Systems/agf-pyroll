@@ -26,7 +26,6 @@ const OrderManagement = () => {
     const [fabStatus, setFabStatus] = useState(null)
     const [selected, setSelected] = useState(null)
     const { data: proLsData, isLoading: isPlLoading, refetch: profitRefetch } = useGetProfitLossDataQuery({ params: { filterYear: (selectedYear?.name ? selectedYear.name : '' || selectedYear) } })
-    console.log(selected, 'selected');
     const { data: capPlaData, isLoading: isCapPlanLoading } = useGetCapPlanDataQuery({ params: { filterCom: (selected?.name ? selected.name : '' || selected) } })
     const { data: fabSts, isLoading: isFabStsLoading } = useGetFabStsDataQuery({ params: {} })
     const profitLossData = useMemo(() => proLsData?.data ? proLsData?.data : [], [proLsData])

@@ -1,4 +1,4 @@
-export const BASE_URL = 'http://192.168.1.37:8080'
+export const BASE_URL = 'http://192.168.1.37:8000'
 // export const BASE_URL = process.env.REACT_APP_SERVER_URL
 export const PO_REGISTER = '/poRegister'
 export const COMMON_MAST = '/commonMast'
@@ -6,3 +6,4 @@ export const SUPPLIER = '/supplier'
 export const PO_DATA = '/poData'
 export const MIS_DASHBOARD = '/misDashboard'
 export const ORD_MANAGEMENT = '/ordManagement'
+export const USER_API = '/user'
