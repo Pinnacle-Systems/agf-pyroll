@@ -7,9 +7,6 @@ import YearlyComparisionBuyerWise from './comParision'
 import BuyerWiseRevenue from './BuyerWiseRev'
 import BudgetVsActualReport from './BudgetVsActual'
 import ShortShip from './ShortShipment'
-
-
-
 const MisDashboard = () => {
     return (
         <div className='h-full w-full overflow-auto px-1'>
