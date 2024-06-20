@@ -24,24 +24,7 @@ const Dashboard = () => {
       <Helmet>
         <title>Dashboard | ReactDashX</title>
       </Helmet>
-      {/* <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
-        <Box>
-          <Button
-            sx={{
-              backgroundColor: colors.blueAccent[700],
-              color: colors.grey[100],
-              fontSize: '14px',
-              fontWeight: 'bold',
-              padding: '5px 12px',
-              borderRadius: '4px',
-            }}
-          >
-            <DownloadIcon sx={{ mr: '8px' }} />
-            Download Reports
-          </Button>
-        </Box>
-      </Box> */}
+
 
       {/* Grid & Charts */}
       <Box

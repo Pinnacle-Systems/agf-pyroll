@@ -19,7 +19,7 @@ import DataTable from './ManagementTable'
 import OrderVsShipped from './OrderVsShipped'
 import { HiOutlineRefresh } from 'react-icons/hi'
 
-const OrderManagement = () => {
+const OrderManagement = () => { 
     const [selectedYear, setSelectedYear] = useState('');
     const [plData, setPlData] = useState(null)
     const [capPlanData, setCapPlanData] = useState(null)

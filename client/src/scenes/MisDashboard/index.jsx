@@ -14,7 +14,7 @@ const MisDashboard = () => {
     return (
         <div className='h-full w-full overflow-auto px-1'>
             <Header />
-            <div className='grid grid-cols-3    gap-2 mt-2 '>
+            <div className='grid grid-cols-3 gap-2 mt-2 '>
                 <OrdersInHand />
                 <OrdersInHandMonthWise />
                 <ActualVsBudgetValueMonthWise />

@@ -90,11 +90,12 @@ const ShortShipmentRatio = () => {
             <table className="min-w-full bg-white border border-gray-200">
                 <thead>
                     <tr>
-                        <th className="py-1 px-2 border font-medium">Order No</th>
-                        <th className="py-1 px-2 border font-medium">Order Qty</th>
-                        <th className="py-1 px-2 border font-medium">Ship Qty</th>
-                        <th className="py-1 px-2 border font-medium">Difference</th>
-                        <th className="py-1 px-2 border font-medium">Percentage</th>
+                        <th className="py-1 px-2 border font-medium text-sm">Order No</th>
+                        <th className="py-1 px-2 border font-medium text-sm">Order Qty</th>
+                        <th className="py-1 px-2 border font-medium text-sm">Ship Qty</th>
+                        <th className="py-1 px-2 border font-medium text-sm">Difference</th>
+                        <th className="py-1 px-2 border font-medium text-sm">Percentage</th>
+
                     </tr>
                 </thead>
                 <tbody>
