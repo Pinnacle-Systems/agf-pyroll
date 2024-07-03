@@ -13,11 +13,11 @@ const oracledb = require('oracledb');
 //       password: "PSSDEMOGAR_MAY2023",
 //       connectString: "203.95.216.155:1555/AVT05p",
 // };
-const dbConfig = {
-      user: "pssbsa",
-      password: "PSSBSA_MAY2023",
-      connectString: "203.95.216.155:1556/AVT06p",
-};
+// const dbConfig = {
+//       user: "pssbsa",
+//       password: "PSSBSA_MAY2023",
+//       connectString: "203.95.216.155:1556/AVT06p",
+// };
 // const dbConfig = {
 //       user: "TIPLAGF",
 //       password: "TIPLAGF555",
