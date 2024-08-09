@@ -1,18 +1,21 @@
 import { getConnection } from "../constants/db.connection.js";
 import { IN_HAND } from "../constants/dbConstants.js";
-import { getTopCustomers, getProfit, getTurnOver, getNewCustomers, getLoss } from "../queries/misDashboard.js";
+import { getTopCustomers, getProfit, getEmployees, getNewCustomers, getLoss }
+    from "../queries/misDashboard.js";
 
 
 export async function get(req, res) {
     const connection = await getConnection(res)
     try {
-        const { type, filterYear, previousYear } = req.query
+        const { type, filterYear, filterBuyer, filterMonth } = req.query
 
-        const totalTurnOver = await getTurnOver(connection, type, filterYear, previousYear);
-        const profit = await getProfit(connection, type, filterYear, previousYear);
-        const newCustomers = await getNewCustomers(connection, type, filterYear, previousYear);
-        const topCustomers = await getTopCustomers(connection, type, filterYear, previousYear);
-        const loss = await getLoss(connection, type, filterYear, previousYear);
+        console.log(filterBuyer, filterMonth, 'total');
+        const totalTurnOver = await getEmployees(connection, type, filterYear, filterBuyer, filterMonth);
+        const profit = await getProfit(connection, type, filterYear, filterBuyer, filterMonth);
+        console.log(profit, 'totla');
+        const newCustomers = await getNewCustomers(connection, type, filterYear, filterBuyer, filterMonth);
+        const topCustomers = await getTopCustomers(connection, type, filterYear, filterBuyer, filterMonth);
+        const loss = await getLoss(connection, type, filterYear, filterMonth);
         return res.json({
             statusCode: 0, data: {
                 totalTurnOver,
@@ -35,22 +38,31 @@ export async function get(req, res) {
 export async function getOrdersInHand(req, res) {
     const connection = await getConnection(res)
     try {
-        const { filterYear } = req.query;
+        const { filterYear, filterBuyer } = req.query;
 
         const sql = ` 
-        SELECT  customer, order_count
-        FROM (
-            SELECT  customer, COUNT(orderno) as order_count
-            FROM MISORDSALESVAL
-            WHERE status = 'In Hand'
-            and finyr = '${filterYear}'
-            GROUP BY status, customer
-            ORDER BY COUNT(orderno) DESC
-        )  where rownum < 10`
-
+SELECT X.SLAP,COUNT(X.SLAP) VAL FROM (
+SELECT CASE WHEN X.AGE BETWEEN 18 AND 25 THEN '18 - 25'
+WHEN X.AGE BETWEEN 25 AND 35 THEN '25 - 35' 
+WHEN X.AGE BETWEEN 35 AND 45 THEN '35 - 45' 
+WHEN X.AGE BETWEEN 45 AND 65 THEN '45 - 60'
+WHEN X.AGE > 60 THEN '60 Above'  END SLAP FROM (
+SELECT MONTHS_BETWEEN(TRUNC(SYSDATE),A.DOB)/12 AGE FROM MISTABLE A WHERE A.COMPCODE = '${filterBuyer}'
+AND A.DOJ <= (
+SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
+) AND (A.DOL IS NULL OR A.DOL <= (
+SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
+) )
+) X
+) X
+WHERE X.SLAP IS NOT NULL
+GROUP BY X.SLAP
+ORDER BY 1
+`
+        console.log(sql, 'sql60');
         let result = await connection.execute(sql);
         result = result.rows.map(row => ({
-            buyer: row[0], value: row[1]
+            buyer: row[0], value: row[1], female: row[2], total: row[3]
         }))
         return res.json({
             statusCode: 0, data: result
@@ -68,29 +80,19 @@ export async function getOrdersInHand(req, res) {
 export async function getOrdersInHandMonthWise(req, res) {
     const connection = await getConnection(res)
     try {
-        const monthArr = [-6, -5, -4, -3, -2, -1, 0, 1, 2, 3, 4, 5, 6].map(i =>
+        const monthArr =
             `
-            select 
-            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'Mon-YYYY') as monthYear ,
-            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'MM') as monthOnly ,
-            to_char(ADD_MONTHS(CURRENT_DATE, ${i}), 'YYYY') as yearOnly ,
-            (
-            select count(1) from MISORDSALESVAL 
-            where extract(YEAR from planshipdt) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, ${i}))
-            and extract(MONTH from planshipdt) = extract(MONTH from ADD_MONTHS(CURRENT_DATE, ${i}))
-            ) AS PLANNED,
-            (
-            select count(1) from MISORDSALESVAL 
-            where extract(YEAR from actshipdt) = extract(YEAR from ADD_MONTHS(CURRENT_DATE, ${i}))
-            and extract(MONTH from actshipdt) = extract(MONTH from ADD_MONTHS(CURRENT_DATE, ${i}))
-            ) AS ACTUAL
-            FROM DUAL
+        SELECT B.PAYPERIOD,B.STDT,A.COMPCODE,COUNT(*) ATTRITION FROM MISTABLE A
+JOIN MONTHLYPAYFRQ B ON A.COMPCODE = B.COMPCODE 
+AND B.FINYR = :FINYEAR AND A.COMPCODE = :COMPCODE
+AND A.DOL BETWEEN B.STDT AND B.ENDT
+GROUP BY B.PAYPERIOD,B.STDT,A.COMPCODE
+ORDER BY 2
         `
-        )
 
-        const sql = monthArr.join('union')
 
-        let result = await connection.execute(`select * from (${sql}) order by yearOnly,monthOnly`);
+
+        let result = await connection.execute(monthArr);
         result = result.rows.map(row => ({
             date: row[0], planned: row[3], actual: row[4]
         }))
@@ -155,17 +157,23 @@ export async function getYearlyComp(req, res) {
 
         const sql =
             `
-            SELECT A.FINYR,A.CUSTOMER,SUM(A.ORDERQTY) ORDERQTY FROM MISORDSALESVAL A
-            GROUP BY A.FINYR,A.CUSTOMER
-            ORDER BY 2,1,3
+           SELECT A.COMPCODE,SUM(MALE) MALE,SUM(FEMALE) FEMALE,SUM(MALE)+SUM(FEMALE) TOTAL FROM (
+SELECT A.COMPCODE,CASE WHEN A.GENDER = 'MALE' THEN 1 ELSE 0 END MALE,
+CASE WHEN A.GENDER = 'FEMALE' THEN 1 ELSE 0 END FEMALE FROM MISTABLE A WHERE  A.DOJ <= (
+SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE AA.PAYPERIOD = 'July 2024' 
+) AND (A.DOL IS NULL OR A.DOL <= (
+SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE AA.PAYPERIOD = 'July 2024'
+) )
+) A
+GROUP BY A.COMPCODE
      `
 
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
 
-            year: po[0],
-            customer: po[1],
-            orderQty: po[2],
+            customer: po[0],
+            male: po[1],
+            female: po[2],
 
         }))
         return res.json({ statusCode: 0, data: resp })
@@ -181,22 +189,45 @@ export async function getYearlyComp(req, res) {
 export async function getBuyerWiseRevenue(req, res) {
     const connection = await getConnection(res)
     try {
-        const { filterYear } = req.query;
-
+        const { filterYear, filterSupplier } = req.query;
+        const supplierArray = filterSupplier.split(',');
+        const sepComName = supplierArray.join('');
+        const supplierList = supplierArray.map(supplier => `'${supplier}'`).join(',');
         const sql =
             `
-            SELECT A.CUSTOMER,SUM(A.ACTSALVAL) FROM MISORDSALESVAL A
-            WHERE A.ACTSALVAL > 0 AND A.FINYR = '${filterYear}'
-            GROUP BY A.CUSTOMER
-            ORDER BY 1
+         SELECT A.PAYPERIOD,A.STDT,A.COMPCODE,ROUND(A.CLOSING/A.OPENING*100,2) RETENTIONPER FROM (
+SELECT A.PAYPERIOD,A.STDT,A.COMPCODE,SUM(A.OPENING) OPENING,SUM(A.ATTRITION) ATTRITION,SUM(A.OPENING) - SUM(A.ATTRITION) + SUM(A.JOINERS) CLOSING FROM (
+SELECT B.PAYPERIOD,B.STDT,A.COMPCODE,0 OPENING,COUNT(*) ATTRITION,0 JOINERS FROM MISTABLE A
+JOIN MONTHLYPAYFRQ B ON A.COMPCODE = B.COMPCODE 
+AND B.FINYR = '${filterYear}' AND A.COMPCODE IN (${supplierList})
+AND A.DOL BETWEEN B.STDT AND B.ENDT
+GROUP BY B.PAYPERIOD,B.STDT,A.COMPCODE
+UNION ALL
+SELECT B.PAYPERIOD,B.STDT,A.COMPCODE,0 OPENING,0 ATTRITION,COUNT(*) JOINERS FROM MISTABLE A
+JOIN MONTHLYPAYFRQ B ON A.COMPCODE = B.COMPCODE 
+AND B.FINYR = '${filterYear}' AND A.COMPCODE  IN (${supplierList})
+AND A.DOJ BETWEEN B.STDT AND B.ENDT
+GROUP BY B.PAYPERIOD,B.STDT,A.COMPCODE
+UNION ALL
+SELECT B.PAYPERIOD,B.STDT,A.COMPCODE,COUNT(*) OPENING,0 ATTRITION,0 JOINERS FROM MISTABLE A
+JOIN MONTHLYPAYFRQ B ON A.COMPCODE = B.COMPCODE 
+AND B.FINYR = '${filterYear}' AND A.COMPCODE  IN (${supplierList})
+AND A.DOJ < B.STDT
+GROUP BY B.PAYPERIOD,B.STDT,A.COMPCODE
+) A
+GROUP BY A.PAYPERIOD,A.STDT,A.COMPCODE
+) A
+ORDER BY 2
      `
+        console.log(sql, '215');
 
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
 
-            customer: po[0],
-            revenue: po[1],
-
+            payPeriod: po[0],
+            stdt: po[1],
+            customer: po[2],
+            retention: po[3],
 
         }))
         return res.json({ statusCode: 0, data: resp })
@@ -214,18 +245,24 @@ export async function getBuyerWiseRevenue(req, res) {
 export async function getActualVsBudget(req, res) {
     const connection = await getConnection(res);
     try {
-        const { filterMonth, filterSupplier, filterYear, filterAll } = req.query;
+        const { filterMonth, filterSupplier, filterYear, filterAll = 'Detailed' } = req.query;
 
         let sql = '';
 
         if (filterAll === 'Detailed') {
             sql = `
-                SELECT A.FINYR,A.ORDERNO,A.BUYERCODE,A.TYPENAME,A.YARNCOST,A.FABRICCOST,A.ACCCOST,A.CMTCOST,
-                A.OTHERCOST,A.SALECOST,A.ACTPROFIT,A.ACTPROFITPER,A.ORD,A.MON,A.ORDERNO GRP 
-                FROM MISORDBUDACTDETAILS A  
-                WHERE A.TYPENAME <> 'Detailed' AND A.finYr = :filterYear 
-                AND A.BUYERCODE = :filterSupplier  AND A.Mon = :filterMonth
-                ORDER BY BUYERCODE,ORDERNO,ORD`;
+              SELECT A.COMPCODE,SUM(MALE) MALE,SUM(FEMALE) FEMALE,SUM(MALE)+SUM(FEMALE) TOTAL FROM (
+SELECT A.COMPCODE,CASE WHEN A.GENDER = 'MALE' THEN 1 ELSE 0 END MALE,
+CASE WHEN A.GENDER = 'FEMALE' THEN 1 ELSE 0 END FEMALE FROM MISTABLE A WHERE A.COMPCODE = 'AGF'
+AND A.DOJ <= (
+SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE AA.PAYPERIOD = 'July 2024' 
+) AND (A.DOL IS NULL OR A.DOL <= (
+SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE AA.PAYPERIOD = 'July 2024'
+) )
+) A
+GROUP BY A.COMPCODE`;
+            console.log(sql, 'dqw');
+
         } else {
             sql = `
                 SELECT A.FINYR,ORDERNO,A.BUYERCODE,A.TYPENAME,A.YARNCOST,A.FABRICCOST,A.ACCCOST,A.CMTCOST,
@@ -237,11 +274,7 @@ export async function getActualVsBudget(req, res) {
         }
 
 
-        const result = await connection.execute(sql, {
-            filterYear,
-            filterSupplier,
-            filterMonth,
-        });
+        const result = await connection.execute(sql);
         let resp = result.rows.map(po => ({
             finYr: po[0],
             orderNo: po[1],
@@ -271,41 +304,43 @@ export async function getActualVsBudget(req, res) {
 export async function getShortShipmentRatio(req, res) {
     const connection = await getConnection(res)
     try {
-        const { filterYear, filterMonth, filterSupplier } = req.query;
+        const { filterCat } = req.query;
         let sql
-        if (filterMonth || filterSupplier || filterYear) {
+
+        if (filterCat === 'Birthday') {
             sql =
                 `
-        SELECT 
-        orderNo,
-        customer,
-        orderQty,
-        shipQty,
-        (shipQty - orderQty) AS difference,
-        ROUND((shipQty - orderQty) / orderQty * 100, 2) AS difference_percentage
-    FROM 
-        MISORDSALESVAL
-    WHERE 
-        status = 'Completed' 
-        AND finyr = '${filterYear}'
-        AND customer = '${filterSupplier}'
-        AND ACTDELMON = '${filterMonth}'
-    ORDER BY 
-        difference_percentage DESC
+     SELECT A.COMPCODE,A.IDCARD,A.FNAME,A.GENDER,A.DOB,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE),A.DOB)/12) AGE,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE),A.DOJ)/12) EXP ,A.DOJ FROM MISTABLE A 
+WHERE TO_CHAR(SYSDATE, 'WW') = TO_CHAR(A.DOB, 'WW') AND A.PAYCAT = 'STAFF'
+AND A.DOJ <= (
+SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
+) AND (A.DOL IS NULL OR A.DOL <= (
+SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
+) )
+ORDER BY 1,2,3,4,5
  `
         } else {
-            res.status(200).json({ message: 'filterMonth and filterSupplier are required' });
-            return;
+            sql = `SELECT A.COMPCODE,A.IDCARD,A.FNAME,A.GENDER,A.DOB,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE),A.DOB)/12) AGE,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE),A.DOJ)/12) EXP ,A.DOJ FROM MISTABLE A 
+WHERE TO_CHAR(SYSDATE, 'WW') = TO_CHAR(A.DOJ, 'WW') AND A.PAYCAT = 'STAFF'
+AND A.DOJ <= (
+SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
+) AND (A.DOL IS NULL OR A.DOL <= (
+SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
+) )
+ORDER BY 1,2,3,4,5`
         }
+
 
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
-            orderNo: po[0],
-            customer: po[1],
-            orderQty: po[2],
-            shipQty: po[3],
-            diffrence: po[4],
-            percentage: po[5]
+            customer: po[0],
+            idCard: po[1],
+            name: po[2],
+            gender: po[3],
+            dob: po[4],
+            age: po[5],
+            exp: po[6],
+            doj: po[7]
 
         }))
         return res.json({ statusCode: 0, data: resp })

@@ -27,10 +27,11 @@ export async function getBuyer(req, res) {
     const connection = await getConnection(res)
     try {
         const result = await connection.execute(`
-        SELECT customer
-        FROM MISORDSALESVAL
-        GROUP BY customer
-        ORDER BY customer
+        SELECT C.COMPCODE,COUNT(*) TOT FROM HREMPLOYMAST A 
+JOIN HREMPLOYDETAILS B ON A.HREMPLOYMASTID = B.HREMPLOYMASTID
+JOIN GTCOMPMAST C ON C.GTCOMPMASTID = A.COMPCODE
+WHERE B.IDACTIVE = 'YES'
+GROUP BY C.COMPCODE
      `)
         let resp = result.rows.map(po => ({
             buyerName: po[0]
@@ -53,12 +54,12 @@ export async function getMonthData(req, res) {
     try {
         const { filterYear, filterBuyer } = req.query;
         const result = await connection.execute(`
-        SELECT PLANDELMON
-        FROM MISORDSALESVAL T
-        WHERE T.finyr = '${filterYear}' AND T.customer = '${filterBuyer}'
-               GROUP BY PLANDELMON
-        ORDER BY TO_DATE(PLANDELMON, 'Month YYYY')
+            SELECT A.PAYPERIOD FROM MONTHLYPAYFRQ A
+              WHERE A.finyr = '${filterYear}' 
+GROUP BY A.PAYPERIOD
+      ORDER BY TO_DATE(A.PAYPERIOD, 'Month YYYY')        
      `)
+        console.log(result, 'res');
         let resp = result.rows.map(po => ({
             month: po[0]
         }))
@@ -80,7 +81,11 @@ export async function getCompCodeData(req, res) {
         const { } = req.query;
         const sql =
             `
-        SELECT A.COMPCODE FROM MONTHLYPAYFRQ A group by A.COMPCODE`
+       SELECT C.COMPCODE,COUNT(*) TOT FROM HREMPLOYMAST A 
+JOIN HREMPLOYDETAILS B ON A.HREMPLOYMASTID = B.HREMPLOYMASTID
+JOIN GTCOMPMAST C ON C.GTCOMPMASTID = A.COMPCODE
+WHERE B.IDACTIVE = 'YES'
+GROUP BY C.COMPCODE`
         console.log(sql, '84');
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({

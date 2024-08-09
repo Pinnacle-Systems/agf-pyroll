@@ -39,11 +39,7 @@ const LoginForm = ({ setIsLoggedIn }) => {
 
   return (
     <section className='relative flex items-center justify-evenly w-full h-full'>
-      {/* Background video */}
-      <video autoPlay={true} loop muted className="absolute inset-0 w-full h-full object-cover">
-        <source src={video} />
-        Your browser does not support the video tag.
-      </video>
+
 
 
       <section className='com rounded-tr-3xl rounded-bl-3xl shadow-2xl p-8 w-[17rem] h-[23rem]'>

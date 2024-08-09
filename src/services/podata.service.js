@@ -186,17 +186,20 @@ export async function getSuppEfficency(req, res) {
 export async function getTopItems(req, res) {
     const connection = await getConnection(res)
     try {
-        const { finYearData } = req.query;
+        const { filterBuyer } = req.query;
 
         const sql =
             `
-            select * from (select ARTICLEID, sum(poqty) as poqty
-            from misyfpurreg
-             where  misyfpurreg.FINYR = ${finYearData.replace(/"/g, '\'')}
-            group by ARTICLEID
-            order by poqty desc)
-            where rownum <= 10 
+        SELECT A.BGF,COUNT(*) CNT FROM MISTABLE A 
+WHERE A.COMPCODE = '${filterBuyer}' AND A.BGF IS NOT NULL AND A.DOJ <= (
+SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
+) AND (A.DOL IS NULL OR A.DOL <= (
+SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
+) )
+GROUP BY A.BGF
+ORDER BY 2 DESC,1 
      `
+        console.log(sql, '202');
 
         const result = await connection.execute(sql)
         let resp = result.rows.map(po => ({
@@ -273,13 +276,27 @@ export async function getTopFiveSuppTurnOvr(req, res) {
 export async function getOverAllSupplierContribution(req, res) {
     const connection = await getConnection(res)
     try {
-        const { suppContribution } = req.query;
+        const { filterBuyer } = req.query;
 
 
         const sql =
             `
-            select supplier,Round(sum(poQty * price)) as poQty,finyr from misyfpurreg where finyr = ${suppContribution.replace(/"/g, '\'')}
-            and poQty > '5000'  group by supplier, finyr              
+       SELECT X.SLAP,COUNT(X.SLAP) VAL FROM (
+SELECT CASE WHEN X.AGE BETWEEN 1 AND 2 THEN '1 - 2'
+WHEN X.AGE BETWEEN 3 AND 5 THEN '3 - 5' 
+WHEN X.AGE BETWEEN 5 AND 10 THEN '5 - 10' 
+WHEN X.AGE > 10 THEN 'Above 10'  END SLAP FROM (
+SELECT MONTHS_BETWEEN(TRUNC(SYSDATE),A.DOJ)/12 AGE FROM MISTABLE A WHERE A.COMPCODE = '${filterBuyer}'
+AND A.DOJ <= (
+SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
+) AND (A.DOL IS NULL OR A.DOL <= (
+SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
+) )
+) X
+) X
+WHERE X.SLAP IS NOT NULL
+GROUP BY X.SLAP
+ORDER BY 1     
      `
 
         const result = await connection.execute(sql)

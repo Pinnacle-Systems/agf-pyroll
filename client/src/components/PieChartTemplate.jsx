@@ -8,9 +8,7 @@ const PieChartTemplate = ({ data = [], valueField = '', categoryField = '', colo
         am4core.useTheme(am4themes_animated);
 
         let chart = am4core.create('chartdiv', am4charts.PieChart3D);
-        chart.hiddenState.properties.opacity = 0; // this creates initial fade-in
-
-        // chart.legend = new am4charts.Legend();
+        chart.hiddenState.properties.opacity = 0;
 
 
 
@@ -32,7 +30,7 @@ const PieChartTemplate = ({ data = [], valueField = '', categoryField = '', colo
         };
     }, [data, valueField, categoryField, colorList]);
 
-    return <div id="chartdiv" style={{ width: '100%', height: 350 }} className={className}></div>;
+    return <div id="chartdiv" style={{ width: '100%', height: 250 }} className={className}></div>;
 };
 
 export default PieChartTemplate;

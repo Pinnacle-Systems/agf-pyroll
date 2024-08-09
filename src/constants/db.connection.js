@@ -19,10 +19,15 @@ const oracledb = require('oracledb');
 //       connectString: "203.95.216.155:1556/AVT06p",
 // };
 // const dbConfig = {
-//       user: "TIPLAGF",
-//       password: "TIPLAGF555",
-//       connectString: "103.125.155.219:1555/an01p",
+//       user: "pssbsa",
+//       password: "PSSBSA_MAY2023",
+//       connectString: "203.95.216.155:1556/AVT06p",
 // };
+const dbConfig = {
+      user: " PSSPAYROLL",
+      password: "PSSPAYROLL_APR2023",
+      connectString: "103.125.155.220:1555/AN01P",
+};
 
 
 export async function getConnection(res) {

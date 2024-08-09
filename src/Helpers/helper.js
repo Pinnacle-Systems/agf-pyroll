@@ -1,3 +1,5 @@
+import moment from "moment";
+
 export const getRemovedItems = (array1, array2) => {
     const filtered = array1.filter(el => {
         return array2.indexOf(el) === -1;
@@ -16,4 +18,7 @@ export function getNumberFromAlphaNumeric(txt) {
     const num = txt.replace(/[^0-9]/g, '');
     return num
 }
+
+
+export const currentDate = moment().format('DD/MM/YYYY hh:mm:ss a');
 

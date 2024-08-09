@@ -2,96 +2,103 @@ import React from 'react'
 import { DOWN_TREND_ICON, UP_TREND_ICON } from '../icons';
 import { getDifferenceInPercentage } from '../helper/accumulation';
 import CardWrapper from './CardWrapper';
+import lab from '../assets/img/image.png'
+import staff from '../assets/businessman.png'
 
-const NumericCard = ({ misData }) => {
+const NumericCard = ({ misData, selectedBuyer }) => {
 
     const totalTurnOver = misData?.data?.totalTurnOver;
     const profit = misData?.data?.profit;
     const newCustomers = misData?.data?.newCustomers;
     const topCustomers = misData?.data?.topCustomers;
     const loss = misData?.data?.loss;
+    console.log(selectedBuyer, totalTurnOver, 'br');
+
+
+    const filteredTotalTurnOver = totalTurnOver?.filter(item => selectedBuyer.includes(item.comCode)) || [];
+    const filterProfit = profit?.filter(item => selectedBuyer.includes(item.comCode)) || [];
+    const filterNewCus = newCustomers?.filter(item => selectedBuyer.includes(item.comCode)) || [];
+    const filteredTopCus = topCustomers?.filter(item => selectedBuyer.includes(item.comCode)) || [];
+    const filterLoss = loss?.filter(item => selectedBuyer.includes(item.comCode)) || [];
     const data = [
         {
-            name: "Turn Over",
+            heading: " Employees on Role",
             borderColor: "#1F588B",
-            value: `₹${(totalTurnOver?.currentValue || 0).toLocaleString()}`,
-            qty: `${(totalTurnOver?.currentQty || 0).toLocaleString()}`,
-            previousValue: `₹${(totalTurnOver?.prevValue || 0).toLocaleString()}`,
-            previousQty: `₹${(totalTurnOver?.prevQty || 0).toLocaleString()}`,
-
+            name: 'Total',
+            valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
+            valName2: 'https://img.icons8.com/?size=100&id=23492&format=png&color=000000',
+            value: `₹${(filteredTotalTurnOver.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
+            qty: `${(filteredTotalTurnOver.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
+            previousValue: `₹${(filteredTotalTurnOver.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
         },
         {
-            name: "Profit",
+            heading: "Avg Monthly salary",
             borderColor: "#62AAA3",
-            value: `₹${(profit?.currentValue || 0).toLocaleString().toLocaleString()}`,
-            qty: `${(profit?.currentQty || 0).toLocaleString()}`,
-            previousValue: `₹${(profit?.prevValue || 0).toLocaleString()}`,
-            previousQty: `₹${(profit?.prevQty || 0).toLocaleString()}`,
+            name: 'Total',
+            valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
+            valName2: 'https://img.icons8.com/?size=100&id=23492&format=png&color=000000',
+            value: `₹${(filterProfit.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
+            qty: `${(filterProfit.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
+            previousValue: `₹${(filterProfit.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
 
 
         },
         {
-            name: "New Customers",
+            heading: "Last Monthly salary",
             borderColor: "border-[#96A669]",
-            value: `₹${(newCustomers?.currentValue || 0).toLocaleString().toLocaleString()}`,
-            qty: `₹${(newCustomers?.currentQty || 0).toLocaleString()}`,
-            previousValue: `₹${(newCustomers?.prevValue || 0).toLocaleString()}`,
-            previousQty: `₹${(newCustomers?.prevQty || 0).toLocaleString()}`,
+            name: 'Total',
+            valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
+            valName2: 'https://img.icons8.com/?size=100&id=23492&format=png&color=000000',
+            value: `₹${(filterNewCus.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
+            qty: `${(filterNewCus.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
+            previousValue: `₹${(filterNewCus.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
         },
         {
-            name: "Top 5 Customers",
+            heading: "Pay category",
             borderColor: "border-[#D49B37]",
-            value: `₹${(topCustomers?.currentValue || 0).toLocaleString().toLocaleString()}`,
-            qty: `₹${(topCustomers?.currentQty || 0).toLocaleString()}`,
-            previousValue: `₹${(topCustomers?.prevValue || 0).toLocaleString()}`,
-            previousQty: `₹${(topCustomers?.prevQty || 0).toLocaleString()}`,
+            name: 'Total',
+            valName: lab,
+            valName2: staff,
+            value: `₹${(filteredTopCus.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
+            qty: `${(filteredTopCus.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
+            previousValue: `₹${(filteredTopCus.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
         },
         {
-            name: "Loss",
+            heading: "Labours last month OT wages",
             borderColor: "border-[#D49B37]",
-            value: `₹${(loss?.currentValue || 0).toLocaleString()}`,
-            qty: `₹${(loss?.currentQty || 0).toLocaleString()}`,
-            previousValue: `₹${(loss?.prevValue || 0).toLocaleString()}`,
-            previousQty: `₹${(loss?.prevQty || 0).toLocaleString()}`,
+            name: 'Total',
+            valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
+            valName2: 'https://img.icons8.com/?size=100&id=23492&format=png&color=000000',
+            value: `₹${(filterLoss.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
+            qty: `${(filterLoss.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
+            previousValue: `₹${(filterLoss.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
         },
     ]
     return (
         <div className='flex justify-around w-full h-full'>
             {data.map((val, i) =>
                 <div key={i} className='w-[24.5%] h-full text-center '>
-                    <CardWrapper name={val.name} >
+                    <CardWrapper heading={val.heading} >
                         <div className={`h-full grid items-center bg-white border-4 cuttedBorder${i + 1}`}
                         >
-                            <div className='flex justify-between px-4'>
+                            <div className='flex justify-center px-4'>
                                 <div>
-                                    <h1 className='text-sm font-semibold'>Qty</h1>
+                                    <h1 className='text-sm font-semibold'>{val.name}</h1>
                                     <span className='text-lg font-bold'>
                                         {val.qty}
                                     </span></div>
-                                <span className='text-lg font-bold'>
-                                    <h1 className='text-sm font-semibold'>Value</h1>
-                                    {val.value}
-                                </span>
+
                             </div>
-                            <div className='flex justify-between px-4 text-gray-800 text-[12px]'>
-                                <span>
-                                    <div className='font-medium '>
-                                        Prev Qty
-                                    </div>
-                                    <div>
-                                        {val.previousQty}
-                                    </div>
+                            <div className='flex justify-between px-2 text-gray-800 text-[12px]  w-full'>
+                                <span className='flex flex-col items-center justify-between'>
+                                    <img className='w-10 h-10 ' src={val.valName} />
+                                    <div className='text-sm'>{val.previousValue}</div>
                                 </span>
-                                <span>
-                                    <div className='font-medium '>Prev Val</div>
-                                    <div>{val.previousValue}</div>
+                                <span className='flex flex-col items-center justify-between'>
+                                    <img className='w-10 h-10 ' src={val.valName2} />
+                                    <div className='text-sm'>  {val.value} </div>
                                 </span>
-                                {/* <div className='grid items-center justify-center text-center'>
-                                    <div className='text-center '>Trend</div>
-                                    <div className='text-sm flex items-center justify-center'>
-                                        {val.trend}
-                                    </div>
-                                </div> */}
+
                             </div>
                         </div>
                     </CardWrapper>

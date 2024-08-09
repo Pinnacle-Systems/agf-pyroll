@@ -1,8 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import Chart from 'react-apexcharts';
+import DropdownDt from '../Ui Component/dropDownParam';
+import { useGetBuyerNameQuery } from '../redux/service/commonMasters';
 
-const TreeMapChart = ({ overAllSuppCon }) => {
-    console.log(overAllSuppCon, 'overAllSuppCon');
+const TreeMapChart = ({ overAllSuppCon, selected, setSelected, option }) => {
+    console.log(selected, 'overAllSuppCon');
+
+
 
     const truncateText = (text, maxLength) => {
         if (text.length > maxLength) {
@@ -52,9 +56,9 @@ const TreeMapChart = ({ overAllSuppCon }) => {
     useEffect(() => {
         if (overAllSuppCon && overAllSuppCon.length > 0) {
             const data = overAllSuppCon.map(item => ({
-                x: truncateText(item.supplier, 10), // Adjust the number based on your desired length
+                x: truncateText(item.supplier, 10),
                 y: item.poQty,
-                fullX: item.supplier, // Store the full supplier name for tooltip
+                fullX: item.supplier,
             }));
 
             setChartOptions(prevOptions => ({
@@ -66,6 +70,7 @@ const TreeMapChart = ({ overAllSuppCon }) => {
 
     return (
         <div id="chart" >
+            <DropdownDt selected={selected} setSelected={setSelected} option={option} />
             <Chart options={chartOptions} series={chartOptions.series} type="treemap" height={350} className='text-black' />
         </div>
     );

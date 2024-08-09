@@ -12,14 +12,15 @@ import Scene from '../../components/loader/Loader'
 import CapacityPlanner from '../../components/CapacityPlanChart'
 
 import FabStsChart from '../../components/FabStatusChart'
-import ChartTable from './ChartTableCombo'
+
 import DropdownData from '../../Ui Component/modelUi'
 import DropdownDt from '../../Ui Component/dropDownParam'
 import DataTable from './ManagementTable'
 import OrderVsShipped from './OrderVsShipped'
 import { HiOutlineRefresh } from 'react-icons/hi'
+import ChartTable from '../MisDashboard/ChartTableCombo'
 
-const OrderManagement = () => { 
+const OrderManagement = () => {
     const [selectedYear, setSelectedYear] = useState('');
     const [plData, setPlData] = useState(null)
     const [capPlanData, setCapPlanData] = useState(null)

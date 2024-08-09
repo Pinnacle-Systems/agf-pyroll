@@ -455,39 +455,31 @@ export async function getYFActVsPln(req, res) {
     const connection = await getConnection(res);
     try {
         const { filterMonth, filterSupplier, filterYear } = req.query;
+        console.log(filterSupplier, 'fil');
 
-        let sql;
+        // Split the filterSupplier string into an array
+        const supplierArray = filterSupplier.split(',');
+        const sepComName = supplierArray.join('');
+        const supplierList = supplierArray.map(supplier => `'${supplier}'`).join(',');
 
-        if (filterMonth || filterSupplier || filterYear) {
-            sql = `
-            SELECT B.orderNo,
-             B.customer,
-              B.plandelmon,
-              B.orderQty,
-               SUM(A.PAMOUNT)as plAmt,
-                SUM(A.AAMOUNT)as actAmt
-               FROM MISYARNFABRICVALUE A
-JOIN MISORDSALESVAL B ON A.ORDERNO = B.ORDERNO
-WHERE A.PROCESSNAME = 'FABRIC' AND B.customer = '${filterSupplier}' AND B.FInyr = '${filterYear}'
-and plandelmon ='${filterMonth}'
-GROUP BY B.orderNo, B.customer, B.plandelmon,B.orderQty
+        const sql = `
+            SELECT B.PAYPERIOD, B.STDT, A.COMPCODE, COUNT(*) ATTRITION 
+            FROM MISTABLE A
+            JOIN MONTHLYPAYFRQ B ON A.COMPCODE = B.COMPCODE 
+            AND B.FINYR = '${filterYear}' 
+            AND A.COMPCODE IN (${supplierList})
+            AND A.DOL BETWEEN B.STDT AND B.ENDT
+            GROUP BY B.PAYPERIOD, B.STDT, A.COMPCODE
+            ORDER BY 2
+        `;
+        console.log(sql, '416');
 
-            `;
-            console.log(sql, '416');
-        } else {
-
-            res.status(200).json({ message: 'filterMonth and filterSupplier are required' });
-            return;
-        }
-        console.log(sql, 'sql');
         const result = await connection.execute(sql);
         let resp = result.rows.map(po => ({
-            ordeNo: po[0],
-            customer: po[1],
-            PlanMnth: po[2],
-            qty: po[3],
-            planed: po[4],
-            actual: po[5]
+            payPeriod: po[0],
+            stdt: po[1],
+            customer: po[2],
+            attrition: po[3],
         }));
 
         return res.json({ statusCode: 0, data: resp });
@@ -498,6 +490,7 @@ GROUP BY B.orderNo, B.customer, B.plandelmon,B.orderQty
         await connection.close();
     }
 }
+
 
 
 export async function getOrderStatusBuyerWise(req, res) {

@@ -5,7 +5,7 @@ import YearlyComChart from './YearlyCompChart'
 
 const YearlyComparisionBuyerWise = () => {
     return (
-        <CardWrapper name={"Buyer Wise Order Qty Yearly Comparison"}>
+        <CardWrapper heading={"Employee Breakup"}>
             < YearlyComChart />
         </CardWrapper>
     )

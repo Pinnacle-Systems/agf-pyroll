@@ -1,44 +1,49 @@
-import React, { useState } from 'react'
-import NumericCard from '../../components/NumericCard'
-import Dropdown from '../../components/Dropdown'
-import { useGetMisDashboardQuery } from '../../redux/service/misDashboardService';
-import DropdownData from '../../Ui Component/modelUi';
-import { HiOutlineRefresh } from 'react-icons/hi'
+import React from 'react';
+import NumericCard from '../../components/NumericCard';
+import DropdownCom from '../../Ui Component/modelParam';
+import { HiOutlineRefresh } from 'react-icons/hi';
 
-const Header = () => {
-    const [selectedOption, setSelectedOption] = useState('Detailed1');
-    const handleOptionChange = (event) => {
-        setSelectedOption(event.target.value);
-    };
-    const [selectedYear, setSelectedYear] = useState('');
-    const [previousYear, setPreviousYear] = useState(null);
-    const { data: misData, refetch } = useGetMisDashboardQuery({ params: { filterYear: (selectedYear?.name ? selectedYear.name : '' || selectedYear), previousYear } })
-    console.log(previousYear, 'rep');
+const Header = ({
+    selectedBuyer, setSelectedBuyer,
+    selectedYear, setSelectedYear,
+    selectedMonth, setSelectedMonth,
+
+    refetch, misData
+}) => {
+    console.log(misData, 'mis');
     return (
         <>
             <div className='bg-[#ADB612] h-[30px] flex justify-center items-center font-semibold'>
+                <div className='flex group w-full justify-end relative'>
+                    <div className='flex items-center'>
+                        <label className='text-sm text-center'>Select :</label>
 
-                <div className='flex  group w-full justify-end relative'>
-                    <DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} previousYear={previousYear} setPreviousYear={setPreviousYear} />
+                        <div>
+                            <DropdownCom
+                                selectedBuyer={selectedBuyer}
+                                setSelectedBuyer={setSelectedBuyer}
+                                selectedMonth={selectedMonth}
+                                setSelectedMonth={setSelectedMonth}
+                                selectedYear={selectedYear}
+                                setSelectedYear={setSelectedYear}
 
-                    <div>   <button
-                        className=' bg-sky-500 rounded-sm p-1 flex items-center justify-center h-[30px] text-center font-normal text-[16px] border-2 border-[#E0E0E0]'
-                        onClick={() => refetch()}>
-                        <HiOutlineRefresh />
-                    </button>
-                        {/* <span className='group-hover:opacity-100 transition-opacity bg-gray-800 px-1 bottom-2 right-3 text-sm text-gray-100 rounded-md -translate-x-1/2 absolute opacity-0 z-40'>
-                            Refresh
-                        </span> */}
+                                columnHeaderHeight={"30"}
+                            />   </div>
+                    </div>
+                    <div>
+                        <button
+                            className='bg-sky-500 rounded-sm p-1 flex items-center justify-center h-[30px] text-center font-normal text-[16px] border-2 border-[#E0E0E0]'
+                            onClick={() => refetch()}>
+                            <HiOutlineRefresh />
+                        </button>
                     </div>
                 </div>
-
-
             </div>
             <div className='h-[25%]'>
-                <NumericCard misData={misData} />
+                <NumericCard misData={misData} selectedBuyer={selectedBuyer} />
             </div>
         </>
-    )
-}
+    );
+};
 
-export default Header
+export default Header;

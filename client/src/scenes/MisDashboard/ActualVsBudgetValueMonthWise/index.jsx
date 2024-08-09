@@ -4,7 +4,7 @@ import LineChart from './LineChart'
 
 const ActualVsBudgetValueMonthWise = () => {
     return (
-        <CardWrapper name={"Actual Vs Budget Month Wise"}>
+        <CardWrapper heading={"Retention Month Wise"}>
             <LineChart />
         </CardWrapper>
     )

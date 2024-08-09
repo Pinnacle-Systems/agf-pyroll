@@ -3,16 +3,12 @@ import Highcharts from 'highcharts';
 import HighchartsReact from 'highcharts-react-official';
 import { DataGrid, gridClasses } from '@mui/x-data-grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-
-
+import { useGetYFActVsPlnQuery } from '../../redux/service/orderManagement';
+import { useGetBuyerNameQuery, useGetFinYearQuery, useGetMonthQuery } from '../../redux/service/commonMasters';
+import DropdownCom from '../../Ui Component/modelParam';
 import { HiOutlineRefresh } from "react-icons/hi";
-import { useGetBuyerWiseRevenueQuery } from '../../../redux/service/misDashboardService';
-import { useGetBuyerNameQuery, useGetFinYearQuery, useGetMonthQuery } from '../../../redux/service/commonMasters';
-import DropdownCom from '../../../Ui Component/modelParam';
-import DropdownData from '../../../Ui Component/modelUi';
-
-
-const Retention = () => {
+import DropdownData from '../../Ui Component/modelUi';
+const ChartTable = () => {
     const [selectedMonth, setSelectedMonth] = useState('');
     const [selectedBuyer, setSelectedBuyer] = useState('');
     const [selectedYear, setSelectedYear] = useState('');
@@ -20,11 +16,9 @@ const Retention = () => {
     const [monthData, setMonthData] = useState([]);
     const [yearData, setYearData] = useState([]);
 
-    const { data: fabPlVsActFull, isLoading: isyfActVsPlLoadingFull, refetch } = useGetBuyerWiseRevenueQuery({ params: { filterMonth: selectedMonth || '', filterSupplier: selectedBuyer || '', filterYear: selectedYear || '' } });
     const { data: buyer, isLoading: isbuyerLoad } = useGetBuyerNameQuery({ params: {} });
     const { data: month } = useGetMonthQuery({ params: { filterYear: selectedYear || '', filterBuyer: selectedBuyer || '' } });
     const { data: year } = useGetFinYearQuery({});
-
     useEffect(() => {
         if (buyer?.data || month?.data || year?.data) {
             const buyerName = (buyer?.data ? buyer?.data : []).map((item) => item.buyerName);
@@ -35,12 +29,12 @@ const Retention = () => {
             setYearData(finYearData);
         }
     }, [buyer, month, year]);
-
+    const { data: fabPlVsActFull, isLoading: isyfActVsPlLoadingFull, refetch } = useGetYFActVsPlnQuery({ params: { filterMonth: selectedMonth || '', filterSupplier: selectedBuyer || '', filterYear: selectedYear || '' } });
     const fabPlVsActFullDt = fabPlVsActFull?.data ? fabPlVsActFull?.data : [];
-    console.log(fabPlVsActFullDt, 'fabPlVsActFullDt');
 
     const orderCount = fabPlVsActFullDt.length;
-    const totalPlanned = fabPlVsActFullDt.reduce((total, order) => total + (order.retention || 0), 0);
+    const totalPlanned = fabPlVsActFullDt.reduce((total, order) => total + (order.attrition || 0),
+        0);
 
     const options = {
         chart: {
@@ -73,7 +67,7 @@ const Retention = () => {
         },
         yAxis: {
             title: {
-                text: 'Retention',
+                text: 'Attrition',
                 style: {
                     fontSize: '10px',
                     paddingLeft: '20px'
@@ -112,12 +106,12 @@ const Retention = () => {
         },
         series: [
             {
-                name: 'Retention',
+                name: 'Attrition',
                 data: fabPlVsActFullDt.map((order) => ({
-                    y: order.retention,
-                    color: '#2bc97a'
+                    y: order.attrition,
+                    color: '#ca1818'
                 })),
-                color: '#2bc97a',
+                color: '#ca1818',
             },
         ],
     };
@@ -128,9 +122,12 @@ const Retention = () => {
             serial: index + 1,
             payPeriod: order.payPeriod,
             customer: order.customer,
-            retention: order.retention,
+            attrition: order.attrition,
         })),
-        { id: 'total', serial: '', payPeriod: 'Total', customer: '', retention: totalPlanned.toLocaleString(), },
+        {
+            id: 'total', serial: '', payPeriod: 'Total', customer: '',
+            attrition: totalPlanned.toLocaleString(),
+        },
     ];
 
     const valueFormatter = ({ value }) => {
@@ -142,7 +139,7 @@ const Retention = () => {
         { field: 'serial', headerName: 'S/No', maxWidth: 40 },
 
         { field: 'customer', headerName: 'Customer', maxWidth: 90 },
-        { field: 'retention', headerName: 'Retention', valueFormatter, flex: 1, align: 'right', headerAlign: 'right', minWidth: 110 },
+        { field: 'attrition', headerName: 'Attrition', valueFormatter, flex: 1, align: 'right', headerAlign: 'right', minWidth: 110 },
     ];
 
     const theme = createTheme({
@@ -174,7 +171,7 @@ const Retention = () => {
     return (
         <ThemeProvider theme={theme}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <div className="flex justify-end">
+                <div className="flex justify-end ">
                     <div className='flex items-center h-8  gap-1'>
                         <label className='text-sm text-center flex px-3  '>Select:</label>
                         <DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
@@ -209,35 +206,35 @@ const Retention = () => {
                                 options={options}
                                 containerProps={{ style: { minWidth: '70%', height: '350px' } }}
                             />
-
+                            {/* <h3 className='text-sm pt-1 pb-1 text-left font-bold'>Total Attrition : {totalPlanned.toLocaleString()}</h3> */}
                         </div>
                         {/* <div style={{ flex: '30%' }} className='flex flex-col'>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '400px', width: '100%', border: '0.5px solid #E0E0E0', borderRadius: '10px' }}>
-                                <DataGrid
-                                    rows={orderDataGridRows}
-                                    columns={orderDataGridColumns}
-                                    pageSize={10}
-                                    rowsPerPageOptions={[10]}
-                                    sx={{
-                                        '& .MuiDataGrid-cell': {
-                                            border: 'none',
-                                            py: '5px',
-                                        },
-                                        '& .MuiDataGrid-columnHeaders': {
-                                            borderBottom: 'none',
-                                        },
-                                        '& .MuiDataGrid-cell:focus': {
-                                            outline: 'none',
-                                        },
-                                        '& .fontWeightBold': {
-                                            fontWeight: 'bold',
-                                            backgroundColor: '#dbe2e8',
-                                        },
-                                    }}
-                                    getRowClassName={getRowClassName}
-                                />
-                            </div>
-                        </div> */}
+                                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '400px', width: '100%', border: '0.5px solid #E0E0E0', borderRadius: '10px' }}>
+                                    <DataGrid
+                                        rows={orderDataGridRows}
+                                        columns={orderDataGridColumns}
+                                        pageSize={10}
+                                        rowsPerPageOptions={[10]}
+                                        sx={{
+                                            '& .MuiDataGrid-cell': {
+                                                border: 'none',
+                                                py: '5px',
+                                            },
+                                            '& .MuiDataGrid-columnHeaders': {
+                                                borderBottom: 'none',
+                                            },
+                                            '& .MuiDataGrid-cell:focus': {
+                                                outline: 'none',
+                                            },
+                                            '& .fontWeightBold': {
+                                                fontWeight: 'bold',
+                                                backgroundColor: '#dbe2e8',
+                                            },
+                                        }}
+                                        getRowClassName={getRowClassName}
+                                    />
+                                </div>
+                            </div> */}
                     </div>
                 ) : (
                     <div>No Data Available</div>
@@ -247,4 +244,4 @@ const Retention = () => {
     );
 };
 
-export default Retention;
+export default ChartTable;

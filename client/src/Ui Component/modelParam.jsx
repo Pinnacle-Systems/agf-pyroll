@@ -1,50 +1,88 @@
-import React from "react";
-import './dropdown.css';
+import React, { useEffect, useState, useRef } from "react";
+import { useGetBuyerNameQuery } from "../redux/service/commonMasters";
 
-const DropdownCom = ({ selectedBuyer, setSelectedBuyer, options = [], monthOptions = [], selectedMonth, setSelectedMonth, setSelectedYear, seletedYear, yearOptions = [] }) => {
-    const handleBuyerChange = (event) => {
-        setSelectedBuyer(event.target.value);
+const DropdownCom = ({ selectedBuyer, setSelectedBuyer }) => {
+    const [buyerOptions, setBuyerOptions] = useState([]);
+    const [isOpen, setIsOpen] = useState(false);
+    const { data: buyer } = useGetBuyerNameQuery({ params: {} });
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        if (buyer?.data) {
+            const buyerNameOptions = buyer.data.map((item) => ({
+                label: item.buyerName,
+                value: item.buyerName
+            }));
+            setBuyerOptions([{ label: "Select All", value: "select_all" }, ...buyerNameOptions]);
+        }
+    }, [buyer]);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => {
+            document.removeEventListener("mousedown", handleClickOutside);
+        };
+    }, [dropdownRef]);
+
+    const handleOptionChange = (event) => {
+        const value = event.target.value;
+        if (value === "select_all") {
+            if (selectedBuyer.length === buyerOptions.length - 1) {
+                setSelectedBuyer([]);
+            } else {
+                setSelectedBuyer(buyerOptions.map(option => option.value).filter(val => val !== "select_all"));
+            }
+        } else {
+            const newSelectedBuyer = selectedBuyer.includes(value)
+                ? selectedBuyer.filter(v => v !== value)
+                : [...selectedBuyer, value];
+            setSelectedBuyer(newSelectedBuyer);
+        }
     };
 
-    const handleMonthChange = (event) => {
-        setSelectedMonth(event.target.value);
+    const toggleDropdown = () => {
+        setIsOpen(!isOpen);
     };
-    const handleYearChange = (event) => {
-        setSelectedYear(event.target.value);
-    };
+
+    const isSelectAllChecked = selectedBuyer.length === buyerOptions.length - 1;
 
     return (
-        <div className="card flex justify-content-center w-[30%] ">
-            <div className="h-[0.1rem] flex gap-2 rounded-xs">
-                <div>
-                    <select className="w-[8.5rem] h-[1.5rem] p-1 text-xs" id="dropdown1" value={selectedBuyer} onChange={handleBuyerChange}>
-                        <option className="text-xs" value="">Buyer</option>
-                        {options.map((option, index) => (
-                            <option className="text-xs w-[10rem]" key={index} value={option}>{option}</option>
+        <div ref={dropdownRef} className="relative">
+            <button
+                onClick={toggleDropdown}
+                className="bg-white border border-gray-300 rounded shadow-sm 
+                  text-left flex items-center justify-end text-[14px]"
+                type="button"
+            >
+                Company
+                <svg className="w-4 h-4 ml-2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M6.293 7.293a1 1 0 011.414 0L10 8.586l2.293-1.293a1 1 0 111.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z" clipRule="evenodd" />
+                </svg>
+            </button>
+            {isOpen && (
+                <div className="absolute mt-2 w-44 bg-white border border-gray-300 rounded shadow-lg z-10">
+                    <div className="max-h-60 overflow-y-auto">
+                        {buyerOptions.map(option => (
+                            <label key={option.value} className="flex items-center p-2 hover:bg-gray-100 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    value={option.value}
+                                    checked={option.value === "select_all" ? isSelectAllChecked : selectedBuyer.includes(option.value)}
+                                    onChange={handleOptionChange}
+                                    className="form-checkbox h-4 w-4 text-blue-600"
+                                />
+                                <span className="ml-2 text-sm">{option.label}</span>
+                            </label>
                         ))}
-                    </select>
+                    </div>
                 </div>
-                <div>
-                    <select className="w-[5rem] h-[1.5rem] p-1 text-xs" id="dropdow3" value={seletedYear} onChange={handleYearChange}>
-                        <option className="text-xs" value="">Year</option>
-                        {yearOptions.map((yrOption, index) => (
-                            <option className="text-xs w-[10rem]" key={index} value={yrOption}>{yrOption}</option>
-                        ))}
-                        {console.log(yearOptions, 'year')}
-                    </select>
-                </div>
-                <div>
-                    <select className="month w-[8.5rem] h-[1.5rem] p-1 text-xs" id="dropdown2" value={selectedMonth} onChange={handleMonthChange}>
-                        <option className="text-xs" value="">Month</option>
-                        {monthOptions.map((monthOption, index) => (
-                            <option className="text-xs w-[10rem]" key={index} value={monthOption}>{monthOption}</option>
-                        ))}
-
-                    </select>
-                </div>
-
-
-            </div>
+            )}
         </div>
     );
 };

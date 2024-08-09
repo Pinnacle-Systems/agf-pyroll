@@ -4,8 +4,9 @@ import * as am4charts from '@amcharts/amcharts4/charts';
 import am4themes_animated from '@amcharts/amcharts4/themes/animated';
 
 const SortedBarChart = ({ topItems }) => {
+
     useEffect(() => {
-        // Apply the amCharts v4 animated theme
+
         am4core.useTheme(am4themes_animated);
 
         // Create chart instance
@@ -74,7 +75,7 @@ const SortedBarChart = ({ topItems }) => {
         };
     }, [topItems]);
     console.log(topItems, 'top');
-    return <div id="sidechartdiv" style={{ width: "100%", height: "300px" }}></div>;
+    return <div id="sidechartdiv" style={{ width: "100%", height: "350px" }}></div>;
 };
 
 export default SortedBarChart;

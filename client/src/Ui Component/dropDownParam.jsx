@@ -2,14 +2,16 @@ import React, { useEffect, useState } from "react";
 import { Dropdown } from 'primereact/dropdown';
 
 export default function DropdownDt({ selected, setSelected, option }) {
-    console.log(option, 'option');
-    const [options, setOptions] = useState(null)
-    useEffect(() => {
-        const mappedOptions = option.map((item) => ({
-            name: item.com,
-        }));
-        setOptions(mappedOptions);
+    const [options, setOptions] = useState([]);
 
+    useEffect(() => {
+        if (option) {
+            const mappedOptions = option.map((item) => ({
+                name: item.buyerName,
+                value: item.buyerName
+            }));
+            setOptions(mappedOptions);
+        }
     }, [option]);
 
     return (
@@ -18,7 +20,7 @@ export default function DropdownDt({ selected, setSelected, option }) {
                 value={selected}
                 onChange={(e) => setSelected(e.value)}
                 options={options}
-                placeholder={``}
+                placeholder={`Select `}
                 className="w-full"
                 style={{ backgroundColor: 'white', borderRadius: '2px', width: '4.5rem', fontSize: '12px' }}
                 panelClassName="dropdown-panel-black"
