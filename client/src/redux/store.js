@@ -1,7 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { openTabs } from "./features";
 
-import { poRegister, commonMast, supplier, poData, misDashboardService, ordManagement } from './service'
+import { poRegister, commonMast, supplier, poData, misDashboardService, ordManagement, UsersApi } from './service'
 import { setupListeners } from '@reduxjs/toolkit/query'
 
 export const store = configureStore({
@@ -12,7 +12,8 @@ export const store = configureStore({
         [supplier.reducerPath]: supplier.reducer,
         [poData.reducerPath]: poData.reducer,
         [misDashboardService.reducerPath]: misDashboardService.reducer,
-        [ordManagement.reducerPath]: ordManagement.reducer
+        [ordManagement.reducerPath]: ordManagement.reducer,
+        [UsersApi.reducerPath]: UsersApi.reducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat([
@@ -21,7 +22,8 @@ export const store = configureStore({
             supplier.middleware,
             poData.middleware,
             misDashboardService.middleware,
-            ordManagement.middleware
+            ordManagement.middleware,
+            UsersApi.middleware,
         ]
         ),
 });

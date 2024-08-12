@@ -27,12 +27,12 @@ const Header = ({
                                 selectedYear={selectedYear}
                                 setSelectedYear={setSelectedYear}
 
-                                columnHeaderHeight={"30"}
+                                columnHeaderHeight={"20"}
                             />   </div>
                     </div>
                     <div>
                         <button
-                            className='bg-sky-500 rounded-sm p-1 flex items-center justify-center h-[30px] text-center font-normal text-[16px] border-2 border-[#E0E0E0]'
+                            className='bg-sky-500 rounded-sm p-1 flex items-center justify-center h-[30px] text-center font-normal text-[14px] border-2 border-[#E0E0E0]'
                             onClick={() => refetch()}>
                             <HiOutlineRefresh />
                         </button>

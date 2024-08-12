@@ -463,7 +463,7 @@ export async function getYFActVsPln(req, res) {
         const supplierList = supplierArray.map(supplier => `'${supplier}'`).join(',');
 
         const sql = `
-            SELECT B.PAYPERIOD, B.STDT, A.COMPCODE, COUNT(*) ATTRITION 
+            SELECT B.PAYPERIOD, B.STDT,  COUNT(*) ATTRITION 
             FROM MISTABLE A
             JOIN MONTHLYPAYFRQ B ON A.COMPCODE = B.COMPCODE 
             AND B.FINYR = '${filterYear}' 
@@ -478,8 +478,7 @@ export async function getYFActVsPln(req, res) {
         let resp = result.rows.map(po => ({
             payPeriod: po[0],
             stdt: po[1],
-            customer: po[2],
-            attrition: po[3],
+            attrition: po[2],
         }));
 
         return res.json({ statusCode: 0, data: resp });

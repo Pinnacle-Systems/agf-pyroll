@@ -1,115 +1,78 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import { Link, useNavigate } from 'react-router-dom';
-import './login.css'
-import Sidebar from '../global/Sidebar';
-import { theme } from 'flowbite-react';
-import { tokens } from '../../theme';
-import video from '../../assets/Data_Grid.mp4'
+import { useLoginUserMutation } from '../../redux/service/user';
+import './login.css';
+
 const LoginForm = ({ setIsLoggedIn }) => {
   const navigate = useNavigate();
-  const [username, setUserName] = useState('')
-  const [password, setPassword] = useState('')
-
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
+  const [error, setError] = useState(null);
+  const [loginUser, { isLoading }] = useLoginUserMutation();
   const [showPassword, setShowPassword] = useState(false);
-  // functions
-  async function submitHandler(e) {
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // try {
-    //   let data = { username, password }
-    //   let response = await loginUser(data).unwrap();
-
-    //   if (response.statusCode === 0) {
-    //     alert('Login successful');
-    //     navigate('/home');
-    //   } else if (response.statusCode === 1) {
-    //     alert('Enter valid details');
-    //     navigate('/');
-    //   }
-
-    //   localStorage.setItem('gtCompMastId', response.data.gtCompMastId);
-    //   localStorage.setItem('userName', username);
-
-    // } catch (error) {
-    //   console.error('Error during login:', error);
-
-    // }
-  }
+    setError(null);
+    try {
+      const data = await loginUser({ username, password }).unwrap();
+      console.log(data);
+      if (data.message === "Login successfull") {
+        localStorage.setItem('userName', username);
+        navigate('/dashboard');
+      } else {
+        setError('Login failed, please try again.');
+      }
+    } catch (error) {
+      setError(error.data ? error.data.message : error.message);
+    }
+  };
 
   return (
-    <section className='relative flex items-center justify-evenly w-full h-full'>
+    <section className='relative flex items-center justify-evenly w-full h-full bg-gradient-to-r from-green-400 via-sky-500 to-sky-900 animate-gradient-xxl'>
 
-
-
-      <section className='com rounded-tr-3xl rounded-bl-3xl shadow-2xl p-8 w-[17rem] h-[23rem]'>
-
-        <p className='italic hover:not-italic '><span class="text-transparent md:text-xl  bg-clip-text bg-gradient-to-br from-orange-400 to-red-400 animate-text   pr-1">PINNACLE</span> Thulliam operates as a division under the corporate umbrella of the Pinnacle System. Hence it executes all its operations and implementations under the distinct brand name of Thulliam.</p>
-
-        <a href="https://pinnaclesystems.co.in/" target="_blank" class="relative inline-flex items-center justify-center p-4 px-6 py-3 overflow-hidden font-medium transition duration-300 ease-out border-2 border-cyan-400 rounded-full shadow-md group">
-          <span class="absolute inset-0 flex items-center justify-center w-full h-full text-white duration-300 -translate-x-full bg-cyan-400 group-hover:translate-x-0 ease">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
-          </span>
-          <span class="absolute flex items-center justify-center font-semibold w-full h-full text-cyan-400 transition-all duration-300 transform group-hover:translate-x-full ease">Let's Talk</span>
-          <span class="relative invisible">Button Text</span>
-        </a>
-        {/* <Link to='/home'>
-          <button className='w-full cursor-pointer rounded-[8px] font-semibold text-black px-[12px] py-[8px] mt-6 bg-sky-300 text-xs'>
-            Sign In
-          </button></Link> */}
-      </section>
-      <div className=' login w-[17rem] h-[21rem] rounded-tr-3xl rounded-bl-3xl  shadow-2xl  p-8 flex flex-col  gap-y-4 mt-6'><form onSubmit={submitHandler}
-
-      >
-
-        <label className='w-full '>
-          <p className='text-[0.85rem] text-white mb-1 leading-[1.375rem]'>User Name <sup className='text-white'>*</sup></p>
-          <input
-            required
-            type="username"
-            value={username}
-            onChange={(e) => setUserName(e.target.value)}
-            name='username'
-            className='bg-richblack-800 rounded-[0.5rem] text-richblack-5 w-full p-[12px]'
-          />
-        </label>
-
-        <label className='w-full relative'>
-          <p className='text-[0.85rem] text-white mb-1 leading-[1.375rem]'>Password <sup className='text-white'>*</sup></p>
-          <input
-            required
-            type={showPassword ? ("text") : ("password")}
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            name='password'
-            className='bg-richblack-800 rounded-[0.5rem] text-richblack-5 w-full p-[12px]'
-          />
-
-          <span
-            className='absolute right-3 bottom-[5rem] cursor-pointer'
-            onClick={() => setShowPassword((prev) => !prev)} >
-            {showPassword ?
-
-              (<AiOutlineEyeInvisible fontSize={24} fill='#AFB2BF' />) :
-
-              (<AiOutlineEye fontSize={24} fill='#AFB2BF' />)}
-          </span>
-
-          <Link to="#">
-            <p className='text-xs mt-1 text-white'>
-              Forgot Password
-            </p>
-          </Link>
-        </label>
-        <Link to='/home'>
-          <button className='w-full cursor-pointer rounded-[8px] font-semibold text-black px-[12px] py-[8px] mt-6 bg-sky-300 text-xs'>
-            Sign In
-          </button></Link>
-
-
-      </form></div>
+      <div className='login w-[17rem] h-[21rem] rounded-tr-3xl rounded-bl-3xl shadow-2xl p-8 flex flex-col gap-y-4 mt-6 bg-white'>
+        <form onSubmit={handleSubmit} className="space-y-4 w-full flex flex-col justify-center">
+          <h2 className="font-bold text-center text-lg">Login</h2>
+          {error && <p className="text-red-500 text-center">{error}</p>}
+          <div>
+            <label className="block text-black mb-1">Username</label>
+            <input
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+          <div>
+            <label className="block text-black mb-1">Password</label>
+            <input
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <div
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 cursor-pointer"
+              onClick={() => setShowPassword(!showPassword)}
+            >
+              {showPassword ? <AiOutlineEye /> : <AiOutlineEyeInvisible />}
+            </div>
+          </div>
+          <button
+            className="w-full bg-blue-500 py-2 rounded-md hover:bg-blue-600 transition duration-300"
+            type="submit"
+            disabled={isLoading}
+          >
+            {isLoading ? 'Logging in...' : 'Login'}
+          </button>
+        </form>
+      </div>
     </section>
   );
 }
 
-export default LoginForm
+export default LoginForm;

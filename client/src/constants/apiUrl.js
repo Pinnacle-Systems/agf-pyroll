@@ -6,4 +6,5 @@ export const SUPPLIER = '/supplier'
 export const PO_DATA = '/poData'
 export const MIS_DASHBOARD = '/misDashboard'
 export const ORD_MANAGEMENT = '/ordManagement'
-export const USER_API = '/user'
+export const LOGIN_API = "users/login"
+export const USERS_API = "users"

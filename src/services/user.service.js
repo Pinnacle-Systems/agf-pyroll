@@ -1,6 +1,5 @@
 import bcrypt from "bcrypt"
 import { getConnection } from "../constants/db.connection.js";
-import { groupUsers } from "../Helpers/userSupplyDetails.js";
 
 
 
@@ -15,65 +14,77 @@ export async function login(req, res) {
     let storedPassword = result.rows[0][1]
     const isMatched = await bcrypt.compare(password, storedPassword)
     if (!isMatched) return res.json({ statusCode: 1, message: "Password Doesn't Match" })
-    let gtCompMastId = result.rows[0][2]
-    let supplyDetails = await connection.execute(`
-  select pcategory 
-  from gtcompprodet 
-  join gtpartycatmast on gtcompprodet.partycat = gtpartycatmast.gtpartycatmastid
-  where gtcompmastid=:gtCompMastId
-  `, { gtCompMastId })
-    supplyDetails = supplyDetails.rows.map(item => item[0])
+    // let gtCompMastId = result.rows[0][2]
+    // let supplyDetails = await connection.execute(`
+    // select pcategory 
+    // from gtcompprodet 
+    // join gtpartycatmast on gtcompprodet.partycat = gtpartycatmast.gtpartycatmastid
+    // where gtcompmastid=:gtCompMastId
+    // `, { gtCompMastId })
+    // supplyDetails = supplyDetails.rows.map(item => item[0])
 
     await connection.close()
-    return res.json({ statusCode: 0, message: "Login Sucessfull", data: ({ supplyDetails, gtCompMastId }) })
+    return res.json({ statusCode: 0, message: "Login Sucessfull", message: "Login successfull" })
 
 }
 
 export async function create(req, res) {
-    const connection = await getConnection(res)
-    const { username, password, gtCompMastId } = req.body;
+    const connection = await getConnection();
+    const { username, password, checkboxes } = req.body;
+    const roles = checkboxes.map((item) => item.label)
+    const createdDate = new Date();
+
     if (!username || !password) {
         return res.json({ statusCode: 1, message: 'Username and Password are Required' });
     }
-    const userName = await connection.execute('SELECT COUNT(*) as count FROM SPUSERLOG WHERE username = :username', { username })
-    console.log(userName, "username")
-    if (userName.rows > 0) {
-        return res.json({ statusCode: 1, message: "UserName Already Exsist" })
+
+    try {
+        // Check if the username already exists
+        const userNameResult = await connection.execute(
+            'SELECT COUNT(*) as count FROM SPUSERLOG WHERE username = :username',
+            { username }
+        );
+
+        if (userNameResult.rows[0][0] > 0) {
+            await connection.close();
+            return res.json({ statusCode: 1, message: 'UserName Already Exsist' });
+        }
+
+        const saltRounds = 10;
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+
+        const sql = 'INSERT INTO SPUSERLOG(username, password) VALUES (:username, :hashedPassword)';
+        await connection.execute(sql, { username, hashedPassword });
+
+        const userRoleSql = 'INSERT INTO USERLOG(userName, role, createdDate) VALUES (:username, :role, :createdDate)';
+        for (const role of roles) {
+            await connection.execute(userRoleSql, { username, role, createdDate });
+        }
+
+        await connection.commit();
+        await connection.close();
+
+        return res.json({ statusCode: 0, message: 'User created successfully' });
+    } catch (error) {
+        console.error(error);
+        await connection.close();
+        return res.json({ statusCode: 1, message: 'An error occurred while creating the user' });
     }
-
-
-    const saltRounds = 10;
-    const hashedPassword = await bcrypt.hash(password, saltRounds);
-
-    const sql = 'INSERT INTO SPUSERLOG(username, password, gtCompMastId) VALUES (:username, :hashedPassword, :gtCompMastId)';
-
-    const bindParams = { username, hashedPassword, gtCompMastId };
-
-    const result = await connection.execute(sql, bindParams)
-
-    connection.commit()
-    await connection.close()
-
-    return res.json({ statusCode: 0, data: result })
 }
+
 
 export async function get(req, res) {
 
     const connection = await getConnection(res)
     try {
-        const result = await connection.execute(`
-    select spuserlog.userName, spuserlog.gtCompMastId,gtCompMast.compname, pcategory 
-    from spuserlog
-    join gtCompMast on gtCompMast.gtCompMastId = spuserlog.gtCompMastId
-    join (select pcategory, gtcompprodet.gtCompMastId 
-    from gtcompprodet 
-    join gtpartycatmast on gtcompprodet.partycat = gtpartycatmast.gtpartycatmastid)partyCat on gtCompMast.gtCompMastId = partyCat.gtCompMastId
-    order by userName
-    `)
-        const resp = result.rows.map(user => ({ userName: user[0], gtCompMastId: user[1], compName: user[2], pCategory: user[3] }))
-        const output = groupUsers(resp)
-        return res.json({ statusCode: 0, data: output })
-
+        const sql = `  
+  select T.userName, userlog.ROLE
+from spuserlog T
+left join userlog on T.USERNAME = userlog.USERNAME
+order by userName`
+        const result = await connection.execute(sql)
+        const resp = result.rows.map(user => ({ userName: user[0], role: user[1] }))
+        return res.json({ statusCode: 0, data: resp })
     }
     catch (err) {
         console.log(err)
@@ -140,10 +151,8 @@ export async function getOne(req, res) {
 export async function remove(req, res) {
     const connection = await getConnection.apply(res);
     try {
-
     }
     catch (err) {
-
     }
 }
 

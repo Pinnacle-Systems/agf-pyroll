@@ -1,78 +1,60 @@
 import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
-import { BASE_URL, USER_API } from "../../constants/apiUrl";
+import { BASE_URL, LOGIN_API, USERS_API } from "../../constants/apiUrl";
 
-
-const user = createApi({
-    reducerPath: 'User',
+const UsersApi = createApi({
+    reducerPath: "loginUser",
     baseQuery: fetchBaseQuery({
         baseUrl: BASE_URL,
     }),
-    tagTypes: ['User'],
+    tagTypes: ["Login"],
     endpoints: (builder) => ({
-        getUser: builder.query({
-            query: () => USER_API,
-            providesTags: ['User'],
-        }),
-        getUserById: builder.query({
-            query: (params) => {
-                return {
-                    url: `${USER_API}/userDetails`,
-                    method: 'GET',
-                    params,
 
-                }
-            },
-            providesTags: ['User'],
-        }),
+
         loginUser: builder.mutation({
             query: (payload) => ({
-                url: USER_API + "/login",
-                method: 'POST',
+                url: LOGIN_API,
+                method: "POST",
                 body: payload,
                 headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
+                    "Content-type": "application/json; charset=UTF-8",
                 },
             }),
-            invalidatesTags: ["User"],
+            invalidatesTags: ["Login"],
         }),
-        addUser: builder.mutation({
-            query: (payload) => ({
-                url: USER_API,
-                method: 'POST',
-                body: payload,
-                headers: {
-                    'Content-type': 'application/json; charset=UTF-8',
-                },
-            }),
-            invalidatesTags: ["User"],
-        }),
-        updateUser: builder.mutation({
-            query: (payload) => {
-                const { id, ...body } = payload
+        getUsers: builder.query({
+            query: () => {
+
                 return {
-                    url: `${USER_API}/${id}`,
-                    method: 'PUT',
-                    body,
-                }
+                    url: USERS_API,
+                    method: "GET",
+                    headers: {
+                        "Content-type": "application/json; charset=UTF-8",
+                    },
+
+                };
             },
-            invalidatesTags: ["User"],
+            providesTags: ["Users"],
         }),
-        deleteUser: builder.mutation({
-            query: (id) => ({
-                url: `${USER_API}/${id}`,
-                method: 'DELETE',
+        createUser: builder.mutation({
+            query: (payload) => ({
+                url: USERS_API,
+                method: "POST",
+                body: payload,
+                headers: {
+                    "Content-type": "application/json; charset=UTF-8",
+                },
             }),
-            invalidatesTags: ["User"],
+            invalidatesTags: ["Login"],
         }),
+
+
     }),
-})
+});
 
 export const {
-    useGetUserQuery,
-    useGetUserByIdQuery,
     useLoginUserMutation,
-    useAddUserMutation,
-    useUpdateUserMutation,
-    useDeleteUserMutation } = user;
+    useGetUsersQuery,
+    useCreateUserMutation
+} = UsersApi;
 
-export default user;
+export default UsersApi;

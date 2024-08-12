@@ -50,7 +50,7 @@ app.use('/misDashboard', misDashboard)
 
 app.use('/ordManagement', ordManagement)
 
-app.use('/user', user)
+app.use('/users', user)
 const PORT = 8080;
 
 app.listen(PORT, () => {

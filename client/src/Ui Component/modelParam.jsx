@@ -57,7 +57,7 @@ const DropdownCom = ({ selectedBuyer, setSelectedBuyer }) => {
             <button
                 onClick={toggleDropdown}
                 className="bg-white border border-gray-300 rounded shadow-sm 
-                  text-left flex items-center justify-end text-[14px]"
+                  text-left flex items-center justify-end text-[12px]"
                 type="button"
             >
                 Company
@@ -66,10 +66,11 @@ const DropdownCom = ({ selectedBuyer, setSelectedBuyer }) => {
                 </svg>
             </button>
             {isOpen && (
-                <div className="absolute mt-2 w-44 bg-white border border-gray-300 rounded shadow-lg z-10">
+                <div className="absolute  w-44 bg-white border border-gray-300
+                 rounded shadow-lg z-40">
                     <div className="max-h-60 overflow-y-auto">
                         {buyerOptions.map(option => (
-                            <label key={option.value} className="flex items-center p-2 hover:bg-gray-100 cursor-pointer">
+                            <label key={option.value} className="flex items-center hover:bg-gray-100 cursor-pointer p-1">
                                 <input
                                     type="checkbox"
                                     value={option.value}
@@ -77,7 +78,7 @@ const DropdownCom = ({ selectedBuyer, setSelectedBuyer }) => {
                                     onChange={handleOptionChange}
                                     className="form-checkbox h-4 w-4 text-blue-600"
                                 />
-                                <span className="ml-2 text-sm">{option.label}</span>
+                                <span className="ml-2 text-[12px] px-2">{option.label}</span>
                             </label>
                         ))}
                     </div>

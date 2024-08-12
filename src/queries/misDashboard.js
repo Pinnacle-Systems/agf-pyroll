@@ -18,7 +18,9 @@ SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE AA.PAYPERIOD = '${currentDt
 ) AND (A.DOL IS NULL OR A.DOL <= (
 SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE AA.PAYPERIOD = '${currentDt}' 
 ) )
-) A group by COMPCODE`
+) A group by COMPCODE
+ `
+        console.log(sql, '23');
 
 
         result = await connection.execute(sql)
@@ -163,6 +165,8 @@ JOIN HREMPLOYDETAILS BB ON AA.HREMPLOYMASTID = BB.HREMPLOYMASTID
 JOIN HRBANDMAST CC ON CC.HRBANDMASTID = BB.BAND
 WHERE  A.PAYPERIOD = '${lstMnth}' ) group by COMPCODE
 `
+        console.log(sql, '168');
+
 
         result = await connection.execute(sql)
     } else if (type === "MONTH") {

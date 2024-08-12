@@ -12,6 +12,8 @@ import { ProSidebar, Menu, MenuItem } from 'react-pro-sidebar';
 import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import { tokens } from '../../theme';
 import { FaHome } from "react-icons/fa";
+import { useMemo } from 'react';
+import { useGetUsersQuery } from '../../redux/service/user';
 
 const Accordion = styled((props) => (
     <MuiAccordion disableGutters elevation={0} square {...props} />
@@ -68,55 +70,75 @@ const CustomizedAccordions = () => {
     };
     const dispatch = useDispatch()
 
+
+    const { data: userData, refetch } = useGetUsersQuery();
+
+    const storedUsername = localStorage.getItem('userName');
+
+    const currentUser = useMemo(() => {
+        return userData?.data?.find(user => user.userName === storedUsername);
+    }, [userData, storedUsername]);
+
+    const userRoles = useMemo(() => {
+        return currentUser ? userData.data.filter(user => user.userName === storedUsername && user.role).map(user => user.role) : [];
+    }, [currentUser, userData, storedUsername]);
+
     return (
         <div className='w-full   flex flex-col items-center justify-center '>
 
             <div className=' w-full p-1 '>
+                {
+                    userRoles.includes("DASHBOARD") && (
 
-                <Accordion >
+                        <Accordion >
 
-                    <AccordionSummary id="panel1d-header" sx={{
+                            <AccordionSummary id="panel1d-header" sx={{
 
-                        bgcolor: 'black',
-                        color: 'white',
+                                bgcolor: 'black',
+                                color: 'white',
 
 
-                    }}>
-                        <button className='w-full  header-font flex   items-center  gap-5  justify-start   top-bar ' onClick={() => dispatch(push({ id: 1, name: "DASHBOARD" }))}>
-                            <span className=' font-normal text-[16px] font-semibold   '>
-                                DASHBOARD
-                            </span>
-                        </button>
-                    </AccordionSummary>
+                            }}>
+                                <button className='w-full  header-font flex   items-center  gap-5  justify-start   top-bar ' onClick={() => dispatch(push({ id: 1, name: "DASHBOARD" }))}>
+                                    <span className='  text-[16px] font-semibold   '>
+                                        DASHBOARD
+                                    </span>
+                                </button>
+                            </AccordionSummary>
 
-                </Accordion>
+                        </Accordion>
+                    )
+                }
 
-                <Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
+                {userRoles.includes('Employess') && (<Accordion expanded={expanded === 'panel1'} onChange={handleChange('panel1')}>
                     <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                        <h4 className='w-[100%] text-[15px] font-normal text-white '>Order Management</h4>
+                        <h4 className='w-[100%] text-[15px] font-normal text-white '>Employees </h4>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <h4 className='w-[100%] text-[15px] font-normal pl-9 cursor-pointer' onClick={() => dispatch(push({ id: 3, name: "Order Status" }))}>Order Status</h4>
+                        <h4 className='w-[100%] text-[15px] font-normal pl-9 cursor-pointer' onClick={() => dispatch(push({ id: 3, name: "Order Status" }))}>Employees Deatil</h4>
                     </AccordionDetails>
-                </Accordion>
-                <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
+                </Accordion>)}
+                {userRoles.includes("User") && (<Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
+                    <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
+                        <h4 className='w-[100%] text-[15px] font-normal text-white'>User</h4>
+                    </AccordionSummary>
+                    <AccordionDetails>
+                        <h4 className='w-[100%] text-[15px] font-normal pl-9 cursor-pointer' onClick={() => dispatch(push({ id: 4, name: "User" }))}>User Details</h4>
+                    </AccordionDetails>
+                </Accordion>)}
+
+
+                {/* <Accordion expanded={expanded === 'panel2'} onChange={handleChange('panel2')}>
 
                     <AccordionSummary id="panel1d-header "  >
                         <h4 className='w-[100%]   font-normal text-[15px] text-white '>PO Management</h4>
                     </AccordionSummary>
                     <AccordionDetails>
-                        <h4 className='w-[100%] text-[15px] font-normal text-[15px] pl-9 cursor-pointer' onClick={() => dispatch(push({ id: 2, name: "PO Register" }))}>PO Register</h4>
+                        <h4 className='w-[100%]  font-normal text-[15px] pl-9 cursor-pointer' onClick={() => dispatch(push({ id: 2, name: "PO Register" }))}>PO Register</h4>
                     </AccordionDetails>
-                </Accordion>
-                <Accordion expanded={expanded === 'panel3'} onChange={handleChange('panel3')}>
-                    <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
-                        <h4 className='w-[100%] text-[15px] font-normal text-white'>Pro Management</h4>
-                    </AccordionSummary>
-                    <AccordionDetails>
-                        <h4 className='w-[100%] text-[15px] font-normal pl-9 cursor-pointer' onClick={() => dispatch(push({ id: 3, name: "Pro Management" }))}>Orders</h4>
-                    </AccordionDetails>
-                </Accordion>
-                <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
+                </Accordion> */}
+
+                {/* <Accordion expanded={expanded === 'panel4'} onChange={handleChange('panel4')}>
                     <AccordionSummary aria-controls="panel2d-content" id="panel2d-header">
                         <h4 className='w-[100%] text-[15px] font-normal text-white'>Inventory Mgmt</h4>
                     </AccordionSummary>
@@ -139,7 +161,7 @@ const CustomizedAccordions = () => {
                     <AccordionDetails>
                         <h4 className='w-[100%] text-[15px] font-normal pl-9 cursor-pointer' onClick={() => dispatch(push({ id: 3, name: "ORDERS" }))}>Orders</h4>
                     </AccordionDetails>
-                </Accordion>
+                </Accordion> */}
             </div>
         </div>
     );
