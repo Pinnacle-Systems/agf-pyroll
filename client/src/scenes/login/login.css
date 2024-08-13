@@ -80,3 +80,9 @@
     z-index: -1;
     /* Ensure the video is behind other content */
 }
+
+.bg {
+    background-image: url(../../assets/img/AnnouncementWinter.png);
+    background-repeat: no-repeat;
+    background-size: cover;
+}

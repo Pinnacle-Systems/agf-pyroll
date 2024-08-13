@@ -101,7 +101,7 @@ const YearlyComChart = () => {
                 const femaleDiff = femalePoints.length >= 2 ? (femalePoints[1].value - femalePoints[0].value) : null;
 
                 return `
-                    <b>Customer: ${this.x}</b><br/>
+                    <b>Company: ${this.x}</b><br/>
                     ${points.map(point => `${point.year} ${point.gender}: ${point.value.toLocaleString()}`).join('<br/>')}
                     ${maleDiff !== null ? `<br/><b>Male Difference (${malePoints[1].year} - ${malePoints[0].year}):</b> ${maleDiff.toLocaleString()}` : ''}
                     ${femaleDiff !== null ? `<br/><b>Female Difference (${femalePoints[1].year} - ${femalePoints[0].year}):</b> ${femaleDiff.toLocaleString()}` : ''}

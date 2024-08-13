@@ -188,7 +188,6 @@ const ChartTable = () => {
                             columnHeaderHeight={"30"}
                         /> </div>
                     <div className='flex group relative'>
-
                         <span className='group-hover:opacity-100 transition-opacity bg-gray-800 px-1 bottom-5 text-sm text-gray-100 rounded-md -translate-x-1/2 absolute opacity-0 z-40'>
                             Refresh
                         </span>

@@ -151,6 +151,13 @@ export async function getActualVsBudgetValueMonthWise(req, res) {
     }
 }
 export async function getYearlyComp(req, res) {
+    const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+    const d = new Date();
+    const monthName = month[d.getMonth()];
+    const yearName = d.getFullYear();
+    const lastmonth = month[d.getMonth() - 1]
+    const currentDt = [monthName, yearName].join(' ')
+    const lstMnth = [lastmonth, yearName].join(' ')
     const connection = await getConnection(res)
     try {
         const { } = req.query;
@@ -160,9 +167,9 @@ export async function getYearlyComp(req, res) {
            SELECT A.COMPCODE,SUM(MALE) MALE,SUM(FEMALE) FEMALE,SUM(MALE)+SUM(FEMALE) TOTAL FROM (
 SELECT A.COMPCODE,CASE WHEN A.GENDER = 'MALE' THEN 1 ELSE 0 END MALE,
 CASE WHEN A.GENDER = 'FEMALE' THEN 1 ELSE 0 END FEMALE FROM MISTABLE A WHERE  A.DOJ <= (
-SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE AA.PAYPERIOD = 'July 2024' 
+SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE AA.PAYPERIOD = '${currentDt}' 
 ) AND (A.DOL IS NULL OR A.DOL <= (
-SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE AA.PAYPERIOD = 'July 2024'
+SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE AA.PAYPERIOD = '${currentDt}'
 ) )
 ) A
 GROUP BY A.COMPCODE
@@ -316,7 +323,7 @@ SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA
 ) AND (A.DOL IS NULL OR A.DOL <= (
 SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
 ) )
-ORDER BY 1,2,3,4,5
+ORDER BY A.DOB desc
  `
         } else {
             sql = `SELECT A.COMPCODE,A.IDCARD,A.FNAME,A.GENDER,A.DOB,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE),A.DOB)/12) AGE,TRUNC(MONTHS_BETWEEN(TRUNC(SYSDATE),A.DOJ)/12) EXP ,A.DOJ FROM MISTABLE A 
@@ -326,7 +333,8 @@ SELECT MIN(AA.STDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA
 ) AND (A.DOL IS NULL OR A.DOL <= (
 SELECT MIN(AA.ENDT) STDT FROM MONTHLYPAYFRQ AA WHERE TO_DATE(SYSDATE) BETWEEN AA.STDT AND AA.ENDT 
 ) )
-ORDER BY 1,2,3,4,5`
+ORDER BY A.DOJ desc
+`
         }
 
 

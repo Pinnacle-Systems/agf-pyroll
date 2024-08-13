@@ -73,7 +73,7 @@ const MisDashboard = () => {
                     setSelectedYear={setSelectedYear}
                     selectedYear={selectedYear}
                 />
-                <div className=''>  <CardWrapper heading={"Exprience Distribution"}>
+                <div className=''>  <CardWrapper heading={"Experience Distribution"}>
                     < TreeMapChart overAllSuppCon={overAllSuppCon} selected={selected}
                         setSelected={setSelected} option={option} />
                 </CardWrapper></div>
@@ -95,8 +95,8 @@ const MisDashboard = () => {
 
             </div>
             <div className='w-full flex justify-center mt-2'>
-                <div className='w-[100%]'>  <div className='w-[70%]'>
-                    <CardWrapper heading={"Events  Breakup"}>
+                <div className='w-[100%]'>  <div className='w-[50%]'>
+                    <CardWrapper heading={"Event's  Breakup Current Month"}>
                         <ShortShip />
                     </CardWrapper></div></div>
             </div>

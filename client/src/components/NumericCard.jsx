@@ -27,9 +27,9 @@ const NumericCard = ({ misData, selectedBuyer }) => {
             name: 'Total',
             valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
             valName2: 'https://img.icons8.com/?size=100&id=23492&format=png&color=000000',
-            value: `₹${(filteredTotalTurnOver.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
+            value: `${(filteredTotalTurnOver.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
             qty: `${(filteredTotalTurnOver.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
-            previousValue: `₹${(filteredTotalTurnOver.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
+            previousValue: `${(filteredTotalTurnOver.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
         },
         {
             heading: "Avg Monthly salary",
@@ -44,7 +44,7 @@ const NumericCard = ({ misData, selectedBuyer }) => {
 
         },
         {
-            heading: "Last Monthly salary",
+            heading: "Last Month salary",
             borderColor: "border-[#96A669]",
             name: 'Total',
             valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
@@ -54,17 +54,17 @@ const NumericCard = ({ misData, selectedBuyer }) => {
             previousValue: `₹${(filterNewCus.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
         },
         {
-            heading: "Pay category",
+            heading: "Staffs Last Month Salary",
             borderColor: "border-[#D49B37]",
             name: 'Total',
-            valName: staff,
-            valName2: lab,
+            valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
+            valName2: 'https://img.icons8.com/?size=100&id=23492&format=png&color=000000',
             value: `₹${(filteredTopCus.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
             qty: `${(filteredTopCus.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
             previousValue: `₹${(filteredTopCus.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
         },
         {
-            heading: "Labours last month OT wages",
+            heading: "Labours Last Month Salary",
             borderColor: "border-[#D49B37]",
             name: 'Total',
             valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
