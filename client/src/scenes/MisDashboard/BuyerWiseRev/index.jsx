@@ -175,21 +175,7 @@ const Retention = () => {
         <ThemeProvider theme={theme}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                 <div className="flex justify-end">
-                    <div className='flex items-center h-8  gap-1'>
-                        <label className='text-sm text-center flex px-3  '>Select:</label>
-                        <DropdownData selectedYear={selectedYear} setSelectedYear={setSelectedYear} />
-                        <DropdownCom
-                            selectedBuyer={selectedBuyer}
-                            setSelectedBuyer={setSelectedBuyer}
-                            selectedMonth={selectedMonth}
-                            setSelectedMonth={setSelectedMonth}
-                            selectedYear={selectedYear}
-                            setSelectedYear={setSelectedYear}
-                            options={buyerNm}
-                            monthOptions={monthData}
-                            yearOptions={yearData}
-                            columnHeaderHeight={"30"}
-                        /> </div>
+
                     <div className='flex group relative'>
 
                         <span className='group-hover:opacity-100 transition-opacity bg-gray-800 px-1 bottom-5 text-sm text-gray-100 rounded-md -translate-x-1/2 absolute opacity-0 z-40'>
@@ -207,33 +193,7 @@ const Retention = () => {
                             />
 
                         </div>
-                        {/* <div style={{ flex: '30%' }} className='flex flex-col'>
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: '400px', width: '100%', border: '0.5px solid #E0E0E0', borderRadius: '10px' }}>
-                                <DataGrid
-                                    rows={orderDataGridRows}
-                                    columns={orderDataGridColumns}
-                                    pageSize={10}
-                                    rowsPerPageOptions={[10]}
-                                    sx={{
-                                        '& .MuiDataGrid-cell': {
-                                            border: 'none',
-                                            py: '5px',
-                                        },
-                                        '& .MuiDataGrid-columnHeaders': {
-                                            borderBottom: 'none',
-                                        },
-                                        '& .MuiDataGrid-cell:focus': {
-                                            outline: 'none',
-                                        },
-                                        '& .fontWeightBold': {
-                                            fontWeight: 'bold',
-                                            backgroundColor: '#dbe2e8',
-                                        },
-                                    }}
-                                    getRowClassName={getRowClassName}
-                                />
-                            </div>
-                        </div> */}
+
                     </div>
                 ) : (
                     <div>No Data Available</div>

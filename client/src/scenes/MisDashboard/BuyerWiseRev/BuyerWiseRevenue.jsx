@@ -8,7 +8,7 @@ import { fontSize, fontWeight } from '@mui/system';
 Highcharts3D(Highcharts);
 
 const BuyerWiseRevenueGen = ({ buyerRev }) => {
-    const buyerWiseRev = buyerRev?.data ? buyerRev?.data : [];
+    const buyerWiseRev = buyerRev ? buyerRev : [];
     console.log(buyerRev);
 
     const options = {
@@ -19,8 +19,8 @@ const BuyerWiseRevenueGen = ({ buyerRev }) => {
                 alpha: 40
             },
             backgroundColor: '#FFFFFF',
-            width: 650,
-            height: 400
+            width: 320,
+            height: 300
         },
         title: {
             text: '',
@@ -61,8 +61,8 @@ const BuyerWiseRevenueGen = ({ buyerRev }) => {
         series: [{
             name: '',
             data: buyerWiseRev.map(item => ({
-                name: item.customer,
-                y: item.revenue
+                name: item.buyer,
+                y: item.value
             }))
         }],
         credits: {

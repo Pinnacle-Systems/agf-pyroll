@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/static/css/main.49329c6a.css",
-    "main.js": "/static/js/main.88ee6360.js",
+    "main.js": "/static/js/main.8f7d84a1.js",
     "pdfmake.js": "/static/js/pdfmake.6cae2992.chunk.js",
     "canvg.js": "/static/js/canvg.eb40762d.chunk.js",
     "xlsx.js": "/static/js/xlsx.253494e3.chunk.js",
@@ -11,13 +11,13 @@
     "static/media/AnnouncementWinter.png": "/static/media/AnnouncementWinter.eeb6f8b808f40a32712b.png",
     "index.html": "/index.html",
     "main.49329c6a.css.map": "/static/css/main.49329c6a.css.map",
-    "main.88ee6360.js.map": "/static/js/main.88ee6360.js.map",
+    "main.8f7d84a1.js.map": "/static/js/main.8f7d84a1.js.map",
     "pdfmake.6cae2992.chunk.js.map": "/static/js/pdfmake.6cae2992.chunk.js.map",
     "canvg.eb40762d.chunk.js.map": "/static/js/canvg.eb40762d.chunk.js.map",
     "xlsx.253494e3.chunk.js.map": "/static/js/xlsx.253494e3.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.49329c6a.css",
-    "static/js/main.88ee6360.js"
+    "static/js/main.8f7d84a1.js"
   ]
 }

@@ -4,12 +4,13 @@ import { useGetMisDashboardOrdersInHandQuery } from '../../../redux/service/misD
 import { HiOutlineRefresh } from 'react-icons/hi';
 import DropdownDt from '../../../Ui Component/dropDownParam';
 import { useGetBuyerNameQuery } from '../../../redux/service/commonMasters';
-
+import MyFunnel from '../../../components/DonutChartMui';
+import BuyerWiseRevenueGen from '../BuyerWiseRev/BuyerWiseRevenue'
 const PieChart = () => {
     const [selected, setSelected] = useState();
     const { data, refetch } = useGetMisDashboardOrdersInHandQuery({ params: { filterBuyer: selected } });
     const { data: buyer, isLoading: isbuyerLoad } = useGetBuyerNameQuery({ params: {} });
-    const ordersInHandBuyerWise = data?.data || 'No orders In Hand';
+    const ordersInHandBuyerWise = data?.data ? data?.data : '';
     const option = buyer?.data ? buyer?.data : [];
 
     return (
@@ -23,7 +24,10 @@ const PieChart = () => {
                     </span>
                 </div>
             </div>
-            <div>    <PieChartTemplate id={`mis-ordersinhand${Math.random()}`} data={ordersInHandBuyerWise} valueField='value' categoryField='buyer' /></div>
+            <div>
+                {/* <MyFunnel topSupplierLastTrurnOver={ordersInHandBuyerWise} /> */}
+                <BuyerWiseRevenueGen buyerRev={ordersInHandBuyerWise} />
+            </div>
         </div>
     );
 }

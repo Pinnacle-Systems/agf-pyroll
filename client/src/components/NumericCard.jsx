@@ -37,9 +37,9 @@ const NumericCard = ({ misData, selectedBuyer }) => {
             name: 'Total',
             valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
             valName2: 'https://img.icons8.com/?size=100&id=23492&format=png&color=000000',
-            value: `₹${(filterProfit.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
-            qty: `${(filterProfit.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
-            previousValue: `₹${(filterProfit.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
+            value: `₹ ${(filterProfit.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
+            qty: `₹ ${(filterProfit.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
+            previousValue: `₹ ${(filterProfit.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
 
 
         },
@@ -49,9 +49,9 @@ const NumericCard = ({ misData, selectedBuyer }) => {
             name: 'Total',
             valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
             valName2: 'https://img.icons8.com/?size=100&id=23492&format=png&color=000000',
-            value: `₹${(filterNewCus.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
-            qty: `${(filterNewCus.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
-            previousValue: `₹${(filterNewCus.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
+            value: `₹ ${(filterNewCus.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
+            qty: `₹ ${(filterNewCus.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
+            previousValue: `₹ ${(filterNewCus.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
         },
         {
             heading: "Staffs Last Month Salary",
@@ -59,9 +59,9 @@ const NumericCard = ({ misData, selectedBuyer }) => {
             name: 'Total',
             valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
             valName2: 'https://img.icons8.com/?size=100&id=23492&format=png&color=000000',
-            value: `₹${(filteredTopCus.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
-            qty: `${(filteredTopCus.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
-            previousValue: `₹${(filteredTopCus.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
+            value: `₹ ${(filteredTopCus.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
+            qty: `₹ ${(filteredTopCus.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
+            previousValue: `₹ ${(filteredTopCus.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
         },
         {
             heading: "Labours Last Month Salary",
@@ -69,9 +69,9 @@ const NumericCard = ({ misData, selectedBuyer }) => {
             name: 'Total',
             valName: 'https://img.icons8.com/?size=100&id=I_5_kSloSWJW&format=png&color=000000',
             valName2: 'https://img.icons8.com/?size=100&id=23492&format=png&color=000000',
-            value: `₹${(filterLoss.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
-            qty: `${(filterLoss.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
-            previousValue: `₹${(filterLoss.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
+            value: `₹ ${(filterLoss.reduce((acc, item) => acc + item.currentValue, 0) || 0).toLocaleString()}`,
+            qty: `₹ ${(filterLoss.reduce((acc, item) => acc + item.currentQty, 0) || 0).toLocaleString()}`,
+            previousValue: `₹ ${(filterLoss.reduce((acc, item) => acc + item.prevValue, 0) || 0).toLocaleString()}`,
         },
     ]
     return (

@@ -282,7 +282,8 @@ export async function getOverAllSupplierContribution(req, res) {
         const sql =
             `
        SELECT X.SLAP,COUNT(X.SLAP) VAL FROM (
-SELECT CASE WHEN X.AGE BETWEEN 1 AND 2 THEN '1 - 2'
+SELECT CASE WHEN X.AGE BETWEEN 0 AND 1 THEN '0 - 1'
+WHEN X.AGE BETWEEN 1 AND 2 THEN '1 - 2'
 WHEN X.AGE BETWEEN 3 AND 5 THEN '3 - 5' 
 WHEN X.AGE BETWEEN 5 AND 10 THEN '5 - 10' 
 WHEN X.AGE > 10 THEN 'Above 10'  END SLAP FROM (
